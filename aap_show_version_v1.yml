@@ -1,0 +1,16 @@
+---
+- name: Ejecutar comando show version en el switch
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Gather facts (eos)
+      arista.eos.eos_facts:
+      when: ansible_network_os == 'arista.eos.eos'
+
+    ###
+    # Demonstrate variables
+    #
+  ###
+    - name: Display some facts
+      debug:
+        msg: "The hostname is {{ ansible_net_hostname }} and the OS is {{ ansible_net_version }}"
