@@ -1,0 +1,46 @@
+---
+- name: Comprobar y crear VLAN MAPPING en Port-Channel el switch Arista
+  hosts: all
+  gather_facts: no
+  
+  # Variables
+  vars:
+    id_port: ""
+    vlan_map: ""
+    vlan_real: ""
+  
+  # Tareas
+  tasks:
+    - name: Verificar existencia de la VLAN
+      arista.eos.eos_command:
+        commands:
+          - show vlan id {{ vlan_map }}
+      register: vlan_check
+
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show vlan id
+      debug:
+        msg: "{{ vlan_check.stdout }}"
+
+    - name: Crea VLAN MAPPING en PORT-CHANNEL
+      arista.eos.eos_config:
+        lines:
+          - interface Port-Channel {{ id_port }}
+          - switchport vlan translation {{ vlan_real }} {{ vlan_map }}
+          - switchport trunk allowed vlan {{ vlan_map }}
+      when: "'not found' not in vlan_check.stdout[0]"
+    
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
+    - name: Verificar existencia de la VLAN MAPPING en Port-Channel
+      arista.eos.eos_command:
+        commands:
+          - show running-config interfaces port-Channel {{ id_port }}
+      register: vlan_check_new
+
+    - name: Mostrar resultado del comando show running-config interfaces port-Channel
+      debug:
+        msg: "{{ vlan_check_new.stdout }}"
