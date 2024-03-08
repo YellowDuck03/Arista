@@ -1,0 +1,47 @@
+---
+- name: Crear PREFIX-LIST switch Arista
+  hosts: all
+  gather_facts: no
+  
+  # Variables
+  vars:
+    nom_prefix: ""
+    id_prefix: ""
+    prefix: ""
+  
+  # Tareas
+  tasks:
+    - name: Verificar PREFIX-LIST en switch
+      arista.eos.eos_command:
+        commands:
+          - show running-config | sec prefix
+      register: prefix_check
+
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show running-config | sec prefix
+      debug:
+        msg: "{{ prefix_check.stdout }}"
+
+    - name: Crea PREFIX-LIST
+      arista.eos.eos_config:
+        lines:
+          - ip prefix-list {{ nom_prefix }}
+          - seq {{ id_prefix }} permit {{ prefix }}
+     #    - switchport vlan translation {{ vlan_real }} {{ vlan_map }}
+     #    - switchport trunk allowed vlan {{ vlan_map }}
+     # when: "'not found' not in vlan_check.stdout[0]"
+    
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
+    - name: Verificar PREFIX creado
+      arista.eos.eos_command:
+        commands:
+          - show running-config | sec prefix
+      register: prefix_check_new
+
+    - name: Mostrar resultado del comando show running-config | sec prefix
+      debug:
+        msg: "{{ prefix_check_new.stdout }}"
