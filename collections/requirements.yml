@@ -1,0 +1,5 @@
+---
+collections:
+  - grafana.grafana
+  - chocolatey.chocolatey
+  - arista.eos
