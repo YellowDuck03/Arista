@@ -1,0 +1,53 @@
+---
+- name: Comprobar y agregar ruta VRF en el switch Arista
+  hosts: all
+  gather_facts: no
+
+  # Variables
+  vars:
+    vrf_nam: ""
+    des_mask: ""
+    next_hop: ""
+  
+  # Tareas
+  tasks:
+    - name: Verificar existencia de VRF, IMPORTANTE!! VRF debe existir
+      arista.eos.eos_command:
+        commands:
+          - show vrf | in {{ vrf_nam }}
+      register: vrf_check
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show vrf filtrando nombre de VRF para ver si existe
+      debug:
+        msg: "{{ vrf_check.stdout }}"
+        
+    - name: Verificar ruta en VRF existe
+      arista.eos.eos_command:
+        commands:
+          - show run | in {{ des_mask }}
+      register: des_mask_check
+      
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show run filtrando por ruta
+      debug:
+        msg: "{{ des_mask_check.stdout }}"
+ 
+    - name: Crear Ruta en VRF si no existe
+      arista.eos.eos_config:
+        lines:
+          - ip route vrf {{ vrf_nam }} {{ des_mask }} {{ next_hop }}
+      when: vrf_nam not in des_mask_check.stdout
+   
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
+    - name: Verificar existencia de VRF nuevamente
+      arista.eos.eos_command:
+        commands:
+          - show run | in {{ des_mask }}
+      register: vrf_check_new
+    - name: Mostrar resultado del comando show vrf 
+      debug:
+        msg: "{{ vrf_check_new.stdout }}"

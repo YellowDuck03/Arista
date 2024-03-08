@@ -1,0 +1,59 @@
+---
+- name: Comprobar y add vlan a portchannel en el switch Arista
+  hosts: all
+  gather_facts: no
+  
+  # Variables
+  vars:
+    port_id: ""
+    port_desc: ""
+    vlan_allowed: ""
+    mlag_id: ""
+    int_id: ""
+    int_desc: ""
+    int_speed: ""
+   
+  # Tareas
+  tasks:
+    - name: Verificar existencia de configuración en portchannel
+      arista.eos.eos_command:
+        commands:
+          - show  interfaces port-Channel {{ port_id }}
+      register: port_id_check
+
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show interfaces port channel id
+      debug:
+        msg: "{{ port_id_check.stdout }}"
+     
+   
+    - name: Crear Port-channel con Interfaces si no existe
+      arista.eos.eos_config:
+        lines:
+          - interface Port-channel {{ port_id }}
+          - description {{ port_desc }}
+          - switchport trunk allowed vlan {{ vlan_allowed }}
+          - switchport mode trunk
+          - mlag {{ mlag_id }}
+          - spanning-tree bpdufilter enable 
+          - spanning-tree guard root
+          - interface Ethernet {{ int_id }}
+          - description {{ int_desc }}
+          - speed forced {{ int_speed }}
+          - channel-group {{ port_id }} mode active
+      when: "'Interface does not exist' in port_id_check.stdout[0]"
+        
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
+    - name: Verificar los cambios en el portchannel
+      arista.eos.eos_command:
+        commands:
+          - show  interfaces port-Channel {{ port_id }}
+      register: port_id_check_new
+
+    - name: Mostrar resultado del comando show Port-channel después de crear puerto
+      debug:
+        msg: "{{ port_id_check_new.stdout }}"
