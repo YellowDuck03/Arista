@@ -1,0 +1,13 @@
+---
+- name: Listar instancias de EC2
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Obtener información de instancias de EC2
+      community.aws.ec2_instance_info:
+        region: tu_region  # Reemplaza con tu región de AWS
+      register: ec2_info
+
+    - name: Mostrar información de instancias
+      debug:
+        var: ec2_info.instances
