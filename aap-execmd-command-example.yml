@@ -1,0 +1,40 @@
+---
+- name: "[PLAY-1] EJECUCION DE COMANDOS -> COMMAND MODULE"
+  hosts: localhost
+  gather_facts: true
+  become: no
+
+  vars:
+    read_file_path_base: "/etc"
+    read_file_name: "hosts"
+    read_file_path_full: "{{ read_file_path_base }}/{{ read_file_name }}"
+
+  pre_tasks:
+
+  - ansible.builtin.assert:
+      that:
+        - read_file_path_base is defined
+        - read_file_path_base != ""
+        - read_file_name is defined
+        - read_file_name != ""
+        - read_file_path_full is defined
+        - read_file_path_full != ""
+      success_msg: "'VALIDATION [VARS] -> SUCCESS"
+
+  tasks:
+
+  - ansible.builtin.debug:
+      msg: "INFO: FILE TO READ -> '{{ read_file_path_full }}'"
+
+  - name: "INFO: READING FILE"
+    ansible.builtin.command: "cat {{ read_file_path_full }}"
+    ignore_errors: true
+    register: reg_read_file_raw
+
+  - ansible.builtin.debug:
+      msg: "INFO: FILE TO READ -> '{{ reg_read_file_raw }}'"
+
+  - fail:
+      mag: "ERROR: COMMAND TO READ FILE FAILED. (EC={{ reg_read_file_raw.rc}})"
+    when:
+      - not reg_read_file_raw.rc | int == 0
