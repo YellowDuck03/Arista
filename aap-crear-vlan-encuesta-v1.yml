@@ -41,5 +41,6 @@
 
     - name: Mostrar resultado del comando show vlan id después de crear la VLAN
       debug:
-        msg: "{{ vlan_check_new.stdout }}"
+        msg: 
+        "{{ vlan_check_new.stdout }}"
 
