@@ -20,7 +20,7 @@
     # Salida por pantalla
     - name: Mostrar resultado del comando show vlan id
       debug:
-        msg: "{{ route-map_check.stdout }}"
+        msg: "{{ rmap_check.stdout }}"
 
     - name: Crear el route map si no existe
       arista.eos.eos_config:
