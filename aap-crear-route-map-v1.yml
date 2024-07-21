@@ -28,7 +28,7 @@
           - route-map {{ nom_route_map }}
           - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
-      when: "'not found' in route-map_check.stdout[0]"
+      when: "'not found' in rmap_check.stdout[0]"
     
     - name: Guardar cambios
       arista.eos.eos_command:
@@ -44,6 +44,6 @@
     - name: Mostrar resultado del comando show vlan id después de crear la VLAN
       debug:
         msg: "{{ 
-        route-map_check_new.stdout 
+        rmap_check_new.stdout 
         }}"
 
