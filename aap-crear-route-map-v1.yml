@@ -15,7 +15,7 @@
       arista.eos.eos_command:
         commands:
           - show route-map {{ nom_route_map }}
-      register: route-map_check
+      register: rmap_check
 
     # Salida por pantalla
     - name: Mostrar resultado del comando show vlan id
@@ -39,7 +39,7 @@
       arista.eos.eos_command:
         commands:
           - show route-map {{ nom_route_map }}
-      register: route-map_check_new
+      register: rmap_check_new
 
     - name: Mostrar resultado del comando show vlan id después de crear la VLAN
       debug:
