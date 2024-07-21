@@ -18,7 +18,7 @@
       register: rmap_check
 
     # Salida por pantalla
-    - name: Mostrar resultado del comando show vlan id
+    - name: Mostrar resultado del comando show route-map
       debug:
         msg: "{{ rmap_check.stdout }}"
 
