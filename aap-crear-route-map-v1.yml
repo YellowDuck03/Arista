@@ -25,14 +25,13 @@
         msg: "{{ route_map_config.stdout }}"
           
     - name: Crear el route map si no existe
-    when: "'not found' in route_map_config.stdout[0]"
-
       arista.eos.eos_config:
         lines:
           - route-map {{ nom_route_map }}
           - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
-    
+          when: not route_map_exists
+
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
