@@ -30,7 +30,6 @@
           - route-map {{ nom_route_map }}
           - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
-          when: not {{ route_map_exists }}
 
     - name: Guardar cambios
       arista.eos.eos_command:
