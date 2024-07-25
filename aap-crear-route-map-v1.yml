@@ -16,17 +16,15 @@
         commands:
           - show running-config section route-map
       register: route_map_config
-      
-          - name: Set fact if route-map exists
       set_fact:
-        route_map_exists: "{{ 'route-map TEST_ROUTE_MAP' in route_map_config.stdout[0] }}"
+        route_map_exists: "{{ 'route-map nom_route_map' in route_map_config.stdout[0] }}"
 
     # Salida por pantalla
     - name: Mostrar resultado del comando show route-map
       debug:
-        msg: "{{ rmap_check.stdout }}"
+        msg: "{{ route_map_config.stdout }}"
 
-
+        
           
     - name: Crear el route map si no existe
     when: not route_map_exists
