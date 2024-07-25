@@ -23,11 +23,10 @@
     - name: Mostrar resultado del comando show route-map
       debug:
         msg: "{{ route_map_config.stdout }}"
-
-        
           
     - name: Crear el route map si no existe
-    when: not route_map_exists
+    when: "'not found' in route_map_config.stdout[0]"
+
       arista.eos.eos_config:
         lines:
           - route-map {{ nom_route_map }}
