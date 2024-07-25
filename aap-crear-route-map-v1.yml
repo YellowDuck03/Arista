@@ -16,8 +16,7 @@
         commands:
           - show running-config section route-map
       register: route_map_config
-      set_fact:
-        route_map_exists: "{{ 'route-map nom_route_map' in route_map_config.stdout[0] }}"
+
 
     # Salida por pantalla
     - name: Mostrar resultado del comando show route-map
