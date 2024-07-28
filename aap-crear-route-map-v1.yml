@@ -12,7 +12,7 @@
   # Tareas
   tasks:
     - name: Verificar existencia del route-map
-      arista.eos.eos_command:
+      eos_command:
             commands: "show running-config section route-map | include {{ nom_route_map }}"
 
           
@@ -23,7 +23,7 @@
         msg: "{{ route_map_config.stdout }}"
           
     - name: Crear el route map si no existe
-      arista.eos.eos_config:
+      eos_command:
         lines:
           - route-map {{ nom_route_map }}
           - match ip address prefix-list {{ nom_prefix }}
@@ -32,12 +32,12 @@
 
       
     - name: Guardar cambios
-      arista.eos.eos_command:
+      eos_command:
         commands:
           - write memory
         
     - name: Verificar existencia del route-map
-      arista.eos.eos_command:
+      eos_command:
         commands:
           - show route-map {{ nom_route_map }}
       register: rmap_check_new
