@@ -27,9 +27,7 @@
           - route-map {{ nom_route_map }}
           - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
-   
 
-      
     - name: Guardar cambios
         arista.eos.eos_command:
         commands:
