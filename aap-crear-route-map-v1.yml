@@ -1,7 +1,7 @@
 ---
 - name: Comprobar y crear route-map en el switch Arista
   hosts: all
-  gather_facts: false
+  gather_facts: no
   
   # Variables
   vars:
@@ -13,8 +13,8 @@
   tasks:
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
-        commands:
-          - show run section route-map | i {{ nom_route_map }}
+            commands: "show running-config section route-map | include {{ nom_route_map }}"
+
           
       register: route_map_config
     # Salida por pantalla
