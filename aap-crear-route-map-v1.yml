@@ -28,7 +28,7 @@
           - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
     
-          when: not nom_route_map  in route_map_config.stdout[0] not  
+          when: not nom_route_map  in route_map_config.stdout[0] 
 
 
     - name: Guardar cambios
