@@ -14,9 +14,7 @@
     - name: Verificar existencia del route-map
         arista.eos.eos_command:
          commands:
-            - show running-config section route-map | include {{ nom_route_map }}
-
-          
+            - show running-config section route-map | include {{ nom_route_map }}          
       register: route_map_config
     # Salida por pantalla
     - name: Mostrar resultado del comando show route-map
