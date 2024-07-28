@@ -13,6 +13,7 @@
   tasks:
     - name: Verificar existencia del route-map
         arista.eos.eos_command:
+         commands:
             - show running-config section route-map | include {{ nom_route_map }}
 
           
