@@ -28,7 +28,8 @@
           - route-map {{ nom_route_map }}
           - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
-        when: nom_route_map not in route_map_config.stdout
+        when: route_map_config.stdout_lines | length == 0
+
       
     - name: Guardar cambios
       arista.eos.eos_command:
