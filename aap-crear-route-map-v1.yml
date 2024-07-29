@@ -11,7 +11,7 @@
     
   tasks:
     - name: Obtener configuración actual del Route-Map
-      eos_command:
+      arista.eos.eos_command:
         commands:
           - "show running-config section route-map"
       register: route_map_config
@@ -21,8 +21,9 @@
         route_map_exists: "{{ route_map_config.stdout[0] is search('route-map {{ nom_route_map }}') }}"
 
     - name: Configurar Route-Map si no existe
-      eos_config:
-        lines:
+      arista.eos.eos_command:
+        commands:
+          - "configure terminal"
           - "route-map {{ nom_route_map }} permit 10"
           - "match ip address prefix-list {{ nom_prefix }}"
           - "set metric {{ metric }}"
@@ -31,6 +32,6 @@
 
   handlers:
     - name: Guardar configuración
-      eos_command:
+      arista.eos.eos_command:
         commands:
-          - "write memory"
+          - "copy running-config startup-config"
