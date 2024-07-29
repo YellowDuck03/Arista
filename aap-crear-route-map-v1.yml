@@ -13,7 +13,7 @@
     - name: Obtener configuración actual del Route-Map
       arista.eos.eos_command:
         commands:
-          - "show running-config section route-map"
+          - "show running-config | include route-map {{ nom_route_map }}"
       register: route_map_config
 
     - name: Debug de la configuración actual del Route-Map
