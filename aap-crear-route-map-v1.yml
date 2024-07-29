@@ -9,32 +9,61 @@
     nom_prefix: ""
     metric: ""
 
-   tasks:
-    - name: Verificar si el route-map ya existe
+ 
+  # Tareas
+  tasks:
+    - name: Verificar existencia de la VLAN
       arista.eos.eos_command:
-        commands: 
-        - show running-config | include route-map {{ nom_route_map }}
-      register: route_map_check
+        commands:
+          - show vlan id {{ vlan_id }}
+      register: vlan_check
 
-    - name: Crear route-map si no existe
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show vlan id
+      debug:
+        msg: "{{ vlan_check.stdout }}"
+     
+    - name: Verificar existencia de Portchannel
+      arista.eos.eos_command:
+        commands:
+          - show port-channel | in {{ vlan_port }}
+      register: vlan_port_check
+      
+      # Salida por pantalla
+    - name: Mostrar resultado del comando show port-channel
+      debug:
+        msg: "{{ vlan_port_check.stdout }}"
+    
+    - name: Verificar existencia de vlan en Portchannel IMPORTANTE!! el PortChannel debe tener al menos una Vlan asignada
+      arista.eos.eos_command:
+        commands:
+          - show run interface port-channel {{ vlan_port }} | in {{ vlan_id }}
+      register: vlan_id_port_check
+      
+      # Salida por pantalla
+    - name: Mostrar resultado del comando show port-channel filtrando vlan_id
+      debug:
+        msg: "{{ vlan_id_port_check.stdout }}"
+
+
+    - name: Agregar vlan a Portchannel si no existe
       arista.eos.eos_config:
         lines:
-          - route-map {{ nom_route_map }} permit 10
-          - match ip address prefix-list {{ nom_prefix }}
-          - set metric {{ metric }}
-     
-
+          - interface Port-channel {{ vlan_port }}
+          - switchport trunk allowed vlan add {{ vlan_id }}
+      when: "'' in vlan_id_port_check.stdout[0]"
+        
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
         
-    - name: Mostrar mensaje de que el route-map fue creado
-      debug:
-        msg: "Route-map '{{ nom_route_map }}' ha sido creado con el prefijo '{{ nom_prefix }}' y métrica '{{ metric }}'."
-      when: route_map_check.stdout_lines | length == 0
+    - name: Verificar existencia del Port-Channel
+      arista.eos.eos_command:
+        commands:
+          - show run interface port-channel {{ vlan_port }} | in {{ vlan_id }}
+      register: vlan_port_check_new
 
-    - name: Mostrar mensaje si el route-map ya existe
+    - name: Mostrar resultado del comando show Port-channel después de crear puerto
       debug:
-        msg: "El route-map '{{ nom_route_map }}' ya existe y no se creará."
-      when: route_map_check.stdout_lines | length > 0
+        msg: "{{ vlan_port_check_new.stdout }}"
