@@ -14,7 +14,6 @@
       arista.eos.eos_command:
         commands: "show running-config | include route-map {{ nom_route_map }}"
       register: route_map_check
-      ignore_errors: yes
 
     - name: Mostrar salida del chequeo del route-map
       debug:
@@ -26,9 +25,13 @@
           - "route-map {{ nom_route_map }} permit 10"
           - " match ip address prefix-list {{ nom_prefix }}"
           - " set metric {{ metric }}"
-        save_when: modified
-      when: route_map_check.stdout_lines | length == 0
+      when: "'' in route_map_check.stdout[0]"
 
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
     - name: Mostrar mensaje de que el route-map fue creado
       debug:
         msg: "Route-map '{{ nom_route_map }}' ha sido creado con el prefijo '{{ nom_prefix }}' y métrica '{{ metric }}'."
