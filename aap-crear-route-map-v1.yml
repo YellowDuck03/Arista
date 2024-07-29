@@ -48,8 +48,4 @@
         msg: "El Route-Map ya existía, no se realizó ninguna configuración"
       when: not route_map_configured.changed
       
- handlers:
-    - name: Guardar configuración
-      arista.eos.eos_command:
-        commands:
-          - write memory
+
