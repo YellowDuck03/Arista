@@ -22,14 +22,15 @@
       debug:
         msg: "{{ nom_route_map.stdout }}"
           
-    - name: Crear el route map si no existe
-        arista.eos.eos_config:
+    - name: Crear route-map si no existe
+      arista.eos.eos_config:
         lines:
-          - route-map {{ nom_route_map }}
-          - match ip address prefix-list {{ nom_prefix }}
-          - set metric {{ metric }}
-when: route_map_output.stdout == ""
+          - " route-map {{ nom_route_map }} permit 10"
+          - " match ip address prefix-list {{ nom_prefix }}"
+        save_when: modified
+      when: route_map_output.stdout == ""
 
+      
     - name: Guardar cambios
         arista.eos.eos_command:
         commands:
