@@ -13,12 +13,12 @@
     - name: Obtener configuración actual del Route-Map
       arista.eos.eos_command:
         commands:
-          - "show running-config | include route-map {{ nom_route_map }}"
+          - "show running-config section route-map"
       register: route_map_config
 
     - name: Debug de la configuración actual del Route-Map
       debug:
-        var: route_map_config.stdout
+        msg: "Configuración actual del Route-Map: {{ route_map_config.stdout }}"
 
     - name: Validar existencia del Route-Map
       set_fact:
@@ -26,7 +26,7 @@
 
     - name: Debug del estado de existencia del Route-Map
       debug:
-        var: route_map_exists
+        msg: "El Route-Map {{ nom_route_map }} existe: {{ route_map_exists }}"
 
     - name: Configurar Route-Map si no existe
       arista.eos.eos_command:
@@ -38,8 +38,23 @@
       when: not route_map_exists
       register: route_map_configured
 
-    - name: Guardar cambios
+    - name: Informar si se realizó la configuración del Route-Map
+      debug:
+        msg: "Configuración del Route-Map realizada"
+      when: route_map_configured is defined and route_map_configured.changed
+
+    - name: Informar si no se realizó la configuración del Route-Map
+      debug:
+        msg: "El Route-Map ya existía, no se realizó ninguna configuración"
+      when: route_map_configured is not defined or not route_map_configured.changed
+
+    - name: Guardar configuración
       arista.eos.eos_command:
         commands:
-          - write memory
-        
+          - "write memory"
+      when: route_map_configured is defined and route_map_configured.changed
+
+  handlers:
+    - name: save_config
+      debug:
+        msg: "Configuración guardada exitosamente"
