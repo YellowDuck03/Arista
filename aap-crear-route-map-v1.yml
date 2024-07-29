@@ -16,10 +16,6 @@
         - show running-config | include route-map {{ nom_route_map }}
       register: route_map_check
 
-    - name: Mostrar salida del chequeo del route-map
-      debug:
-        msg: "Salida del chequeo del route-map: {{ route_map_check.stdout_lines }}"
-
     - name: Crear route-map si no existe
       arista.eos.eos_config:
         lines:
