@@ -38,4 +38,8 @@
       when: not route_map_exists
       register: route_map_configured
 
-
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
