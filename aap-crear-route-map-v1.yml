@@ -8,8 +8,7 @@
     nom_route_map: ""
     nom_prefix: ""
     metric: ""
-
- 
+    
   tasks:
     - name: Obtener configuración actual del Route-Map
       eos_command:
