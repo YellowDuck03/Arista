@@ -8,8 +8,8 @@
     nom_route_map: ""
     nom_prefix: ""
     metric: ""
-    
-   tasks:
+  # Tareas
+  tasks:
     - name: Obtener configuración actual del Route-Map
       arista.eos.eos_command:
         commands:
