@@ -8,27 +8,39 @@
     nom_route_map: ""
     nom_prefix: ""
     metric: ""
-  
+
   tasks:
     - name: Verificar si el route-map ya existe
       arista.eos.eos_command:
-        commands: "show run section route-map | include {{ nom_route_map }}"
-      register: route_map_output
-      
-        # Salida por pantalla
-    - name: Mostrar resultado del comando Verificar si el route-map ya existe
+        commands: "show running-config | include route-map {{ nom_route_map }}"
+      register: route_map_check
+      ignore_errors: yes
+      tags: check_route_map
+
+    - name: Mostrar salida del chequeo del route-map
       debug:
-        msg: "{{ route_map_output.stdout }}"
-        
+        msg: "Salida del chequeo del route-map: {{ route_map_check.stdout_lines }}"
+      when: route_map_check.rc == 0
+      tags: debug
+
     - name: Crear route-map si no existe
       arista.eos.eos_config:
         lines:
-         - route-map {{ nom_route_map }} permit 10
-         - match ip address prefix-list {{ nom_prefix }}
-         - set metric {{ metric }}
-        when: route_map_output.stdout_lines | length == 0
+          - "route-map {{ nom_route_map }} permit 10"
+          - " match ip address prefix-list {{ nom_prefix }}"
+          - " set metric {{ metric }}"
+        save_when: modified
+      when: route_map_check.rc != 0
+      tags: create_route_map
 
-    - name: Guardar cambios
-      arista.eos.eos_command:
-        commands:
-          - write memory
+    - name: Mostrar mensaje de que el route-map fue creado
+      debug:
+        msg: "Route-map '{{ nom_route_map }}' ha sido creado con el prefijo '{{ nom_prefix }}' y métrica '{{ metric }}'."
+      when: route_map_check.rc != 0
+      tags: debug
+
+    - name: Mostrar mensaje si el route-map ya existe
+      debug:
+        msg: "El route-map '{{ nom_route_map }}' ya existe y no se creará."
+      when: route_map_check.rc == 0
+      tags: debug
