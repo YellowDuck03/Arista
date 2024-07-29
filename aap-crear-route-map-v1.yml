@@ -9,26 +9,23 @@
     nom_prefix: ""
     metric: ""
   
-  # Tareas
   tasks:
-    - name: Verificar existencia del route-map
+    - name: Verificar si el route-map ya existe
       arista.eos.eos_command:
-      commands: 
-       - show running-config | include route-map {{ nom_route_map }}
+        commands: "show running-config | include route-map {{ nom_route_map }}"
       register: route_map_output
       changed_when: false
-    # Salida por pantalla
-    - name: Mostrar resultado del comando show route-map
-      debug:
-        msg: "{{ nom_route_map.stdout }}"
-          
+
     - name: Crear route-map si no existe
       arista.eos.eos_config:
         lines:
-          - " route-map {{ nom_route_map }} permit 10"
+          - "route-map {{ nom_route_map }} permit 10"
           - " match ip address prefix-list {{ nom_prefix }}"
+          - " set metric {{ metric }}"
         save_when: modified
       when: route_map_output.stdout == ""
 
-        
-
+    - name: Mostrar mensaje si el route-map ya existe
+      debug:
+        msg: "El route-map '{{  nom_route_map }}' ya existe y no se creará."
+      when: route_map_output.stdout != ""
