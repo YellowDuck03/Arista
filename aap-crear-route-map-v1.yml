@@ -38,14 +38,4 @@
       when: not route_map_exists
       register: route_map_configured
 
-    - name: Informar si se realizó la configuración del Route-Map
-      debug:
-        msg: "Configuración del Route-Map realizada"
-      when: route_map_configured.changed
-
-    - name: Informar si no se realizó la configuración del Route-Map
-      debug:
-        msg: "El Route-Map ya existía, no se realizó ninguna configuración"
-      when: not route_map_configured.changed
-      
 
