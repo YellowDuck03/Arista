@@ -10,30 +10,28 @@
     metric: ""
 
  
-  # Tareas
   tasks:
-    - name: Verificar existencia del route-map
-      arista.eos.eos_command:
+    - name: Obtener configuración actual del Route-Map
+      eos_command:
         commands:
-          - show running-config | include route-map {{ nom_route_map }}
-      register: routemap_check
-      ignore_errors: yes
-      
-    # Salida por pantalla
-    - name: Mostrar resultado del Verificador existencia del route-map
-      debug:
-        msg: "{{ routemap_check.stdout }}"
+          - "show running-config section route-map"
+      register: route_map_config
 
-    - name: Crear route-map si no existe
-      arista.eos.eos_config:
+    - name: Validar existencia del Route-Map
+      set_fact:
+        route_map_exists: "{{ route_map_config.stdout[0] is search('route-map {{ nom_route_map }}') }}"
+
+    - name: Configurar Route-Map si no existe
+      eos_config:
         lines:
-          - route-map {{ nom_route_map }} permit 10
-          - match ip address prefix-list {{ nom_prefix }}
-          - set metric {{ metric }}
-      when: "'' in routemap_check.stdout[0]"
-        
-    - name: Guardar cambios
-      arista.eos.eos_command:
+          - "route-map {{ nom_route_map }} permit 10"
+          - "match ip address prefix-list {{ nom_prefix }}"
+          - "set metric {{ metric }}"
+        when: not route_map_exists
+      notify: save_config
+
+  handlers:
+    - name: Guardar configuración
+      eos_command:
         commands:
-          - write memory
-        
+          - "write memory"
