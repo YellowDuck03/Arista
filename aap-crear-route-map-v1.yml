@@ -13,7 +13,8 @@
   tasks:
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
-      commands: "show running-config | include route-map {{ nom_route_map }}"
+      commands: 
+       - show running-config | include route-map {{ nom_route_map }}
       register: route_map_output
       changed_when: false
     # Salida por pantalla
@@ -22,7 +23,7 @@
         msg: "{{ nom_route_map.stdout }}"
           
     - name: Crear el route map si no existe
-        arista.eos.eos_command:
+        arista.eos.eos_config:
         lines:
           - route-map {{ nom_route_map }}
           - match ip address prefix-list {{ nom_prefix }}
