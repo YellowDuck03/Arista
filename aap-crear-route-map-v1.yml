@@ -21,5 +21,5 @@
          - route-map {{ nom_route_map }} permit 10
          - match ip address prefix-list {{ nom_prefix }}
          - set metric {{ metric }}
-      when: route_map_output.stdout == ""
+  
 
