@@ -23,10 +23,10 @@
     - name: Crear route-map si no existe
       arista.eos.eos_config:
         lines:
-          - "route-map {{ nom_route_map }} permit 10"
-          - " match ip address prefix-list {{ nom_prefix }}"
-          - " set metric {{ metric }}"
-      when: "'' in route_map_check.stdout[0]"
+          - route-map {{ nom_route_map }} permit 10
+          - match ip address prefix-list {{ nom_prefix }}
+          - set metric {{ metric }}
+     
 
     - name: Guardar cambios
       arista.eos.eos_command:
