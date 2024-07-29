@@ -16,9 +16,17 @@
           - "show running-config section route-map"
       register: route_map_config
 
+    - name: Debug de la configuración actual del Route-Map
+      debug:
+        var: route_map_config.stdout
+
     - name: Validar existencia del Route-Map
       set_fact:
-        route_map_exists: "{{ route_map_config.stdout[0] is search('route-map {{ nom_route_map }}') }}"
+        route_map_exists: "{{ 'route-map ' ~ nom_route_map in route_map_config.stdout[0] }}"
+
+    - name: Debug del estado de existencia del Route-Map
+      debug:
+        var: route_map_exists
 
     - name: Configurar Route-Map si no existe
       arista.eos.eos_command:
@@ -28,10 +36,20 @@
           - "match ip address prefix-list {{ nom_prefix }}"
           - "set metric {{ metric }}"
       when: not route_map_exists
-      notify: save_config
+      register: route_map_configured
+
+    - name: Informar si se realizó la configuración del Route-Map
+      debug:
+        msg: "Configuración del Route-Map realizada"
+      when: route_map_configured.changed
+
+    - name: Informar si no se realizó la configuración del Route-Map
+      debug:
+        msg: "El Route-Map ya existía, no se realizó ninguna configuración"
+      when: not route_map_configured.changed
 
   handlers:
     - name: Guardar configuración
       arista.eos.eos_command:
         commands:
-          - "copy running-config startup-config"
+          - "copy running-config startup-config
