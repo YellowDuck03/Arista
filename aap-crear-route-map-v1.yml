@@ -20,25 +20,14 @@
       debug:
         msg: "Salida del chequeo del route-map: {{ route_map_check.stdout_lines }}"
 
-    - name: Crear route-map si no existe
+    - name: Configurar route-map
       arista.eos.eos_config:
         lines:
           - "route-map {{ nom_route_map }} permit 10"
           - " match ip address prefix-list {{ nom_prefix }}"
           - " set metric {{ metric }}"
-      when: route_map_check.stdout_lines | length == 0
-      
-    - name: Guardar cambios
-      arista.eos.eos_command:
-        commands:
-          - write memory
-          
-    - name: Mostrar mensaje de que el route-map fue creado
-      debug:
-        msg: "Route-map '{{ nom_route_map }}' ha sido creado con el prefijo '{{ nom_prefix }}' y métrica '{{ metric }}'."
-      when: route_map_check.stdout_lines | length == 0
+        save_when: modified
 
-    - name: Mostrar mensaje si el route-map ya existe
+    - name: Mostrar mensaje de que el route-map fue configurado
       debug:
-        msg: "El route-map '{{ nom_route_map }}' ya existe y no se creará."
-      when: route_map_check.stdout_lines | length > 0
+        msg: "Route-map '{{ nom_route_map }}' ha sido configurado con el prefijo '{{ nom_prefix }}' y métrica '{{ metric }}'."
