@@ -37,12 +37,3 @@
         commands:
           - write memory
         
-    - name: Mostrar mensaje de que el route-map fue creado
-      debug:
-        msg: "Route-map '{{ nom_route_map }}' ha sido creado con el prefijo '{{ nom_prefix }}' y métrica '{{ metric }}'."
-      when: routemap_check.stdout_lines | length == 0
-
-    - name: Mostrar mensaje si el route-map ya existe
-      debug:
-        msg: "El route-map '{{ nom_route_map }}' ya existe y no se creará."
-      when: routemap_check.stdout_lines | length > 0
