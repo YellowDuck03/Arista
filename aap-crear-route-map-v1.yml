@@ -19,7 +19,7 @@
     # Salida por pantalla
     - name: Mostrar resultado del comando show route-map
       debug:
-        msg: "{{ route_map_config.stdout }}"
+        msg: "{{ nom_route_map.stdout }}"
           
     - name: Crear el route map si no existe
         arista.eos.eos_command:
