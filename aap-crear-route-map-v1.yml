@@ -25,7 +25,3 @@
         save_when: modified
       when: route_map_output.stdout == ""
 
-    - name: Mostrar mensaje si el route-map ya existe
-      debug:
-        msg: "El route-map '{{  nom_route_map }}' ya existe y no se creará."
-      when: route_map_output.stdout != ""
