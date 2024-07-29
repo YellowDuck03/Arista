@@ -9,8 +9,8 @@
     nom_prefix: ""
     metric: ""
     
-      tasks:
-        - name: Obtener configuración actual del Route-Map
+  tasks:
+    - name: Obtener configuración actual del Route-Map
       arista.eos.eos_command:
         commands:
           - "show running-config section route-map"
