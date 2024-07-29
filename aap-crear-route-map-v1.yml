@@ -12,58 +12,27 @@
  
   # Tareas
   tasks:
-    - name: Verificar existencia de la VLAN
+    - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
-          - show vlan id {{ vlan_id }}
-      register: vlan_check
+          - show running-config | include route-map {{ nom_route_map }}
+      register: routemap_check
 
     # Salida por pantalla
-    - name: Mostrar resultado del comando show vlan id
+    - name: Mostrar resultado del Verificador existencia del route-map
       debug:
-        msg: "{{ vlan_check.stdout }}"
-     
-    - name: Verificar existencia de Portchannel
-      arista.eos.eos_command:
-        commands:
-          - show port-channel | in {{ vlan_port }}
-      register: vlan_port_check
-      
-      # Salida por pantalla
-    - name: Mostrar resultado del comando show port-channel
-      debug:
-        msg: "{{ vlan_port_check.stdout }}"
-    
-    - name: Verificar existencia de vlan en Portchannel IMPORTANTE!! el PortChannel debe tener al menos una Vlan asignada
-      arista.eos.eos_command:
-        commands:
-          - show run interface port-channel {{ vlan_port }} | in {{ vlan_id }}
-      register: vlan_id_port_check
-      
-      # Salida por pantalla
-    - name: Mostrar resultado del comando show port-channel filtrando vlan_id
-      debug:
-        msg: "{{ vlan_id_port_check.stdout }}"
+        msg: "{{ routemap_check.stdout }}"
 
-
-    - name: Agregar vlan a Portchannel si no existe
+    - name: Crear route-map si no existe
       arista.eos.eos_config:
         lines:
-          - interface Port-channel {{ vlan_port }}
-          - switchport trunk allowed vlan add {{ vlan_id }}
-      when: "'' in vlan_id_port_check.stdout[0]"
+          - route-map {{ nom_route_map }} permit 10
+          - match ip address prefix-list {{ nom_prefix }}
+          - set metric {{ metric }}
+      when: "'' in routemap_check.stdout[0]"
         
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
         
-    - name: Verificar existencia del Port-Channel
-      arista.eos.eos_command:
-        commands:
-          - show run interface port-channel {{ vlan_port }} | in {{ vlan_id }}
-      register: vlan_port_check_new
-
-    - name: Mostrar resultado del comando show Port-channel después de crear puerto
-      debug:
-        msg: "{{ vlan_port_check_new.stdout }}"
