@@ -14,8 +14,7 @@
       arista.eos.eos_command:
         commands: "show run section route-map | include {{ nom_route_map }}"
       register: route_map_output
-      changed_when: false
-
+  
     - name: Crear route-map si no existe
       arista.eos.eos_config:
         lines:
