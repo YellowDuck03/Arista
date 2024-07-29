@@ -14,7 +14,12 @@
       arista.eos.eos_command:
         commands: "show run section route-map | include {{ nom_route_map }}"
       register: route_map_output
-  
+      
+        # Salida por pantalla
+    - name: Mostrar resultado del comando Verificar si el route-map ya existe
+      debug:
+        msg: "{{ route_map_output.stdout }}"
+        
     - name: Crear route-map si no existe
       arista.eos.eos_config:
         lines:
@@ -23,3 +28,7 @@
          - set metric {{ metric }}
       when: nom_route_map not in route_map_output.stdout
 
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
