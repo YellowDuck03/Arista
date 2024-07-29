@@ -30,21 +30,5 @@
         save_when: modified
       when: route_map_output.stdout == ""
 
-      
-    - name: Guardar cambios
-        arista.eos.eos_command:
-        commands:
-          - write memory
         
-    - name: Verificar existencia del route-map
-      eos_command:
-        commands:
-          - show route-map {{ nom_route_map }}
-      register: rmap_check_new
-
-    - name: Mostrar resultado del comando show vlan id después de crear la VLAN
-      debug:
-        msg: "{{ 
-        rmap_check_new.stdout 
-        }}"
 
