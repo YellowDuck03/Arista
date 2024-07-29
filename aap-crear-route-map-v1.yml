@@ -9,7 +9,7 @@
     nom_prefix: ""
     metric: ""
     
-  tasks:
+    tasks:
     - name: Obtener configuración actual del Route-Map
       arista.eos.eos_command:
         commands:
@@ -57,4 +57,4 @@
   handlers:
     - name: save_config
       debug:
-        msg: "Configuración guardada exitosamente"
+        msg: "Configuración guardada exitosamente
