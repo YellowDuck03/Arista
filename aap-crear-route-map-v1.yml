@@ -28,7 +28,7 @@
     - name: Validar configuración del route-map
       arista.eos.eos_command:
         commands:
-          - command: "show running-config | include route-map {{ route_map_name }}"
+          -show running-config | include route-map {{ route_map_name }}
         register: validation_output
 
     - name: Mostrar resultado de la validación
