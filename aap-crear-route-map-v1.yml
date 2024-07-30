@@ -13,7 +13,7 @@
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands: 
-          -show running-config section route-map
+          - show running-config section route-map
       register: route_map_config
 
     - name: Configurar el route-map si no existe
@@ -28,7 +28,7 @@
     - name: Validar configuración del route-map
       arista.eos.eos_command:
         commands:
-          -show running-config | include route-map {{ route_map_name }}
+          - show running-config | include route-map {{ route_map_name }}
         register: validation_output
 
     - name: Mostrar resultado de la validación
