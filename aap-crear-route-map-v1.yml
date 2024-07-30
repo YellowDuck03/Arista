@@ -16,13 +16,17 @@
           - command: "show running-config section route-map"
       register: route_map_config
 
+    - name: Verificar si el route-map ya está configurado
+      set_fact:
+        route_map_exists: "{{ 'route-map ' ~ nom_route_map ~ ' permit 10' in route_map_config.stdout[0] }}"
+
     - name: Configurar el route-map si no existe
       arista.eos.eos_config:
         lines:
           - "route-map {{ nom_route_map }} permit 10"
           - "match ip address prefix-list {{ nom_prefix }}"
           - "set metric {{ metric }}"
-      when: "'route-map {{ nom_route_map }} permit 10' not in route_map_config.stdout[0]"
+      when: not route_map_exists
 
     - name: Validar configuración del route-map
       arista.eos.eos_command:
