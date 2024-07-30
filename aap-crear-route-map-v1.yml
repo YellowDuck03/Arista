@@ -35,7 +35,12 @@
           - "match ip address prefix-list {{ nom_prefix }}"
           - "set metric {{ metric }}"
       when: not route_map_exists
-
+      
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
     - name: Debug Configurar el route-map si no existe
       debug:
         msg: "Route-map configuration applied: {{ not route_map_exists }}"
