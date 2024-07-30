@@ -13,16 +13,16 @@
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
-          - command: "show running-config section route-map | include {{ nom_route_map }}"
+          - command: "show running-config section route-map"
       register: route_map_config
 
     - name: Configurar el route-map si no existe
       arista.eos.eos_config:
         lines:
-          - route-map {{ nom_route_map }} permit 10
-          - match ip address prefix-list {{ nom_prefix }}
-          - set metric {{ metric }}
-      when: route_map_config.stdout_lines | length == 0
+          - "route-map {{ nom_route_map }} permit 10"
+          - "match ip address prefix-list {{ nom_prefix }}"
+          - "set metric {{ metric }}"
+      when: "'route-map {{ nom_route_map }} permit 10' not in route_map_config.stdout"
 
     - name: Validar configuración del route-map
       arista.eos.eos_command:
