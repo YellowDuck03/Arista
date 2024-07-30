@@ -19,15 +19,15 @@
     - name: Configurar el route-map si no existe
       arista.eos.eos_config:
         lines:
-          - route-map {{ route_map_name }} permit 10
-          - match ip address prefix-list {{ prefix }}
+          - route-map {{ nom_route_map }} permit 10
+          - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
       when: route_map_config.stdout_lines | length == 0
 
     - name: Validar configuración del route-map
       arista.eos.eos_command:
         commands:
-          - command: "show running-config | include route-map {{ route_map_name }}"
+          - command: "show running-config | include route-map {{ nom_route_map }}"
       register: validation_output
 
     - name: Mostrar resultado de la validación
