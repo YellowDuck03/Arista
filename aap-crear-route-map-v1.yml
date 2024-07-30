@@ -12,24 +12,24 @@
   tasks:
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
-        commands: 
-          - show running-config section route-map
+        commands:
+          - command: "show running-config section route-map"
       register: route_map_config
 
     - name: Configurar el route-map si no existe
-      arista.eos.eos_config:
-        lines:
-          - command: 
-              - route-map {{ route_map_name }} permit 10
-              - match ip address prefix-list {{ prefix }}
-              - set metric {{ metric }}
-      when: not route_map_config.stdout.find('route-map {{ route_map_name }} permit 10') != -1
+      arista.eos.eos_command:
+        commands:
+          - command: |
+              route-map {{ route_map_name }} permit 10
+              match ip address prefix-list {{ prefix }}
+              set metric {{ metric }}
+      when: route_map_config.stdout is search("route-map {{ route_map_name }} permit 10") == false
 
     - name: Validar configuración del route-map
       arista.eos.eos_command:
         commands:
-          - show running-config | include route-map {{ route_map_name }}
-        register: validation_output
+          - command: "show running-config | include route-map {{ route_map_name }}"
+      register: validation_output
 
     - name: Mostrar resultado de la validación
       debug:
