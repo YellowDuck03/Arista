@@ -10,37 +10,27 @@
     metric: ""
   # Tareas
   tasks:
-    - name: Obtener configuración actual del Route-Map
+    - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
-          - "show running-config section route-map"
-      register: route_map_config
+          - command: "show running-config section route-map"
+        register: route_map_config
 
-    - name: Debug de la configuración actual del Route-Map
+    - name: Configurar el route-map si no existe
+      arista.eos.eos_command:
+        commands:
+          - command: |
+              route-map {{ route_map_name }} permit 10
+              match ip address prefix-list {{ prefix }}
+              set metric {{ metric }}
+      when: "'route-map {{ route_map_name }}' not in route_map_config.stdout"
+
+    - name: Validar configuración del route-map
+      arista.eos.eos_command:
+        commands:
+          - command: "show running-config | include route-map {{ route_map_name }}"
+        register: validation_output
+
+    - name: Mostrar resultado de la validación
       debug:
-        msg: "Configuración actual del Route-Map: {{ route_map_config.stdout }}"
-
-    - name: Validar existencia del Route-Map
-      set_fact:
-        route_map_exists: "{{ 'route-map ' ~ nom_route_map in route_map_config.stdout[0] }}"
-
-    - name: Debug del estado de existencia del Route-Map
-      debug:
-        msg: "El Route-Map {{ nom_route_map }} existe: {{ route_map_exists }}"
-
-    - name: Configurar Route-Map si no existe
-      arista.eos.eos_command:
-        commands:
-          - "configure terminal"
-          - "route-map {{ nom_route_map }} permit 10"
-          - "match ip address prefix-list {{ nom_prefix }}"
-          - "set metric {{ metric }}"
-      when: not route_map_exists
-
-
-
-    - name: Guardar configuración
-      arista.eos.eos_command:
-        commands:
-          - "write memory"
-      when: route_map_configured is defined and route_map_configured.changed
+        msg: "{{ validation_output.stdout }}"
