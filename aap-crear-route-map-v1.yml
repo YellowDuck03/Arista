@@ -9,7 +9,7 @@
     nom_prefix: ""
     metric: ""
   # Tareas
-tasks:
+  tasks:
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
