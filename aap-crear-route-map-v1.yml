@@ -12,8 +12,8 @@
   tasks:
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
-        commands:
-          - command: "show running-config section route-map"
+        commands: 
+          -show running-config section route-map
         register: route_map_config
 
     - name: Configurar el route-map si no existe
