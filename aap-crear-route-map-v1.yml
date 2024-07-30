@@ -17,12 +17,12 @@
         register: route_map_config
 
     - name: Configurar el route-map si no existe
-      arista.eos.eos_command:
-        commands:
-          - command: |
-              route-map {{ route_map_name }} permit 10
-              match ip address prefix-list {{ prefix }}
-              set metric {{ metric }}
+      arista.eos.eos_config:
+        lines:
+          - command: 
+              - route-map {{ route_map_name }} permit 10
+              - match ip address prefix-list {{ prefix }}
+              - set metric {{ metric }}
         when: not route_map_config.stdout.find('route-map {{ route_map_name }} permit 10') != -1
 
     - name: Validar configuración del route-map
