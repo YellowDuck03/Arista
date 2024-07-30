@@ -9,7 +9,7 @@
     nom_prefix: ""
     metric: ""
   # Tareas
-  tasks:
+tasks:
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
@@ -17,13 +17,12 @@
       register: route_map_config
 
     - name: Configurar el route-map si no existe
-      arista.eos.eos_command:
-        commands:
-          - command: |
-              route-map {{ route_map_name }} permit 10
-              match ip address prefix-list {{ prefix }}
-              set metric {{ metric }}
-      when: route_map_config.stdout is search("route-map {{ route_map_name }} permit 10") == false
+      arista.eos.eos_config:
+        lines:
+          - route-map {{ route_map_name }} permit 10
+          - match ip address prefix-list {{ prefix }}
+          - set metric {{ metric }}
+      when: route_map_config.stdout_lines | length == 0
 
     - name: Validar configuración del route-map
       arista.eos.eos_command:
