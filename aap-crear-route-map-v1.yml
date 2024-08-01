@@ -28,22 +28,40 @@
       debug:
         msg: "Route-map exists: {{ route_map_exists }}"
 
-    - name: Configurar el route-map si no existe
+    - name: Verificar existencia del prefix-list
+      arista.eos.eos_command:
+        commands:
+          - command: "show running-config section ip prefix-list"
+      register: prefix_list_config
+
+    - name: Debug Verificar existencia del prefix-list
+      debug:
+        msg: "{{ prefix_list_config.stdout }}"
+
+    - name: Verificar si el prefix-list ya está configurado
+      set_fact:
+        prefix_list_exists: "{{ 'ip prefix-list ' ~ nom_prefix in prefix_list_config.stdout[0] }}"
+
+    - name: Debug Verificar si el prefix-list ya está configurado
+      debug:
+        msg: "Prefix-list exists: {{ prefix_list_exists }}"
+
+    - name: Configurar el route-map si no existe y el prefix-list existe
       arista.eos.eos_config:
         lines:
           - "route-map {{ nom_route_map }} permit 10"
           - "match ip address prefix-list {{ nom_prefix }}"
           - "set metric {{ metric }}"
-      when: not route_map_exists
+      when: not route_map_exists and prefix_list_exists
       
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
         
-    - name: Debug Configurar el route-map si no existe
+    - name: Debug Configurar el route-map si no existe y el prefix-list existe
       debug:
-        msg: "Route-map configuration applied: {{ not route_map_exists }}"
+        msg: "Route-map configuration applied: {{ not route_map_exists and prefix_list_exists }}"
 
     - name: Validar configuración del route-map
       arista.eos.eos_command:
