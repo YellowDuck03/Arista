@@ -1,14 +1,12 @@
----
 - name: Comprobar y crear route-map en el switch Arista
   hosts: all
   gather_facts: no
   
-  # Variables
   vars:
     nom_route_map: ""
     nom_prefix: ""
     metric: ""
-  # Tareas
+
   tasks:
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
@@ -22,7 +20,7 @@
 
     - name: Verificar si el route-map ya está configurado
       set_fact:
-        route_map_exists: "{{ 'route-map ' ~ nom_route_map ~ ' permit 10' in route_map_config.stdout[0] }}"
+        route_map_exists: "{{ 'route-map ' ~ nom_route_map in route_map_config.stdout[0] }}"
 
     - name: Debug Verificar si el route-map ya está configurado
       debug:
@@ -53,12 +51,13 @@
           - "match ip address prefix-list {{ nom_prefix }}"
           - "set metric {{ metric }}"
       when: not route_map_exists and prefix_list_exists
-      
+
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
-        
+      when: not route_map_exists and prefix_list_exists
+
     - name: Debug Configurar el route-map si no existe y el prefix-list existe
       debug:
         msg: "Route-map configuration applied: {{ not route_map_exists and prefix_list_exists }}"
