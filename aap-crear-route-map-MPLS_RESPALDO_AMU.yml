@@ -12,8 +12,9 @@
     
   tasks:
     - name: Configurar route-map
-      arista.eos.eos_config:
-        lines:
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
           - route-map {{ route_map_name }} permit 10
           - set as-path prepend {{ as_path_prepend }}
       register: route_map_config
