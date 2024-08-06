@@ -53,7 +53,11 @@
         msg: "Resultado de la configuración del route-map: {{ route_map_config_result }}"
       when: not route_map_exists and vrf_exists
 
-    - name: Configurar BGP solo si la VRF existe y el route-map existe
+    - name: Verificar si el route-map fue creado
+      set_fact:
+        route_map_created: "{{ not route_map_exists and vrf_exists }}"
+
+    - name: Configurar BGP solo si la VRF existe y el route-map fue creado
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -61,12 +65,12 @@
           - vrf {{ vrf_name }}
           - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
       register: bgp_config
-      when: route_map_exists and vrf_exists
+      when: route_map_created and vrf_exists
 
     - name: Debug Configurar BGP
       debug:
         msg: "Resultado de la configuración de BGP: {{ bgp_config }}"
-      when: vrf_exists and not route_map_exists
+      when: route_map_created and vrf_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
