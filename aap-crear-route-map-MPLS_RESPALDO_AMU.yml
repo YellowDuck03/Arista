@@ -8,7 +8,7 @@
     bgp_as_number: "65021"
     vrf_name: ""
     neighbor_ip: ""
-    as_path_prepend: "65021"
+    as_path_prepend: "65021"  # Se asegura que as_path_prepend sea igual a bgp_as_number
 
   tasks:
     - name: Configurar route-map
