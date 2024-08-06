@@ -8,7 +8,7 @@
     bgp_as_number: "65021"
     vrf_name: ""
     neighbor_ip: ""
-    as_path_prepend: "{{ bgp_as_number }}"  # Hacer que as_path_prepend sea igual a bgp_as_number
+    as_path_prepend: "65021"
 
   tasks:
     - name: Configurar route-map
@@ -17,7 +17,6 @@
           - "route-map {{ route_map_name }} permit 10"
           - "set as-path prepend {{ as_path_prepend }}"
       register: route_map_config
-      changed_when: "'{{ route_map_name }}' not in {{ route_map_config }}"
 
     - name: Debug Configurar route-map
       debug:
