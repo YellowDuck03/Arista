@@ -4,11 +4,11 @@
   gather_facts: no
 
   vars:
-    route_map_name: ""
-    bgp_as_number: "65021"
     vrf_name: ""
+    bgp_as_number: "65021"
+    route_map_name: "MPLS-RESPALDO-{{ vrf_name }}"
     neighbor_ip: "169.254.196.13"
-    as_path_prepend: "{{ bgp_as_number }}"  # Asegura que as_path_prepend sea igual a bgp_as_number
+    as_path_prepend: "{{ bgp_as_number }}" 
 
   tasks:
     - name: Verificar existencia del route-map
