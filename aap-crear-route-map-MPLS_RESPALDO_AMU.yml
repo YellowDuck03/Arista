@@ -45,9 +45,8 @@
           - configure terminal
           - route-map {{ route_map_name }} permit 10
           - set as-path prepend {{ as_path_prepend }}
-      register: route_map_config
-      changed_when: "'Invalid input' not in route_map_config.stdout"
       when: not route_map_exists and vrf_exists
+      register: route_map_config
 
     - name: Debug Configurar route-map
       debug:
