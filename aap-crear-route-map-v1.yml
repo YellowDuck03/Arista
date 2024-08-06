@@ -5,8 +5,8 @@
 
   # Variables
   vars:
-    nom_route_map: "mi_route_map"
-    nom_prefix: "mi_prefix_list"
+    nom_route_map: ""
+    nom_prefix: ""
     metric: "100"
 
   # Tareas
