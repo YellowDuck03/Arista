@@ -20,7 +20,7 @@
     - name: Verificar existencia de la VRF
       fail:
         msg: "La VRF {{ vrf_name }} no existe."
-      when: "'{{ vrf_name }}' not in vrf_check.stdout"
+      when: vrf_name not in vrf_check.stdout
 
     - name: Validar que el route-map no exista
       arista.eos.eos_command:
