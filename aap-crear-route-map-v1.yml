@@ -5,9 +5,9 @@
 
   # Variables
   vars:
-    nom_route_map: ""
-    nom_prefix: ""
-    metric: ""
+    nom_route_map: "mi_route_map"
+    nom_prefix: "mi_prefix_list"
+    metric: "100"
 
   # Tareas
   tasks:
@@ -54,6 +54,8 @@
           - match ip address prefix-list {{ nom_prefix }}
           - set metric {{ metric }}
       when: not route_map_exists and prefix_list_exists
+      changed_when: true
+      failed_when: false
 
     - name: Debug Configurar el route-map si no existe y el prefix-list existe
       debug:
