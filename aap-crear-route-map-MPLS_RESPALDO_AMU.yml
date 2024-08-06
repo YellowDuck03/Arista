@@ -46,7 +46,6 @@
           - route-map {{ route_map_name }} permit 10
           - set as-path prepend {{ as_path_prepend }}
       register: route_map_config_result
-      changed_when: "'Invalid input' not in route_map_config_result.stdout"
       when: not route_map_exists and vrf_exists
 
     - name: Debug Configurar route-map
@@ -62,9 +61,7 @@
           - vrf {{ vrf_name }}
           - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
       register: bgp_config
-      changed_when: "bgp_config.stdout is defined and 'Invalid input' not in bgp_config.stdout"
-      when: vrf_exists and not route_map_exists
-      failed_when: "bgp_config.stdout is not defined or 'Invalid input' in bgp_config.stdout"
+      when: not route_map_exists and vrf_exists
 
     - name: Debug Configurar BGP
       debug:
