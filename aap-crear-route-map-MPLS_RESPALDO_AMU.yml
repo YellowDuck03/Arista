@@ -8,14 +8,15 @@
     bgp_as_number: "65021"
     vrf_name: ""
     neighbor_ip: ""
-    as_path_prepend: "65021"  # Se asegura que as_path_prepend sea igual a bgp_as_number
+    as_path_prepend: "65021"  
 
   tasks:
     - name: Configurar route-map
       arista.eos.eos_config:
         lines:
-          - route-map {{ route_map_name }} permit 10
-          - set as-path prepend {{ as_path_prepend }}
+          - "route-map {{ route_map_name }} permit 10"
+          - "set as-path prepend {{ as_path_prepend }}"
+        parents: []
       register: route_map_config
 
     - name: Debug Configurar route-map
