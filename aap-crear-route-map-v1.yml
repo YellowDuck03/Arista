@@ -52,10 +52,6 @@
           - "set metric {{ metric }}"
       when: not route_map_exists and prefix_list_exists
 
-    - name: Guardar cambios
-      arista.eos.eos_command:
-        commands:
-          - write memory
 
     - name: Debug Configurar el route-map si no existe y el prefix-list existe
       debug:
@@ -70,3 +66,8 @@
     - name: Debug Validar configuración del route-map
       debug:
         msg: "{{ validation_output.stdout }}"
+
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
