@@ -7,7 +7,7 @@
     route_map_name: ""
     bgp_as_number: "65021"
     vrf_name: ""
-    neighbor_ip: "169.254.196.13"
+    neighbor_ip: ""
     as_path_prepend: "{{ bgp_as_number }}"  # Asegura que as_path_prepend sea igual a bgp_as_number
 
   tasks:
@@ -54,7 +54,7 @@
         msg: "Resultado de la configuración del route-map: {{ route_map_config }}"
       when: not route_map_exists and vrf_exists
 
-    - name: Configurar BGP solo si la VRF existe
+    - name: Configurar BGP solo si la VRF existe y el route-map no existe
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -63,12 +63,12 @@
           - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
       register: bgp_config
       changed_when: "'Invalid input' not in bgp_config.stdout"
-      when: vrf_exists
+      when: vrf_exists and not route_map_exists
 
     - name: Debug Configurar BGP
       debug:
         msg: "Resultado de la configuración de BGP: {{ bgp_config }}"
-      when: vrf_exists
+      when: vrf_exists and not route_map_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
