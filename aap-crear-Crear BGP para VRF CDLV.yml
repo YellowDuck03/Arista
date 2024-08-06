@@ -1,23 +1,59 @@
----
 - name: Configurar BGP en el dispositivo Arista CDLV
   hosts: all
   gather_facts: no
 
   vars:
     bgp_asn: ""              
-    vrf_name: ""               
-    neighbor_ip: ""            
-    router_id: "{{ neighbor_ip }}"             
-    network: ""                
+    vrf_name: ""              
+    neighbor_ip: ""           
+    router_id: "{{ neighbor_ip }}" 
+    network: ""               
     filtro_in_bgp: ""         
 
   tasks:
-    - name: Configurar BGP
+    - name: Verificar existencia de la VRF
+      arista.eos.eos_command:
+        commands:
+          - show vrf
+      register: vrf_config
+
+    - name: Debug Verificar existencia de la VRF
+      debug:
+        msg: "Resultado de la verificación de la VRF: {{ vrf_config.stdout }}"
+
+    - name: Verificar existencia de la prefix-list
+      arista.eos.eos_command:
+        commands:
+          - show running-config section ip prefix-list
+      register: prefix_list_config
+
+    - name: Debug Verificar existencia de la prefix-list
+      debug:
+        msg: "Resultado de la verificación de la prefix-list: {{ prefix_list_config.stdout }}"
+
+    - name: Validar si la VRF existe
+      set_fact:
+        vrf_exists: "{{ vrf_name in vrf_config.stdout[0] }}"
+
+    - name: Debug Validar si la VRF existe
+      debug:
+        msg: "La VRF '{{ vrf_name }}' existe: {{ vrf_exists }}"
+
+    - name: Validar si la prefix-list existe
+      set_fact:
+        prefix_list_exists: "{{ ('ip prefix-list ' ~ filtro_in_bgp) in prefix_list_config.stdout[0] }}"
+
+    - name: Debug Validar si la prefix-list existe
+      debug:
+        msg: "El prefix-list '{{ filtro_in_bgp }}' existe: {{ prefix_list_exists }}"
+
+    - name: Configurar BGP solo si existen la VRF y la prefix-list
       arista.eos.eos_command:
         commands:
           - enable
           - configure terminal
           - router bgp {{ bgp_asn }}
+          - bgp log-neighbor-changes
           - vrf {{ vrf_name }}
           - router-id {{ router_id }}
           - neighbor {{ neighbor_ip }} remote-as 27651
@@ -25,14 +61,22 @@
           - address-family ipv4
           - neighbor {{ neighbor_ip }} prefix-list {{ filtro_in_bgp }} in
       register: bgp_config_result
+      when: vrf_exists and prefix_list_exists
       changed_when: true
       failed_when: false
 
     - name: Debug Configurar BGP
       debug:
         msg: "Resultado de la configuración de BGP: {{ bgp_config_result }}"
+      when: vrf_exists and prefix_list_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
+      when: vrf_exists and prefix_list_exists
+
+    - name: Debug Guardar cambios
+      debug:
+        msg: "Cambios guardados en la configuración."
+      when: vrf_exists and prefix_list_exists
