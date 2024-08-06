@@ -1,0 +1,43 @@
+---
+- name: Comprobar y crear VRF en el switch Arista
+  hosts: all
+  gather_facts: no
+  
+  # Variables
+  vars:
+    nom_vrf: ""
+  
+  # Tareas
+  tasks:
+    - name: Verificar existencia de la VRF
+      arista.eos.eos_command:
+        commands:
+          - show vrf | in {{ nom_vrf }}
+      register: vrf_check
+
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show vrf 
+      debug:
+        msg: "{{ vrf_check.stdout }}"
+
+    - name: Crear la VRF si no existe
+      arista.eos.eos_config:
+        lines:
+          - vrf instance {{ nom_vrf }}
+          - ip routing vrf {{ nom_vrf }}
+      when: "'' in vrf_check.stdout[0]"
+    
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
+    - name: Verificar existencia de la VRF nuevamente
+      arista.eos.eos_command:
+        commands:
+          - show vrf | in {{ nom_vrf }}
+      register: vrf_check_new
+
+    - name: Mostrar resultado del comando show vrf  después de crear la VRF
+      debug:
+        msg: "{{ vrf_check_new.stdout }}"
