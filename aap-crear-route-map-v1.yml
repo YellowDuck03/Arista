@@ -56,7 +56,6 @@
       arista.eos.eos_command:
         commands:
           - write memory
-      when: not route_map_exists and prefix_list_exists
 
     - name: Debug Configurar el route-map si no existe y el prefix-list existe
       debug:
