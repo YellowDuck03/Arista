@@ -3,7 +3,7 @@
   hosts: all
   gather_facts: no
 
-    # Variables
+  # Variables
   vars:
     nom_route_map: ""
     nom_prefix: ""
@@ -23,7 +23,7 @@
 
     - name: Verificar si el route-map ya está configurado
       set_fact:
-        route_map_exists: "{{ 'route-map ' ~ nom_route_map in route_map_config.stdout[0] }}"
+        route_map_exists: "{{ ('route-map ' ~ nom_route_map) in route_map_config.stdout[0] }}"
 
     - name: Debug Verificar si el route-map ya está configurado
       debug:
@@ -41,7 +41,7 @@
 
     - name: Verificar si el prefix-list ya está configurado
       set_fact:
-        prefix_list_exists: "{{ 'ip prefix-list ' ~ nom_prefix in prefix_list_config.stdout[0] }}"
+        prefix_list_exists: "{{ ('ip prefix-list ' ~ nom_prefix) in prefix_list_config.stdout[0] }}"
 
     - name: Debug Verificar si el prefix-list ya está configurado
       debug:
@@ -54,7 +54,6 @@
           - "match ip address prefix-list {{ nom_prefix }}"
           - "set metric {{ metric }}"
       when: not route_map_exists and prefix_list_exists
-
 
     - name: Debug Configurar el route-map si no existe y el prefix-list existe
       debug:
