@@ -25,7 +25,21 @@
       set_fact:
         route_map_exists: "{{ ('route-map ' ~ route_map_name) in route_map_config.stdout[0] }}"
 
-    - name: Configurar route-map solo si no existe
+    - name: Verificar existencia de la VRF
+      arista.eos.eos_command:
+        commands:
+          - show vrf
+      register: vrf_config
+
+    - name: Debug Verificar existencia de la VRF
+      debug:
+        msg: "{{ vrf_config.stdout }}"
+
+    - name: Verificar si la VRF existe
+      set_fact:
+        vrf_exists: "{{ vrf_name in vrf_config.stdout[0] }}"
+
+    - name: Configurar route-map solo si no existe y si la VRF existe
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -33,14 +47,14 @@
           - set as-path prepend {{ as_path_prepend }}
       register: route_map_config
       changed_when: "'Invalid input' not in route_map_config.stdout"
-      when: not route_map_exists
+      when: not route_map_exists and vrf_exists
 
     - name: Debug Configurar route-map
       debug:
         msg: "Resultado de la configuración del route-map: {{ route_map_config }}"
-      when: not route_map_exists
+      when: not route_map_exists and vrf_exists
 
-    - name: Configurar BGP
+    - name: Configurar BGP solo si la VRF existe
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -49,10 +63,12 @@
           - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
       register: bgp_config
       changed_when: "'Invalid input' not in bgp_config.stdout"
+      when: vrf_exists
 
     - name: Debug Configurar BGP
       debug:
         msg: "Resultado de la configuración de BGP: {{ bgp_config }}"
+      when: vrf_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
