@@ -24,7 +24,7 @@
         msg: "Resultado de la configuración del route-map: {{ route_map_config }}"
 
     - name: Configurar BGP
-     arista.eos.eos_command:
+      arista.eos.eos_command:
         commands:
           - configure terminal
           - router bgp {{ bgp_as_number }}
