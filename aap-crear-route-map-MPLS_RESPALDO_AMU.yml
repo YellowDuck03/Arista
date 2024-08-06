@@ -4,7 +4,7 @@
   gather_facts: no
 
   vars:
-    route_map_name: "MPLS-RESPALDO-AMSA_SRV_AMU"
+    route_map_name: ""
     bgp_as_number: "65021"
     vrf_name: ""
     neighbor_ip: ""
