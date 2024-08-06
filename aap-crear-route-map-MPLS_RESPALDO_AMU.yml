@@ -8,8 +8,8 @@
     bgp_as_number: "65021"
     vrf_name: ""
     neighbor_ip: ""
-    as_path_prepend: "65021"
-    
+    as_path_prepend: "{{ bgp_as_number }}"  # Asegura que as_path_prepend sea igual a bgp_as_number
+
   tasks:
     - name: Configurar route-map
       arista.eos.eos_command:
@@ -18,6 +18,7 @@
           - route-map {{ route_map_name }} permit 10
           - set as-path prepend {{ as_path_prepend }}
       register: route_map_config
+      changed_when: "'Invalid input' not in route_map_config.stdout"
 
     - name: Debug Configurar route-map
       debug:
@@ -31,6 +32,7 @@
           - vrf {{ vrf_name }}
           - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
       register: bgp_config
+      changed_when: "'Invalid input' not in bgp_config.stdout"
 
     - name: Debug Configurar BGP
       debug:
@@ -40,6 +42,7 @@
       arista.eos.eos_command:
         commands:
           - write memory
+      register: save_config
 
     - name: Debug Guardar cambios
       debug:
