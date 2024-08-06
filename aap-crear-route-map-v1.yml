@@ -14,7 +14,7 @@
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
-          - command: "show running-config section route-map"
+          - show running-config section route-map
       register: route_map_config
 
     - name: Debug Verificar existencia del route-map
@@ -32,7 +32,7 @@
     - name: Verificar existencia del prefix-list
       arista.eos.eos_command:
         commands:
-          - command: "show running-config section ip prefix-list"
+          - show running-config section ip prefix-list
       register: prefix_list_config
 
     - name: Debug Verificar existencia del prefix-list
@@ -50,9 +50,9 @@
     - name: Configurar el route-map si no existe y el prefix-list existe
       arista.eos.eos_config:
         lines:
-          - "route-map {{ nom_route_map }} permit 10"
-          - "match ip address prefix-list {{ nom_prefix }}"
-          - "set metric {{ metric }}"
+          - route-map {{ nom_route_map }} permit 10
+          - match ip address prefix-list {{ nom_prefix }}
+          - set metric {{ metric }}
       when: not route_map_exists and prefix_list_exists
 
     - name: Debug Configurar el route-map si no existe y el prefix-list existe
