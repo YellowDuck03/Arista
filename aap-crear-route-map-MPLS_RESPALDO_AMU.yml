@@ -40,7 +40,6 @@
       arista.eos.eos_command:
         commands:
           - write memory
-      register: save_config
 
     - name: Debug Guardar cambios
       debug:
