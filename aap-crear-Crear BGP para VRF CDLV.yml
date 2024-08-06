@@ -4,8 +4,8 @@
 
   vars:
     vrf_name: ""              
-    neighbor_ip: "valor_inicial"           
-    router_id: "{{ neighbor_ip }}" 
+    neighbor_ip: ""           
+    router_id: "" 
     network: ""               
     filtro_in_bgp: ""         
 
@@ -32,12 +32,25 @@
           {% else %}
             valor_inicial
           {% endif %}
-          
+
+        router_id: >-
+          {% if device_name == 'AMU-P5-E4-UR29-BLEAF-A' %}
+            169.254.196.9
+          {% elif device_name == 'AMU-P5-E3-UR29-BLEAF-B' %}
+            169.254.196.13
+          {% elif device_name == 'CDLV-212-G31-UR29-BLEAF-A' %}
+            169.254.196.17
+          {% elif device_name == 'CDLV-212-G32-UR29-BLEAF-B' %}
+            169.254.196.21
+          {% else %}
+            valor_inicial
+          {% endif %}
       - name: Debug Asignar bgp_asn y neighbor_ip
       debug:
         msg: 
           - "ASN BGP asignado: {{ bgp_asn }}"
           - "IP del vecino BGP asignada: {{ neighbor_ip }}"
+          - "IP del ID BGP asignada: {{ router_id }}"
 
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
