@@ -3,7 +3,8 @@
   gather_facts: no
 
   vars:
-    vrf_name: ""              
+    vrf_name: ""   
+    bgp_asn: ""
     neighbor_ip: ""           
     router_id: "" 
     network: ""               
