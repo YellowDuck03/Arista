@@ -8,8 +8,8 @@
     bgp_as_number: "65021"
     vrf_name: ""
     neighbor_ip: ""
-    as_path_prepend: "65021"  
-
+    as_path_prepend: "65021"
+    
   tasks:
     - name: Configurar route-map
       arista.eos.eos_config:
