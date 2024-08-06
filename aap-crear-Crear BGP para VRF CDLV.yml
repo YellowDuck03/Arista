@@ -1,14 +1,15 @@
 ---
-- name: Configurar BGP en el dispositivo Arista
+- name: Configurar BGP en el dispositivo Arista CDLV
   hosts: all
   gather_facts: no
 
   vars:
-    vrf_name: ""               # Reemplazar con el nombre de la VRF
-    router_id: ""              # Reemplazar con el Router ID
-    neighbor_ip: ""            # Reemplazar con la IP del vecino BGP
-    network: ""                # Reemplazar con la red a anunciar
-    filtro_in_bgp: ""          # Reemplazar con el nombre del filtro de prefijos BGP
+    bgp_asn: ""              
+    vrf_name: ""               
+    neighbor_ip: ""            
+    router_id: "{{ neighbor_ip }}"             
+    network: ""                
+    filtro_in_bgp: ""         
 
   tasks:
     - name: Configurar BGP
@@ -16,8 +17,7 @@
         commands:
           - enable
           - configure terminal
-          - router bgp 65021
-          - bgp log-neighbor-changes
+          - router bgp {{ bgp_asn }}
           - vrf {{ vrf_name }}
           - router-id {{ router_id }}
           - neighbor {{ neighbor_ip }} remote-as 27651
