@@ -4,10 +4,10 @@
   gather_facts: no
 
   vars:
-    route_map_name: "MPLS-RESPALDO-AMSA-CASMLP"
-    bgp_as_number: "65121"
-    vrf_name: "AMSA_CASMLP_CDLV"
-    neighbor_ip: "169.254.196.21"
+    route_map_name: ""
+    bgp_as_number: "65021"
+    vrf_name: ""
+    neighbor_ip: ""
     as_path_prepend: "{{ bgp_as_number }}"  # Hacer que as_path_prepend sea igual a bgp_as_number
 
   tasks:
