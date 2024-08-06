@@ -1,43 +1,47 @@
 ---
-- name: Comprobar y crear VRF en el switch Arista
+- name: Crear route-map MPLS_RESPALDO_AMU
   hosts: all
   gather_facts: no
-  
-  # Variables
+
   vars:
-    nom_vrf: ""
-  
-  # Tareas
+    route_map_name: "MPLS-RESPALDO-AMSA-CASMLP"
+    bgp_as_number: "65121"
+    vrf_name: "AMSA_CASMLP_CDLV"
+    neighbor_ip: "169.254.196.21"
+    as_path_prepend: "{{ bgp_as_number }}"  # Hacer que as_path_prepend sea igual a bgp_as_number
+
   tasks:
-    - name: Verificar existencia de la VRF
-      arista.eos.eos_command:
-        commands:
-          - show vrf | in {{ nom_vrf }}
-      register: vrf_check
-
-    # Salida por pantalla
-    - name: Mostrar resultado del comando show vrf 
-      debug:
-        msg: "{{ vrf_check.stdout }}"
-
-    - name: Crear la VRF si no existe
+    - name: Configurar route-map
       arista.eos.eos_config:
         lines:
-          - vrf instance {{ nom_vrf }}
-          - ip routing vrf {{ nom_vrf }}
-      when: "'' in vrf_check.stdout[0]"
-    
+          - "route-map {{ route_map_name }} permit 10"
+          - "set as-path prepend {{ as_path_prepend }}"
+      register: route_map_config
+      changed_when: "'{{ route_map_name }}' not in {{ route_map_config }}"
+
+    - name: Debug Configurar route-map
+      debug:
+        msg: "Resultado de la configuración del route-map: {{ route_map_config }}"
+
+    - name: Configurar BGP
+      arista.eos.eos_config:
+        lines:
+          - "router bgp {{ bgp_as_number }}"
+          - "vrf {{ vrf_name }}"
+          - "neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out"
+      register: bgp_config
+      changed_when: "'{{ neighbor_ip }}' not in {{ bgp_config }}"
+
+    - name: Debug Configurar BGP
+      debug:
+        msg: "Resultado de la configuración de BGP: {{ bgp_config }}"
+
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
-        
-    - name: Verificar existencia de la VRF nuevamente
-      arista.eos.eos_command:
-        commands:
-          - show vrf | in {{ nom_vrf }}
-      register: vrf_check_new
+      register: save_config
 
-    - name: Mostrar resultado del comando show vrf  después de crear la VRF
+    - name: Debug Guardar cambios
       debug:
-        msg: "{{ vrf_check_new.stdout }}"
+        msg: "Resultado de guardar cambios: {{ save_config }}"
