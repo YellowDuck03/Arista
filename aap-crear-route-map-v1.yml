@@ -7,7 +7,7 @@
   vars:
     nom_route_map: ""
     nom_prefix: ""
-    metric: "100"
+    metric: ""
 
   # Tareas
   tasks:
