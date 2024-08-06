@@ -1,13 +1,13 @@
 ---
-- name: Crear route-map MPLS_RESPALDO_AMU
+- name: Crear route-map MPLS_RESPALDO_CDLV
   hosts: all
   gather_facts: no
 
   vars:
     vrf_name: ""
-    bgp_as_number: "65021"
+    bgp_as_number: "65121"
     route_map_name: "MPLS-RESPALDO-{{ vrf_name }}"
-    neighbor_ip: "169.254.196.13"
+    neighbor_ip: "169.254.196.21"
     as_path_prepend: "{{ bgp_as_number }}" 
 
   tasks:
