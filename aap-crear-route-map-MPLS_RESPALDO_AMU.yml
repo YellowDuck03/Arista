@@ -24,13 +24,13 @@
         msg: "Resultado de la configuración del route-map: {{ route_map_config }}"
 
     - name: Configurar BGP
-      arista.eos.eos_config:
-        lines:
-          - "router bgp {{ bgp_as_number }}"
-          - "vrf {{ vrf_name }}"
-          - "neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out"
+     arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - router bgp {{ bgp_as_number }}
+          - vrf {{ vrf_name }}
+          - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
       register: bgp_config
-      changed_when: "'{{ neighbor_ip }}' not in {{ bgp_config }}"
 
     - name: Debug Configurar BGP
       debug:
