@@ -11,29 +11,14 @@
     as_path_prepend: "{{ bgp_as_number }}"  # Asegura que as_path_prepend sea igual a bgp_as_number
 
   tasks:
-    - name: Validar que la VRF exista
+    - name: Verificar si el route-map ya existe
       arista.eos.eos_command:
         commands:
-          - show vrf
-      register: vrf_check
-
-    - name: Verificar existencia de la VRF
-      fail:
-        msg: "La VRF {{ vrf_name }} no existe."
-      when: vrf_name not in vrf_check.stdout
-
-    - name: Validar que el route-map no exista
-      arista.eos.eos_command:
-        commands:
-          - show running-config | section route-map
+          - show route-map {{ route_map_name }}
       register: route_map_check
+      failed_when: false
 
-    - name: Verificar inexistencia del route-map
-      fail:
-        msg: "El route-map {{ route_map_name }} ya existe."
-      when: "'route-map {{ route_map_name }} ' in route_map_check.stdout"
-
-    - name: Configurar route-map
+    - name: Configurar route-map solo si no existe
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -41,10 +26,12 @@
           - set as-path prepend {{ as_path_prepend }}
       register: route_map_config
       changed_when: "'Invalid input' not in route_map_config.stdout"
+      when: route_map_check.stdout[0] is not defined or 'Invalid input' in route_map_check.stdout[0]
 
     - name: Debug Configurar route-map
       debug:
         msg: "Resultado de la configuración del route-map: {{ route_map_config }}"
+      when: route_map_check.stdout[0] is not defined or 'Invalid input' in route_map_check.stdout[0]
 
     - name: Configurar BGP
       arista.eos.eos_command:
