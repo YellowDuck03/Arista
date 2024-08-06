@@ -47,6 +47,8 @@
           - set as-path prepend {{ as_path_prepend }}
       register: route_map_config_result
       when: not route_map_exists and vrf_exists
+      changed_when: true
+      failed_when: false
 
     - name: Debug Configurar route-map
       debug:
@@ -66,6 +68,8 @@
           - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
       register: bgp_config
       when: route_map_created and vrf_exists
+      changed_when: true
+      failed_when: false
 
     - name: Debug Configurar BGP
       debug:
@@ -76,8 +80,5 @@
       arista.eos.eos_command:
         commands:
           - write memory
-      register: save_config
 
-    - name: Debug Guardar cambios
-      debug:
-        msg: "Resultado de guardar cambios: {{ save_config }}"
+
