@@ -11,12 +11,19 @@
     as_path_prepend: "{{ bgp_as_number }}"  # Asegura que as_path_prepend sea igual a bgp_as_number
 
   tasks:
-    - name: Verificar si el route-map ya existe
+    - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
-          - show route-map {{ route_map_name }}
-      register: route_map_check
-      failed_when: false
+          - show running-config section route-map
+      register: route_map_config
+
+    - name: Debug Verificar existencia del route-map
+      debug:
+        msg: "{{ route_map_config.stdout }}"
+
+    - name: Verificar si el route-map ya está configurado
+      set_fact:
+        route_map_exists: "{{ ('route-map ' ~ route_map_name) in route_map_config.stdout[0] }}"
 
     - name: Configurar route-map solo si no existe
       arista.eos.eos_command:
@@ -26,12 +33,12 @@
           - set as-path prepend {{ as_path_prepend }}
       register: route_map_config
       changed_when: "'Invalid input' not in route_map_config.stdout"
-      when: route_map_check.stdout[0] is not defined or 'Invalid input' in route_map_check.stdout[0]
+      when: not route_map_exists
 
     - name: Debug Configurar route-map
       debug:
         msg: "Resultado de la configuración del route-map: {{ route_map_config }}"
-      when: route_map_check.stdout[0] is not defined or 'Invalid input' in route_map_check.stdout[0]
+      when: not route_map_exists
 
     - name: Configurar BGP
       arista.eos.eos_command:
