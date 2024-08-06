@@ -15,7 +15,6 @@
       arista.eos.eos_config:
         lines:
           - "route-map {{ route_map_name }} permit 10"
-          - "set as-path prepend {{ as_path_prepend }}"
         parents: []
       register: route_map_config
 
