@@ -4,7 +4,7 @@
 
   vars:
     vrf_name: ""   
-    bgp_asn: ""
+    bgp_asn: "CDLV-212-G31-UR29-BLEAF-A"
     neighbor_ip: ""           
     router_id: "" 
     network: ""               
@@ -23,26 +23,26 @@
           {% endif %}
           
         neighbor_ip: >-
-          {% if bgp_asn == 'AMU-P5-E4-UR29-BLEAF-A' %}
+          {% if vars['bgp_asn'] == 'AMU-P5-E4-UR29-BLEAF-A' %}
             169.254.196.9
-          {% elif bgp_asn == 'AMU-P5-E3-UR29-BLEAF-B' %}
+          {% elif vars['bgp_asn'] == 'AMU-P5-E3-UR29-BLEAF-B' %}
             169.254.196.13
-          {% elif bgp_asn == 'CDLV-212-G31-UR29-BLEAF-A' %}
+          {% elif vars['bgp_asn'] == 'CDLV-212-G31-UR29-BLEAF-A' %}
             169.254.196.17
-          {% elif bgp_asn == 'CDLV-212-G32-UR29-BLEAF-B' %}
+          {% elif vars['bgp_asn'] == 'CDLV-212-G32-UR29-BLEAF-B' %}
             169.254.196.21
           {% else %}
             valor_inicial
           {% endif %}
 
         router_id: >-
-          {% if bgp_asn == 'AMU-P5-E4-UR29-BLEAF-A' %}
+          {% if vars['bgp_asn'] == 'AMU-P5-E4-UR29-BLEAF-A' %}
             169.254.196.9
-          {% elif bgp_asn == 'AMU-P5-E3-UR29-BLEAF-B' %}
+          {% elif vars['bgp_asn'] == 'AMU-P5-E3-UR29-BLEAF-B' %}
             169.254.196.13
-          {% elif bgp_asn == 'CDLV-212-G31-UR29-BLEAF-A' %}
+          {% elif vars['bgp_asn'] == 'CDLV-212-G31-UR29-BLEAF-A' %}
             169.254.196.17
-          {% elif bgp_asn == 'CDLV-212-G32-UR29-BLEAF-B' %}
+          {% elif vars['bgp_asn'] == 'CDLV-212-G32-UR29-BLEAF-B' %}
             169.254.196.21
           {% else %}
             valor_inicial
