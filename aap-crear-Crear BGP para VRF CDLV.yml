@@ -4,7 +4,7 @@
 
   vars:
     vrf_name: ""   
-    bgp_asn: "CDLV-212-G31-UR29-BLEAF-A"
+    bgp_asn: ""
     neighbor_ip: ""           
     router_id: "" 
     network: ""               
