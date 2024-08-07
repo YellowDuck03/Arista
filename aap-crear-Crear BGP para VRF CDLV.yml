@@ -91,7 +91,6 @@
       arista.eos.eos_config:
         lines:
           - router bgp {{ bgp_asn }}
-          - bgp log-neighbor-changes
           - vrf {{ vrf_name }}
           - router-id {{ router_id }}
           - neighbor {{ neighbor_ip }} remote-as 27651
