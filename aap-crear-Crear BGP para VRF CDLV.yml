@@ -13,34 +13,29 @@
     filtro_in_bgp: ""         
 
   tasks:
-    - name: Depurar valor de equipo
-      debug:
-        msg: "Valor de equipo: '{{ equipo }}'"
-
-    - name: Asignar bgp_asn en base a la encuesta ansible
+    - name: Establecer bgp_asn específico
       set_fact:
-        bgp_asn: ""
-      when: equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B', 'CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
+        bgp_asn: 65021
+      when: equipo == 'AMU-P5-E4-UR29-BLEAF-A'
       
     - name: Establecer bgp_asn específico
       set_fact:
         bgp_asn: 65021
-      when: equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
-    
-    - name: Establecer bgp_asn específico
+      when: equipo == 'AMU-P5-E3-UR29-BLEAF-B'
+
+ - name: Establecer bgp_asn específico
       set_fact:
         bgp_asn: 65121
-      when: equipo in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
+      when: equipo == 'ACDLV-212-G31-UR29-BLEAF-A'
+
+ - name: Establecer bgp_asn específico
+      set_fact:
+        bgp_asn: 65121
+      when: equipo == 'CDLV-212-G32-UR29-BLEAF-B'
       
     - name: Depurar valor de bgp_asn asignado
       debug:
         msg: "Valor de bgp_asn asignado: '{{ bgp_asn }}'"
-
-    - name: Asignar neighbor_ip y router_id en base a equipo
-      set_fact:
-        neighbor_ip: ""
-        router_id: ""
-      when: equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B', 'CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
 
     - name: Establecer neighbor_ip y router_id específicos
       set_fact:
