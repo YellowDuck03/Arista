@@ -3,10 +3,10 @@
   gather_facts: no
 
   vars:
-    vrf_name: "AMSA_CASMLP_AMU"
-    router_id: "169.254.96.210"
-    route_map: "AMSA-CASMLP-TO-OSPF"
-    network: "169.254.96.208/29"
+    vrf_name: ""
+    router_id: ""
+    route_map: ""
+    network: ""
     area: "0.0.0.0"
 
   tasks:
