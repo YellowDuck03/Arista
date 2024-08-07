@@ -56,7 +56,7 @@
           {% endif %}
 
     - name: Debug Asignar bgp_asn, neighbor_ip y router_id
-       debug:
+      debug:
         msg: 
           - "ASN BGP asignado: {{ assigned_bgp_asn }}"
           - "IP del vecino BGP asignada: {{ assigned_neighbor_ip }}"
