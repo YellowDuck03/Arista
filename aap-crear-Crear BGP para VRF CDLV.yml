@@ -35,28 +35,27 @@
       
     - name: Depurar valor de bgp_asn asignado
       debug:
-      msg: "Valor de bgp_asn asignado: '{{ bgp_asn }}'"
+        msg: "Valor de bgp_asn asignado: '{{ bgp_asn }}'"
 
-      
-    - name: Establecer neighbor_ip y router_id específicos
+    - name: Establecer neighbor_ip y router_id específicos para AMU-P5-E4-UR29-BLEAF-A
       set_fact:
         neighbor_ip: 169.254.196.9
         router_id: 169.254.196.9
       when: equipo == 'AMU-P5-E4-UR29-BLEAF-A'
     
-    - name: Establecer neighbor_ip y router_id específicos
+    - name: Establecer neighbor_ip y router_id específicos para AMU-P5-E3-UR29-BLEAF-B
       set_fact:
         neighbor_ip: 169.254.196.13
         router_id: 169.254.196.13
       when: equipo == 'AMU-P5-E3-UR29-BLEAF-B'
     
-    - name: Establecer neighbor_ip y router_id específicos
+    - name: Establecer neighbor_ip y router_id específicos para ACDLV-212-G31-UR29-BLEAF-A
       set_fact:
         neighbor_ip: 169.254.196.17
         router_id: 169.254.196.17
-      when: equipo == 'CDLV-212-G31-UR29-BLEAF-A'
+      when: equipo == 'ACDLV-212-G31-UR29-BLEAF-A'
     
-    - name: Establecer neighbor_ip y router_id específicos
+    - name: Establecer neighbor_ip y router_id específicos para CDLV-212-G32-UR29-BLEAF-B
       set_fact:
         neighbor_ip: 169.254.196.21
         router_id: 169.254.196.21
@@ -68,7 +67,6 @@
           - "ASN BGP asignado: {{ bgp_asn }}"
           - "IP del vecino BGP asignada: {{ neighbor_ip }}"
           - "IP del ID BGP asignada: {{ router_id }}"
-
           
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
