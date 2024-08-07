@@ -11,7 +11,7 @@
     network: ""               
     filtro_in_bgp: ""         
 
-   tasks:
+  tasks:
     - name: Verificar valor de equipo
       debug:
         msg: "Valor de equipo: {{ equipo }}"
