@@ -56,7 +56,15 @@
       debug:
         msg: "La VRF '{{ vrf_name }}' existe: {{ vrf_exists }}"
 
-    - name: Configurar OSPF solo si la route-map y la VRF existen
+    - name: Verificar existencia de OSPF para la VRF
+      set_fact:
+        ospf_vrf_exists: "{{ ('router ospf ' ~ ospf_process_id ~ ' vrf ' ~ vrf_name) in ospf_config.stdout[0] }}"
+
+    - name: Debug Validar si OSPF para la VRF existe
+      debug:
+        msg: "El OSPF para la VRF '{{ vrf_name }}' ya existe: {{ ospf_vrf_exists }}"
+
+    - name: Configurar OSPF solo si la route-map, la VRF existen y el OSPF para la VRF no existe
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -65,23 +73,23 @@
           - redistribute bgp route-map {{ route_map }}
           - network {{ network }} area {{ area }}
       register: ospf_config_result
-      when: route_map_exists and vrf_exists
+      when: route_map_exists and vrf_exists and not ospf_vrf_exists
       changed_when: true
 
     - name: Debug Configuración de OSPF
       debug:
         msg: "Resultado de la configuración de OSPF: {{ ospf_config_result }}"
-      when: route_map_exists and vrf_exists
+      when: route_map_exists and vrf_exists and not ospf_vrf_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
-      when: route_map_exists and vrf_exists
+      when: route_map_exists and vrf_exists and not ospf_vrf_exists
 
     - name: Debug Guardar cambios
       debug:
         msg: "Cambios guardados en la configuración."
-      when: route_map_exists and vrf_exists
+      when: route_map_exists and vrf_exists and not ospf_vrf_exists
 
 
