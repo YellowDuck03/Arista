@@ -5,7 +5,7 @@
 
   vars:
     vrf_name: "" 
-    equipos: ""
+    equipo: ""
     bgp_asn: ""
     neighbor_ip: ""           
     router_id: "" 
