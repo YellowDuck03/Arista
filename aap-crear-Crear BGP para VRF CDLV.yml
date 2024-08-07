@@ -1,4 +1,3 @@
----
 - name: Configurar BGP en el dispositivo Arista CDLV
   hosts: all
   gather_facts: no
@@ -36,9 +35,9 @@
 
     - name: Asignar valores según equipos seleccionados
       set_fact:
-        bgp_asn: "{{ equipo_config[item].bgp_asn }}"
-        neighbor_ip: "{{ equipo_config[item].neighbor_ip }}"
-        router_id: "{{ equipo_config[item].router_id }}"
+        bgp_asn: "{{ equipos_config[item].bgp_asn }}"
+        neighbor_ip: "{{ equipos_config[item].neighbor_ip }}"
+        router_id: "{{ equipos_config[item].router_id }}"
       with_items: "{{ equipo }}"
       when: item in equipos_config
 
