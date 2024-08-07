@@ -23,12 +23,12 @@
         bgp_asn: 65021
       when: equipo == 'AMU-P5-E3-UR29-BLEAF-B'
 
- - name: Establecer bgp_asn específico
+    - name: Establecer bgp_asn específico
       set_fact:
         bgp_asn: 65121
       when: equipo == 'ACDLV-212-G31-UR29-BLEAF-A'
 
- - name: Establecer bgp_asn específico
+    - name: Establecer bgp_asn específico
       set_fact:
         bgp_asn: 65121
       when: equipo == 'CDLV-212-G32-UR29-BLEAF-B'
