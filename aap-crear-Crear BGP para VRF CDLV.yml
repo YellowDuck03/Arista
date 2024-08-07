@@ -1,3 +1,4 @@
+---
 - name: Configurar BGP en el dispositivo Arista CDLV
   hosts: all
   gather_facts: no
@@ -18,46 +19,52 @@
 
     - name: Asignar bgp_asn en base a la encuesta ansible
       set_fact:
-        bgp_asn: >-
-          {% if equipo | trim == 'AMU-P5-E4-UR29-BLEAF-A' or equipo | trim == 'AMU-P5-E3-UR29-BLEAF-B' %}
-            65021
-          {% elif equipo | trim == 'CDLV-212-G31-UR29-BLEAF-A' or equipo | trim == 'CDLV-212-G32-UR29-BLEAF-B' %}
-            65121
-          {% else %}
-            "valor_inicial"
-          {% endif %}
-
+        bgp_asn: ""
+      when: equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B', 'CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
+      
+    - name: Establecer bgp_asn específico
+      set_fact:
+        bgp_asn: 65021
+      when: equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
+    
+    - name: Establecer bgp_asn específico
+      set_fact:
+        bgp_asn: 65121
+      when: equipo in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
+      
     - name: Depurar valor de bgp_asn asignado
       debug:
         msg: "Valor de bgp_asn asignado: '{{ bgp_asn }}'"
 
     - name: Asignar neighbor_ip y router_id en base a equipo
       set_fact:
-        neighbor_ip: >-
-          {% if equipo | trim == 'AMU-P5-E4-UR29-BLEAF-A' %}
-            169.254.196.9
-          {% elif equipo | trim == 'AMU-P5-E3-UR29-BLEAF-B' %}
-            169.254.196.13
-          {% elif equipo | trim == 'CDLV-212-G31-UR29-BLEAF-A' %}
-            169.254.196.17
-          {% elif equipo | trim == 'CDLV-212-G32-UR29-BLEAF-B' %}
-            169.254.196.21
-          {% else %}
-            "valor_inicial"
-          {% endif %}
-        
-        router_id: >-
-          {% if equipo | trim == 'AMU-P5-E4-UR29-BLEAF-A' %}
-            169.254.196.9
-          {% elif equipo | trim == 'AMU-P5-E3-UR29-BLEAF-B' %}
-            169.254.196.13
-          {% elif equipo | trim == 'CDLV-212-G31-UR29-BLEAF-A' %}
-            169.254.196.17
-          {% elif equipo | trim == 'CDLV-212-G32-UR29-BLEAF-B' %}
-            169.254.196.21
-          {% else %}
-            "valor_inicial"
-          {% endif %}
+        neighbor_ip: ""
+        router_id: ""
+      when: equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B', 'CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
+
+    - name: Establecer neighbor_ip y router_id específicos
+      set_fact:
+        neighbor_ip: 169.254.196.9
+        router_id: 169.254.196.9
+      when: equipo == 'AMU-P5-E4-UR29-BLEAF-A'
+    
+    - name: Establecer neighbor_ip y router_id específicos
+      set_fact:
+        neighbor_ip: 169.254.196.13
+        router_id: 169.254.196.13
+      when: equipo == 'AMU-P5-E3-UR29-BLEAF-B'
+    
+    - name: Establecer neighbor_ip y router_id específicos
+      set_fact:
+        neighbor_ip: 169.254.196.17
+        router_id: 169.254.196.17
+      when: equipo == 'CDLV-212-G31-UR29-BLEAF-A'
+    
+    - name: Establecer neighbor_ip y router_id específicos
+      set_fact:
+        neighbor_ip: 169.254.196.21
+        router_id: 169.254.196.21
+      when: equipo == 'CDLV-212-G32-UR29-BLEAF-B'
 
     - name: Debug Asignar bgp_asn, neighbor_ip y router_id
       debug:
@@ -65,6 +72,7 @@
           - "ASN BGP asignado: {{ bgp_asn }}"
           - "IP del vecino BGP asignada: {{ neighbor_ip }}"
           - "IP del ID BGP asignada: {{ router_id }}"
+
           
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
