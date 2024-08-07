@@ -1,84 +1,73 @@
----
-- name: Crear route-map MPLS_RESPALDO_AMU
+- name: Configurar OSPF en el dispositivo Arista CDLV
   hosts: all
   gather_facts: no
 
   vars:
-    vrf_name: ""
-    bgp_as_number: "65021"
-    route_map_name: "MPLS-RESPALDO-{{ vrf_name }}"
-    neighbor_ip: "169.254.196.13"
-    as_path_prepend: "{{ bgp_as_number }}" 
+    vrf_name: "AMSA_CASMLP_AMU"
+    router_id: "169.254.96.210"
+    route_map: "AMSA-CASMLP-TO-OSPF"
+    network: "169.254.96.208/29"
+    area: "0.0.0.0"
 
   tasks:
-    - name: Verificar existencia del route-map
+    - name: Obtener la configuración OSPF actual
+      arista.eos.eos_command:
+        commands:
+          - show running-config section router ospf
+      register: ospf_config
+
+    - name: Analizar IDs de OSPF actuales
+      set_fact:
+        ospf_ids: "{{ ospf_config.stdout[0] | regex_findall('router ospf (\\d+)') | map('int') | list }}"
+
+    - name: Determinar el siguiente ID de OSPF disponible
+      set_fact:
+        ospf_process_id: "{{ (ospf_ids | sort | last | default(0)) + 1 }}"
+
+    - name: Debug del próximo ID de OSPF disponible
+      debug:
+        msg: "El próximo ID de OSPF disponible es: {{ ospf_process_id }}"
+
+    - name: Verificar existencia de la route-map
       arista.eos.eos_command:
         commands:
           - show running-config section route-map
       register: route_map_config
 
-    - name: Debug Verificar existencia del route-map
-      debug:
-        msg: "{{ route_map_config.stdout }}"
-
-    - name: Verificar si el route-map ya está configurado
+    - name: Validar si la route-map existe
       set_fact:
-        route_map_exists: "{{ ('route-map ' ~ route_map_name) in route_map_config.stdout[0] }}"
+        route_map_exists: "{{ route_map in route_map_config.stdout[0] }}"
 
-    - name: Verificar existencia de la VRF
-      arista.eos.eos_command:
-        commands:
-          - show vrf
-      register: vrf_config
-
-    - name: Debug Verificar existencia de la VRF
+    - name: Debug Validar si la route-map existe
       debug:
-        msg: "{{ vrf_config.stdout }}"
+        msg: "La route-map '{{ route_map }}' existe: {{ route_map_exists }}"
 
-    - name: Verificar si la VRF existe
-      set_fact:
-        vrf_exists: "{{ vrf_name in vrf_config.stdout[0] }}"
-
-    - name: Configurar route-map solo si no existe y si la VRF existe
+    - name: Configurar OSPF solo si la route-map existe
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - route-map {{ route_map_name }} permit 10
-          - set as-path prepend {{ as_path_prepend }}
-      register: route_map_config_result
-      when: not route_map_exists and vrf_exists
+          - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
+          - router-id {{ router_id }}
+          - redistribute bgp route-map {{ route_map }}
+          - network {{ network }} area {{ area }}
+      register: ospf_config_result
+      when: route_map_exists
       changed_when: true
-      failed_when: false
 
-    - name: Debug Configurar route-map
+    - name: Debug Configuración de OSPF
       debug:
-        msg: "Resultado de la configuración del route-map: {{ route_map_config_result }}"
-      when: not route_map_exists and vrf_exists
-
-    - name: Verificar si el route-map fue creado
-      set_fact:
-        route_map_created: "{{ not route_map_exists and vrf_exists }}"
-
-    - name: Configurar BGP solo si la VRF existe y el route-map fue creado
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - router bgp {{ bgp_as_number }}
-          - vrf {{ vrf_name }}
-          - neighbor {{ neighbor_ip }} route-map {{ route_map_name }} out
-      register: bgp_config
-      when: route_map_created and vrf_exists
-      changed_when: true
-      failed_when: false
-
-    - name: Debug Configurar BGP
-      debug:
-        msg: "Resultado de la configuración de BGP: {{ bgp_config }}"
-      when: route_map_created and vrf_exists
+        msg: "Resultado de la configuración de OSPF: {{ ospf_config_result }}"
+      when: route_map_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
+      when: route_map_exists
+
+    - name: Debug Guardar cambios
+      debug:
+        msg: "Cambios guardados en la configuración."
+      when: route_map_exists
 
 
