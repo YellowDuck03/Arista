@@ -4,7 +4,7 @@
 
   vars:
     vrf_name: "" 
-    equipo: ""
+    equipo: "CDLV-212-G32-UR29-BLEAF-B"
     bgp_asn: ""
     neighbor_ip: ""           
     router_id: "" 
@@ -12,20 +12,20 @@
     filtro_in_bgp: ""         
 
   tasks:
-    - name: Verificar valor de equipo
-      debug:
-        msg: "Valor de equipo: {{ equipo }}"
+  - name: Asignar bgp_asn en base a la encuesta ansible
+    set_fact:
+      assigned_bgp_asn: >-
+        {% if equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B'] %}
+          65021
+        {% elif equipo in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B'] %}
+          65121
+        {% else %}
+          "valor_inicial"
+        {% endif %}
 
-    - name: Asignar bgp_asn en base a la encuesta ansible
-      set_fact:
-        assigned_bgp_asn: >-
-          {% if equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B'] %}
-            65021
-          {% elif equipo in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B'] %}
-            65121
-          {% else %}
-            "valor_inicial"
-          {% endif %}
+  - name: Verificar valor de bgp_asn asignado
+    debug:
+      msg: "BGP ASN asignado: {{ assigned_bgp_asn }}"
           
     - name: Asignar neighbor_ip y router_id en base a equipo
       set_fact:
