@@ -48,9 +48,6 @@
           - "IP del vecino BGP asignada: {{ neighbor_ip }}"
           - "IP del ID BGP asignada: {{ router_id }}"
 
-
-          
-          
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
@@ -87,7 +84,25 @@
       debug:
         msg: "El prefix-list '{{ filtro_in_bgp }}' existe: {{ prefix_list_exists }}"
 
-    - name: Configurar BGP solo si existen la VRF y la prefix-list
+    - name: Verificar vecinos BGP existentes
+      arista.eos.eos_command:
+        commands:
+          - show running-config section router bgp
+      register: bgp_running_config
+
+    - name: Debug Verificar vecinos BGP existentes
+      debug:
+        msg: "Configuración BGP actual: {{ bgp_running_config.stdout }}"
+
+    - name: Validar si el vecino BGP ya existe
+      set_fact:
+        neighbor_exists: "{{ neighbor_ip in bgp_running_config.stdout[0] }}"
+
+    - name: Debug Validar si el vecino BGP ya existe
+      debug:
+        msg: "El vecino BGP '{{ neighbor_ip }}' ya existe: {{ neighbor_exists }}"
+
+    - name: Configurar BGP solo si existen la VRF, la prefix-list y el vecino no existe
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -99,21 +114,21 @@
           - address-family ipv4
           - neighbor {{ neighbor_ip }} prefix-list {{ filtro_in_bgp }} in
       register: bgp_config_result
-      when: vrf_exists and prefix_list_exists
+      when: vrf_exists and prefix_list_exists and not neighbor_exists
       changed_when: true
 
     - name: Debug Configurar BGP
       debug:
         msg: "Resultado de la configuración de BGP: {{ bgp_config_result }}"
-      when: vrf_exists and prefix_list_exists
+      when: vrf_exists and prefix_list_exists and not neighbor_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
-      when: vrf_exists and prefix_list_exists
+      when: vrf_exists and prefix_list_exists and not neighbor_exists
 
     - name: Debug Guardar cambios
       debug:
         msg: "Cambios guardados en la configuración."
-      when: vrf_exists and prefix_list_exists
+      when: vrf_exists and prefix_list_exists and not neighbor_exists
