@@ -12,8 +12,8 @@
     filtro_in_bgp: ""         
 
   tasks:
-  - name: Asignar bgp_asn en base a la encuesta ansible
-    set_fact:
+    - name: Asignar bgp_asn en base a la encuesta ansible
+      set_fact:
       assigned_bgp_asn: >-
         {% if equipo in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B'] %}
           65021
@@ -23,13 +23,13 @@
           "valor_inicial"
         {% endif %}
 
-  - name: Verificar valor de bgp_asn asignado
-    debug:
+    - name: Verificar valor de bgp_asn asignado
+      debug:
       msg: "BGP ASN asignado: {{ assigned_bgp_asn }}"
           
     - name: Asignar neighbor_ip y router_id en base a equipo
       set_fact:
-        assigned_neighbor_ip: >-
+      assigned_neighbor_ip: >-
           {% if equipo == 'AMU-P5-E4-UR29-BLEAF-A' %}
             169.254.196.9
           {% elif equipo == 'AMU-P5-E3-UR29-BLEAF-B' %}
@@ -42,7 +42,7 @@
             "valor_inicial"
           {% endif %}
         
-        assigned_router_id: >-
+      assigned_router_id: >-
           {% if equipo == 'AMU-P5-E4-UR29-BLEAF-A' %}
             169.254.196.9
           {% elif equipo == 'AMU-P5-E3-UR29-BLEAF-B' %}
@@ -56,7 +56,7 @@
           {% endif %}
 
     - name: Debug Asignar bgp_asn, neighbor_ip y router_id
-      debug:
+       debug:
         msg: 
           - "ASN BGP asignado: {{ assigned_bgp_asn }}"
           - "IP del vecino BGP asignada: {{ assigned_neighbor_ip }}"
