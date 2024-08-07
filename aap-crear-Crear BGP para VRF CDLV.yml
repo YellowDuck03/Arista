@@ -16,22 +16,22 @@
     - name: Establecer bgp_asn específico para AMU-P5-E4-UR29-BLEAF-A
       set_fact:
         bgp_asn: "65021"
-      when: equipo == 'AMU-P5-E4-UR29-BLEAF-A'
+      when: equipo == {{ AMU-P5-E4-UR29-BLEAF-A }}
       
     - name: Establecer bgp_asn específico para AMU-P5-E3-UR29-BLEAF-B
       set_fact:
         bgp_asn: "65021"
-      when: equipo == 'AMU-P5-E3-UR29-BLEAF-B'
+      when: equipo == {{ AMU-P5-E3-UR29-BLEAF-B }}
 
     - name: Establecer bgp_asn específico para CDLV-212-G31-UR29-BLEAF-A
       set_fact:
         bgp_asn: "65121"
-      when: equipo == 'CDLV-212-G31-UR29-BLEAF-A'
+      when: equipo == {{ CDLV-212-G31-UR29-BLEAF-A }}
 
     - name: Establecer bgp_asn específico para CDLV-212-G32-UR29-BLEAF-B
       set_fact:
         bgp_asn: "65121"
-      when: equipo == 'CDLV-212-G32-UR29-BLEAF-B'
+      when: equipo == {{ CDLV-212-G32-UR29-BLEAF-B }}
       
     - name: Depurar valor de bgp_asn asignado
       debug:
