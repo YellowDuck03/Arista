@@ -11,55 +11,39 @@
     router_id: "" 
     network: ""               
     filtro_in_bgp: ""         
+    
+equipos_config:
+      AMU-P5-E4-UR29-BLEAF-A:
+        bgp_asn: "65021"
+        neighbor_ip: "169.254.196.9"
+        router_id: "169.254.196.9"
+      AMU-P5-E3-UR29-BLEAF-B:
+        bgp_asn: "65021"
+        neighbor_ip: "169.254.196.13"
+        router_id: "169.254.196.13"
+      CDLV-212-G31-UR29-BLEAF-A:
+        bgp_asn: "65121"
+        neighbor_ip: "169.254.196.17"
+        router_id: "169.254.196.17"
+      CDLV-212-G32-UR29-BLEAF-B:
+        bgp_asn: "65121"
+        neighbor_ip: "169.254.196.21"
+        router_id: "169.254.196.21"
 
+        
   tasks:
-    - name: Establecer bgp_asn específico para AMU-P5-E4-UR29-BLEAF-A
-      set_fact:
-        bgp_asn: "65021"
-      when: equipo == {{ AMU-P5-E4-UR29-BLEAF-A }}
-      
-    - name: Establecer bgp_asn específico para AMU-P5-E3-UR29-BLEAF-B
-      set_fact:
-        bgp_asn: "65021"
-      when: equipo == {{ AMU-P5-E3-UR29-BLEAF-B }}
 
-    - name: Establecer bgp_asn específico para CDLV-212-G31-UR29-BLEAF-A
-      set_fact:
-        bgp_asn: "65121"
-      when: equipo == {{ CDLV-212-G31-UR29-BLEAF-A }}
-
-    - name: Establecer bgp_asn específico para CDLV-212-G32-UR29-BLEAF-B
-      set_fact:
-        bgp_asn: "65121"
-      when: equipo == {{ CDLV-212-G32-UR29-BLEAF-B }}
-      
-    - name: Depurar valor de bgp_asn asignado
+    - name: Depurar valor de equipo
       debug:
-        msg: "Valor de bgp_asn asignado: '{{ bgp_asn }}'"
+        msg: "Valor de equipo: '{{ equipo }}'"
 
-    - name: Establecer neighbor_ip y router_id específicos para AMU-P5-E4-UR29-BLEAF-A
+    - name: Asignar valores según equipo
       set_fact:
-        neighbor_ip: 169.254.196.9
-        router_id: 169.254.196.9
-      when: equipo == 'AMU-P5-E4-UR29-BLEAF-A'
-    
-    - name: Establecer neighbor_ip y router_id específicos para AMU-P5-E3-UR29-BLEAF-B
-      set_fact:
-        neighbor_ip: 169.254.196.13
-        router_id: 169.254.196.13
-      when: equipo == 'AMU-P5-E3-UR29-BLEAF-B'
-    
-    - name: Establecer neighbor_ip y router_id específicos para ACDLV-212-G31-UR29-BLEAF-A
-      set_fact:
-        neighbor_ip: 169.254.196.17
-        router_id: 169.254.196.17
-      when: equipo == 'ACDLV-212-G31-UR29-BLEAF-A'
-    
-    - name: Establecer neighbor_ip y router_id específicos para CDLV-212-G32-UR29-BLEAF-B
-      set_fact:
-        neighbor_ip: 169.254.196.21
-        router_id: 169.254.196.21
-      when: equipo == 'CDLV-212-G32-UR29-BLEAF-B'
+        bgp_asn: "{{ equipos_config[equipo].bgp_asn }}"
+        neighbor_ip: "{{ equipos_config[equipo].neighbor_ip }}"
+        router_id: "{{ equipos_config[equipo].router_id }}"
+      when: equipo in equipos_config
+
 
     - name: Debug Asignar bgp_asn, neighbor_ip y router_id
       debug:
