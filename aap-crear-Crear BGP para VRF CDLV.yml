@@ -1,4 +1,3 @@
----
 - name: Configurar BGP en el dispositivo Arista CDLV
   hosts: all
   gather_facts: no
@@ -10,9 +9,8 @@
     neighbor_ip: ""           
     router_id: "" 
     network: ""               
-    filtro_in_bgp: ""         
-    
-equipos_config:
+    filtro_in_bgp: ""
+    equipos_config:
       AMU-P5-E4-UR29-BLEAF-A:
         bgp_asn: "65021"
         neighbor_ip: "169.254.196.9"
@@ -30,9 +28,7 @@ equipos_config:
         neighbor_ip: "169.254.196.21"
         router_id: "169.254.196.21"
 
-        
   tasks:
-
     - name: Depurar valor de equipo
       debug:
         msg: "Valor de equipo: '{{ equipo }}'"
@@ -44,13 +40,18 @@ equipos_config:
         router_id: "{{ equipos_config[equipo].router_id }}"
       when: equipo in equipos_config
 
-
     - name: Debug Asignar bgp_asn, neighbor_ip y router_id
       debug:
         msg: 
           - "ASN BGP asignado: {{ bgp_asn }}"
           - "IP del vecino BGP asignada: {{ neighbor_ip }}"
           - "IP del ID BGP asignada: {{ router_id }}"
+
+
+
+
+
+          
           
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
