@@ -88,8 +88,9 @@
         msg: "El prefix-list '{{ filtro_in_bgp }}' existe: {{ prefix_list_exists }}"
 
     - name: Configurar BGP solo si existen la VRF y la prefix-list
-      arista.eos.eos_config:
-        lines:
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
           - router bgp {{ bgp_asn }}
           - vrf {{ vrf_name }}
           - router-id {{ router_id }}
