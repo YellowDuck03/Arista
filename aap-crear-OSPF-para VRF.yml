@@ -3,10 +3,10 @@
   gather_facts: no
 
   vars:
-    vrf_name: ""
-    router_id: ""
-    route_map: ""
-    network: ""
+    vrf_name: "AMSA_CASMLP_AMU"
+    router_id: "169.254.96.210"
+    route_map: "AMSA-CASMLP-TO-OSPF"
+    network: "169.254.96.208/29"
     area: "0.0.0.0"
 
   tasks:
@@ -58,7 +58,7 @@
 
     - name: Verificar existencia de OSPF para la VRF
       set_fact:
-        ospf_vrf_exists: "{{ ('router ospf ' ~ ospf_process_id ~ ' vrf ' ~ vrf_name) in ospf_config.stdout[0] }}"
+        ospf_vrf_exists: "{{ ospf_config.stdout[0] | regex_search('router ospf \\d+ vrf ' ~ vrf_name) is not none }}"
 
     - name: Debug Validar si OSPF para la VRF existe
       debug:
