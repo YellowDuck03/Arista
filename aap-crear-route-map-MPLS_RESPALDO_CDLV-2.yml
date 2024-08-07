@@ -9,7 +9,7 @@
     equipos_config:
       AMU-P5-E3-UR29-BLEAF-B:
         bgp_as_number: "65021"
-        neighbor_ip: "169.254.196.21"
+        neighbor_ip: "169.254.196.13"
         as_path_prepend: "65021"
       CDLV-212-G32-UR29-BLEAF-B:
         bgp_as_number: "65121"
