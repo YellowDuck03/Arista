@@ -1,3 +1,4 @@
+---
 - name: Configurar BGP en el dispositivo Arista CDLV
   hosts: all
   gather_facts: no
@@ -33,10 +34,11 @@
       debug:
         msg: "Valor de equipo: '{{ equipo }}'"
 
-    - name: Asegurar que equipo sea una cadena
+    - name: Convertir equipo a cadena si es necesario
       set_fact:
-        equipo: "{{ equipo | string }}"
-    
+        equipo: "{{ equipo | first }}"
+      when: equipo is iterable and not isinstance(equipo, string_types)
+
     - name: Asignar valores según equipo
       set_fact:
         bgp_asn: "{{ equipos_config[equipo].bgp_asn }}"
