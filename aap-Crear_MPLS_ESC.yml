@@ -3,9 +3,9 @@
   gather_facts: no
 
   vars:
-    equipo: ""
+    site: ""
     vlan_id: 534
-    vrf_name: "AMSA_CASMLP_AMU"
+    vrf_name: ""
     equipo_config:
       AMU-P5-E3-UR29-BLEAF-B:
         ip_address: 
@@ -15,6 +15,9 @@
         bgp_as_number: "65121"
         neighbor_ip: "169.254.196.21"
         as_path_prepend: "65121"
+AMU-P5-E4-UR29-BLEAF-A
+
+AMU-P5-E3-UR29-BLEAF-B
 
       
 
