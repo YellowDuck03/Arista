@@ -87,7 +87,7 @@
     - name: Verificar vecinos BGP existentes
       arista.eos.eos_command:
         commands:
-          - show running-config section router bgp
+          - show running-config section bgp | sec vrf {{ vrf_name }}
       register: bgp_running_config
 
     - name: Debug Verificar vecinos BGP existentes
