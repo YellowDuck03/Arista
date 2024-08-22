@@ -1,11 +1,12 @@
 - name: Configurar la interfaz Port-Channel5.534 en el equipo AMU-P5-E4-UR29-BLEAF-A
-  hosts: AMU-P5-E4-UR29-BLEAF-A
+  hosts: all
   gather_facts: no
 
   vars:
     site: ""
     vlan_po: ""
     vlan_id: ""
+    segmento: ""
     vrf_name: ""
         equipos_config:
       AMU-P5-E4-UR29-BLEAF-A:
