@@ -36,7 +36,7 @@
 
   tasks:
   
-  - name: Verificar existencia de la VRF
+    - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
           - show vrf | in {{ nom_vrf }}
