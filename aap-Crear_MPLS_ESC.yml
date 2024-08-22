@@ -35,19 +35,23 @@
         ip_po: "169.254.196.22/30"
 
   tasks:
-    - name: Validar si la VRF ya existe
-      arista.eos.eos_command:
-        commands: "show vrf {{ vrf_name }}"
-      register: vrf_check
-      ignore_errors: yes
-
-    - name: Crear VRF si no existe
+    - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
-          - configure terminal
-          - vrf instance {{ vrf_name }}
-          - ip routing vrf {{ vrf_name }}
-      when: vrf_check.failed
+          - show vrf | in {{ vrf_name }}
+      register: vrf_check
+
+    # Salida por pantalla
+    - name: Mostrar resultado del comando show vrf 
+      debug:
+        msg: "{{ vrf_check.stdout }}"
+
+    - name: Crear la VRF si no existe
+      arista.eos.eos_config:
+        lines:
+          - vrf instance {{ nom_vrf }}
+          - ip routing vrf {{ nom_vrf }}
+      when: "'' in vrf_check.stdout[0]"
 
     - name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
