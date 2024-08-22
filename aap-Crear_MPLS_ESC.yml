@@ -55,6 +55,7 @@
           - interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
           - description {{ vrf_name }} MPLS
           - encapsulation dot1q vlan {{ vlan_id }}
+          - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
       when: site == 'CDLV' and vrf_name not in vrf_check.stdout[0]
@@ -68,6 +69,7 @@
           - interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
           - description {{ vrf_name }} MPLS
           - encapsulation dot1q vlan {{ vlan_id }}
+          - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].ip_po }}
       when: site == 'CDLV' and vrf_name not in vrf_check.stdout[0]
@@ -81,6 +83,7 @@
           - interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
           - description {{ vrf_name }} MPLS
           - encapsulation dot1q vlan {{ vlan_id }}
+          - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].ip_po }}
       when: site == 'AMU' and vrf_name not in vrf_check.stdout[0]
@@ -94,6 +97,7 @@
           - interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
           - description {{ vrf_name }} MPLS
           - encapsulation dot1q vlan {{ vlan_id }}
+          - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].ip_po }}
       when: site == 'AMU' and vrf_name not in vrf_check.stdout[0]
