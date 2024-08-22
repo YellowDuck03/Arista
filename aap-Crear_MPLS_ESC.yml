@@ -58,7 +58,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
-      when: site == 'CDLV' and vrf_name not in vrf_check.stdout[0]
+      when: site == 'CDLV' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
 
     - name: Configurar la interfaz para equipo CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -72,7 +72,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].ip_po }}
-      when: site == 'CDLV' and vrf_name not in vrf_check.stdout[0]
+      when: site == 'CDLV' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
 
     - name: Configurar la interfaz para equipo AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -86,7 +86,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].ip_po }}
-      when: site == 'AMU' and vrf_name not in vrf_check.stdout[0]
+      when: site == 'AMU' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
 
     - name: Configurar la interfaz para equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -100,7 +100,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].ip_po }}
-      when: site == 'AMU' and vrf_name not in vrf_check.stdout[0]
+      when: site == 'AMU' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
 
     - name: Guardar cambios
       arista.eos.eos_command:
