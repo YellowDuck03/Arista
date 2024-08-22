@@ -42,9 +42,13 @@
       register: vrf_check
       ignore_errors: yes
 
-    - name: Mostrar resultado del comando show vrf 
+    - name: Determinar si la VRF existe
+      set_fact:
+        vrf_exists: "{{ vrf_name in vrf_check.stdout[0] if vrf_check.stdout else False }}"
+
+    - name: Mostrar resultado de la verificación de la VRF
       debug:
-        msg: "{{ vrf_check.stdout }}"
+        msg: "La VRF {{ vrf_name }} existe: {{ vrf_exists }}"
 
     - name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -58,7 +62,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
-      when: site == 'CDLV' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
+      when: site == 'CDLV' and not vrf_exists
 
     - name: Configurar la interfaz para equipo CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -72,7 +76,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].ip_po }}
-      when: site == 'CDLV' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
+      when: site == 'CDLV' and not vrf_exists
 
     - name: Configurar la interfaz para equipo AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -86,7 +90,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].ip_po }}
-      when: site == 'AMU' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
+      when: site == 'AMU' and not vrf_exists
 
     - name: Configurar la interfaz para equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -100,7 +104,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].ip_po }}
-      when: site == 'AMU' and (vrf_check.stdout is defined and vrf_name not in vrf_check.stdout[0])
+      when: site == 'AMU' and not vrf_exists
 
     - name: Guardar cambios
       arista.eos.eos_command:
