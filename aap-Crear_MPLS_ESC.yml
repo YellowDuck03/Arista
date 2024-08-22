@@ -40,15 +40,7 @@
         commands:
           - show vrf | in {{ vrf_name }}
       register: vrf_check
-      ignore_errors: yes
-
-    - name: Determinar si la VRF existe
-      set_fact:
-        vrf_exists: "{{ vrf_name in vrf_check.stdout[0] if vrf_check.stdout else False }}"
-
-    - name: Mostrar resultado de la verificación de la VRF
-      debug:
-        msg: "La VRF {{ vrf_name }} existe: {{ vrf_exists }}"
+    
 
     - name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
