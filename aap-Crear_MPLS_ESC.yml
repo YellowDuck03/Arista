@@ -38,10 +38,10 @@
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
-          - show vrf | in {{ vrf_name }}
+          - show vrf {{ vrf_name }}
       register: vrf_check
+      ignore_errors: yes
 
-    # Salida por pantalla
     - name: Mostrar resultado del comando show vrf 
       debug:
         msg: "{{ vrf_check.stdout }}"
@@ -51,7 +51,7 @@
         lines:
           - vrf instance {{ vrf_name }}
           - ip routing vrf {{ vrf_name }}
-      when: "'' in vrf_check.stdout[0]"
+      when: "'{{ vrf_name }}' not in vrf_check.stdout[0]"
 
     - name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -62,7 +62,7 @@
           - encapsulation dot1q vlan {{ vlan_id }}
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
-      when: site == 'CDLV' and vrf_check.failed
+      when: site == 'CDLV'
 
     - name: Configurar la interfaz para equipo CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -73,7 +73,7 @@
           - encapsulation dot1q vlan {{ vlan_id }}
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].ip_po }}
-      when: site == 'CDLV' and vrf_check.failed
+      when: site == 'CDLV'
 
     - name: Configurar la interfaz para equipo AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -84,7 +84,7 @@
           - encapsulation dot1q vlan {{ vlan_id }}
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].ip_po }}
-      when: site == 'AMU' and vrf_check.failed
+      when: site == 'AMU'
 
     - name: Configurar la interfaz para equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -95,10 +95,9 @@
           - encapsulation dot1q vlan {{ vlan_id }}
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].ip_po }}
-      when: site == 'AMU' and vrf_check.failed
+      when: site == 'AMU'
 
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
-
