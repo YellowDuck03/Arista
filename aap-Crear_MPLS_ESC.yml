@@ -49,8 +49,8 @@
     - name: Crear la VRF si no existe
       arista.eos.eos_config:
         lines:
-          - vrf instance {{ nom_vrf }}
-          - ip routing vrf {{ nom_vrf }}
+          - vrf instance {{ vrf_name }}
+          - ip routing vrf {{ vrf_name }}
       when: "'' in vrf_check.stdout[0]"
 
     - name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
