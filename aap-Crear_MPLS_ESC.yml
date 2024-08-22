@@ -39,7 +39,7 @@
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
-          - show vrf | in {{ nom_vrf }}
+          - show vrf | in {{ vrf_name }}
       register: vrf_check
 
     - name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
