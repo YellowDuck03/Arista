@@ -4,22 +4,34 @@
 
   vars:
     site: ""
-    vlan_id: 534
+    vlan_po: ""
+    vlan_id: ""
     vrf_name: ""
-    equipo_config:
+        equipos_config:
+      AMU-P5-E4-UR29-BLEAF-A:
+        bgp_asn: "65021"
+        neighbor_ip: "169.254.196.9"
+        router_id: "169.254.196.9"
+        id_po: "Port-Channel5."
+        ip_po: "169.254.196.10/30"
       AMU-P5-E3-UR29-BLEAF-B:
-        ip_address: 
-        description: 
-        as_path_prepend: "65021"
+        bgp_asn: "65021"
+        neighbor_ip: "169.254.196.13"
+        router_id: "169.254.196.13"
+        id_po: "Port-Channel6."
+        ip_po: "169.254.196.14/30"
+      CDLV-212-G31-UR29-BLEAF-A:
+        bgp_asn: "65121"
+        neighbor_ip: "169.254.196.17"
+        router_id: "169.254.196.17"
+        id_po: "Port-Channel5."
+        ip_po: "169.254.196.18/30"
       CDLV-212-G32-UR29-BLEAF-B:
-        bgp_as_number: "65121"
+        bgp_asn: "65121"
         neighbor_ip: "169.254.196.21"
-        as_path_prepend: "65121"
-AMU-P5-E4-UR29-BLEAF-A
-
-AMU-P5-E3-UR29-BLEAF-B
-
-      
+        router_id: "169.254.196.21"
+        id_po: "Port-Channel6."
+        ip_po: "169.254.196.22/30"
 
 interface_name: "Port-Channel5.534"
   tasks:
