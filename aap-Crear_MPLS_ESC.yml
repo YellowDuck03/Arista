@@ -131,7 +131,7 @@
 
   
 
-    - name: Guardar cambios
-      arista.eos.eos_command:
-        commands:
-          - write memory
+- name: Guardar cambios
+  arista.eos.eos_command:
+   commands:
+      - write memory
