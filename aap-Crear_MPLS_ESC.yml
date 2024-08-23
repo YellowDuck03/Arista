@@ -43,6 +43,28 @@
         metric: "20000"
 
   tasks:
+
+    - name: Obtener la configuración OSPF actual
+      arista.eos.eos_command:
+        commands:
+          - show running-config section router ospf
+      register: ospf_config
+
+    - name: Analizar IDs de OSPF actuales
+      set_fact:
+        ospf_ids: "{{ ospf_config.stdout[0] | regex_findall('router ospf (\\d+)') | map('int') | list }}"
+
+    - name: Determinar el siguiente ID de OSPF disponible
+      set_fact:
+        ospf_process_id: "{{ (ospf_ids | sort | last | default(0)) + 1 }}"
+
+    - name: Debug del próximo ID de OSPF disponible
+      debug:
+        msg: "El próximo ID de OSPF disponible es: {{ ospf_process_id }}"
+
+
+
+        
   
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
@@ -50,8 +72,6 @@
           - show vrf | in {{ vrf_name }}
       register: vrf_check
 
-
-      
 
     - name: Verificar existencia de la prefix-list
       arista.eos.eos_command:
@@ -121,6 +141,12 @@
           - route-map {{ vrf_name }}-TO-OSPF permit 10
           - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - set metric {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].metric }}
+
+          - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
+          - router-id {{ router_id }}
+          - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
+          - network {{ network }} area {{ area }}
+
           
           - router bgp {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].bgp_asn }}
           - vrf {{ vrf_name }}
