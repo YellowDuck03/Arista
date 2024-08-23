@@ -7,9 +7,6 @@
     vlan_po: ""
     vlan_id: ""
     segmento: ""
-    first_ip: "{{ (lookup('ansible.utils.ipaddr', segmento) | ipaddr('add', 1)).string }}"
-    second_ip: "{{ (lookup('ansible.utils.ipaddr', segmento) | ipaddr('add', 2)).string }}"
-
     vrf_name: ""
     network: ""
     prefix_in: ""
@@ -78,13 +75,25 @@
       debug:
         msg: "{{ vlan_check.stdout }}"
 
+
+
         
 
+    - name: Calcular la primera IP disponible en el segmento
+      set_fact:
+        first_ip: "{{ (lookup('ansible.utils.ipaddr', segmento) | ipaddr('add', 1)).string }}"
 
+    - name: Calcular la segunda IP disponible en el segmento
+      set_fact:
+        second_ip: "{{ (lookup('ansible.utils.ipaddr', segmento) | ipaddr('add', 2)).string }}"
 
-
-          
         
+    - name: Mostrar las IPs calculadas
+      debug:
+        msg:
+          - "Primera IP: {{ first_ip }}"
+          - "Segunda IP: {{ second_ip }}"
+
   
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
