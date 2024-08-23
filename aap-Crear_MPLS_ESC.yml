@@ -188,12 +188,13 @@
       when: 
         - site == 'CDLV'
         - vrf_check.stdout[0] == ''
-        - po_check_cdlv_a.stdout | default('') == ''
+        - po_check_cdlv_a.stdout[0] == ''
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''
         - routemap_check_resp.stdout[0] == ''
         - vlan_check.stdout[0] == ''
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+
 
     - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
@@ -235,7 +236,7 @@
       when: 
         - site == 'CDLV'
         - vrf_check.stdout[0] == ''
-        - po_check_cdlv_b.stdout | default('') == ''
+        - po_check_cdlv_b.stdout[0] == ''
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''
         - routemap_check_resp.stdout[0] == ''
@@ -279,7 +280,7 @@
       when: 
         - site == 'CDLV'
         - vrf_check.stdout[0] == ''
-        - po_check_amu_a.stdout | default('') == ''
+        - po_check_amu_a.stdout[0] == ''
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''
         - routemap_check_resp.stdout[0] == ''
@@ -327,7 +328,7 @@
       when: 
         - site == 'CDLV'
         - vrf_check.stdout[0] == ''
-        - po_check_amu_b.stdout | default('') == ''
+        - po_check_amu_b.stdout[0] == ''
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''
         - routemap_check_resp.stdout[0] == ''
