@@ -122,7 +122,7 @@
     - name: Verificar existencia de la VLAN
       arista.eos.eos_command:
         commands:
-      - show vlan id {{ vlan_id }}
+          - show vlan id {{ vlan_id }}
       register: vlan_check
       ignore_errors: yes  # Ignorar errores en caso de que la VLAN no exista
 
