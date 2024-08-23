@@ -84,7 +84,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
-      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'% Interface does not exist'" in po_check_cdlv_a.stdout[0] and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'% Interface does not exist'" in po_check_cdlv_a.stdout and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
 
     - name: Configurar la interfaz para equipo CDLV-212-G32-UR29-BLEAF-B
