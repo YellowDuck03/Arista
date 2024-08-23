@@ -42,6 +42,26 @@
           - show vrf | in {{ vrf_name }}
       register: vrf_check
 
+      
+    - name: Verificar existencia del prefix-list
+      arista.eos.eos_command:
+        commands:
+          - show running-config section ip prefix-list
+      register: prefix_list_config
+          - name: Validar si la prefix-list existe
+      set_fact:
+        prefix_list_exists: "{{ ('ip prefix-list ' ~ filtro_in_bgp) in prefix_list_config.stdout[0] }}"
+        
+
+    - name: Verificar vecinos BGP existentes
+      arista.eos.eos_command:
+        commands:
+          - show running-config section bgp | sec vrf {{ vrf_name }}
+      register: bgp_running_config
+   - name: Validar si el vecino BGP ya existe
+      set_fact:
+        neighbor_exists: "{{ neighbor_ip in bgp_running_config.stdout[0] }}"
+      
 
     - name: Verificar existencia del port-channel en equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -84,6 +104,13 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
+          - router bgp {{ bgp_asn }}
+          - vrf {{ vrf_name }}
+          - router-id {{ router_id }}
+          - neighbor {{ neighbor_ip }} remote-as 27651
+          - network {{ network }}
+          - address-family ipv4
+          - neighbor {{ neighbor_ip }} prefix-list {{ filtro_in_bgp }} in
       when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_a[0]" and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
 
