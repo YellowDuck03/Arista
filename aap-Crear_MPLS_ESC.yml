@@ -7,6 +7,9 @@
     vlan_po: ""
     vlan_id: ""
     segmento: ""
+    first_ip: "{{ (lookup('ansible.utils.ipaddr', segmento) | ipaddr('add', 1)).string }}"
+    second_ip: "{{ (lookup('ansible.utils.ipaddr', segmento) | ipaddr('add', 2)).string }}"
+
     vrf_name: ""
     network: ""
     prefix_in: ""
@@ -77,23 +80,7 @@
 
         
 
-    - name: Calcular la IP de red
-      ansible.builtin.set_fact:
-        network_ip: "{{ segmento | ipaddr('network') }}"
-    
-    - name: Calcular primera IP usando ansible.utils.ipmath
-      ansible.builtin.set_fact:
-        first_ip: "{{ network_ip | ansible.utils.ipmath(1) }}"
 
-    - name: Calcular segunda IP usando ansible.utils.ipmath
-      ansible.builtin.set_fact:
-        second_ip: "{{ network_ip | ansible.utils.ipmath(2) }}"
-    
-    - name: Mostrar las IPs calculadas
-      debug:
-        msg:
-          - "Primera IP: {{ first_ip }}"
-          - "Segunda IP: {{ second_ip }}"
 
 
           
