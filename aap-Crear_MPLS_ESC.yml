@@ -253,11 +253,6 @@
 
       when: 
         - site == 'CDLV'
-        - vrf_check.stdout == ""
-        - po_check_cdlv_a.stdout == ""''
-        - routemap_check.stdout == ""
-        - routemap_check_resp.stdout == ""
-        - vlan_check.stdout == ""
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
 
@@ -300,11 +295,6 @@
           - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
       when: 
         - site == 'CDLV'
-        - vrf_check.stdout == ""
-        - po_check_cdlv_b.stdout == ""''
-        - routemap_check.stdout == ""
-        - routemap_check_resp.stdout == ""
-        - vlan_check.stdout == ""
         - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
 
