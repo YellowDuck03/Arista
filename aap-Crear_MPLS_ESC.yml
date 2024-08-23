@@ -45,7 +45,6 @@
 
   tasks:
 
-
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
@@ -159,7 +158,7 @@
 
 
   
-    - name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -196,7 +195,7 @@
       when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_a[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and "'' in routemap_check_resp[0]" and "'not found' in vlan_check.stdout[0]" and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
 
-    - name: Configurar la interfaz para equipo CDLV-212-G32-UR29-BLEAF-B
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -236,7 +235,7 @@
       when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_b[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and "'' in routemap_check_resp[0]" and "'not found' in vlan_check.stdout[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
 
-    - name: Configurar la interfaz para equipo AMU-P5-E4-UR29-BLEAF-A
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -272,7 +271,7 @@
           - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in    
       when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_a[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and "'' in routemap_check_resp[0]" and "'not found' in vlan_check.stdout[0]" and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
 
-    - name: Configurar la interfaz para equipo AMU-P5-E3-UR29-BLEAF-B
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
         commands:
           - configure terminal
