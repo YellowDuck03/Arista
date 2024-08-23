@@ -46,28 +46,28 @@
     - name: Verificar existencia del port-channel en equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
-          - show interfaces {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
+          - show ip int brief | i {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
       register: po_check_cdlv_a
       when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
     - name: Verificar existencia del port-channel en equipo CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
         commands:
-          - show interfaces {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
+          - show ip int brief | i {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
       register: po_check_cdlv_b
       when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
     - name: Verificar existencia del port-channel en equipo AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
-          - show interfaces {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
+          - show ip int brief | i {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
       register: po_check_amu_a
       when: site == 'AMU' and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
 
     - name: Verificar existencia del port-channel en equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
         commands:
-          - show interfaces {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
+          - show ip int brief | i {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
       register: po_check_amu_b
       when: site == 'AMU' and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
 
@@ -84,7 +84,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
-      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'% Interface does not exist'" in po_check_cdlv_a.stdout and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_a[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
 
     - name: Configurar la interfaz para equipo CDLV-212-G32-UR29-BLEAF-B
@@ -99,8 +99,8 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].ip_po }}
-      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'% Interface does not exist'" in po_check_cdlv_b.stdout[0] and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
-      
+      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_b[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+
 
     - name: Configurar la interfaz para equipo AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -114,7 +114,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].ip_po }}
-      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'% Interface does not exist'" in po_check_amu_a.stdout[0] and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_a[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
     - name: Configurar la interfaz para equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -128,7 +128,7 @@
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].ip_po }}
-      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'% Interface does not exist'" in po_check_amu_b.stdout[0] and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_b[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
     - name: Guardar cambios
       arista.eos.eos_command:
