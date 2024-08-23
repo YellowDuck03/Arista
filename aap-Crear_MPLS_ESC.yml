@@ -232,8 +232,15 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
-      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_b[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and "'' in routemap_check_resp[0]" and "'' in vlan_check.stdout[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
-
+      when: 
+        - site == 'CDLV'
+        - vrf_check.stdout[0] == ''
+        - po_check_cdlv_a.stdout[0] == ''
+        - prefix_check.stdout[0] == ''
+        - routemap_check.stdout[0] == ''
+        - routemap_check_resp.stdout[0] == ''
+        - vlan_check.stdout[0] == ''
+        - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
     - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
@@ -269,8 +276,17 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in    
-      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_a[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and "'' in routemap_check_resp[0]" and "'' in vlan_check.stdout[0]" and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+      when: 
+        - site == 'CDLV'
+        - vrf_check.stdout[0] == ''
+        - po_check_cdlv_a.stdout[0] == ''
+        - prefix_check.stdout[0] == ''
+        - routemap_check.stdout[0] == ''
+        - routemap_check_resp.stdout[0] == ''
+        - vlan_check.stdout[0] == ''
+        - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
 
+        
     - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
         commands:
@@ -308,8 +324,16 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
-      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_b[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and "'' in routemap_check_resp[0]" and "'' in vlan_check.stdout[0]" and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
-
+      when: 
+        - site == 'CDLV'
+        - vrf_check.stdout[0] == ''
+        - po_check_cdlv_a.stdout[0] == ''
+        - prefix_check.stdout[0] == ''
+        - routemap_check.stdout[0] == ''
+        - routemap_check_resp.stdout[0] == ''
+        - vlan_check.stdout[0] == ''
+        - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+        
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
