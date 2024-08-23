@@ -6,8 +6,47 @@
   # Variables
   vars:
     nom_prefix: ""
-    id_prefix: ""
-    prefix: ""
+    id_prefix_1: ""
+    prefix_1: ""
+    id_prefix_2: ""
+    prefix_2: ""
+    id_prefix_3: ""
+    prefix_3: ""
+    id_prefix_4: ""
+    prefix_4: ""
+    id_prefix_5: ""
+    prefix_5: ""
+    id_prefix_6: ""
+    prefix_6: ""
+    id_prefix_7: ""
+    prefix_7: ""
+    id_prefix_8: ""
+    prefix_8: ""
+    id_prefix_9: ""
+    prefix_9: ""
+    id_prefix_10: ""
+    prefix_10: ""
+    prefix_list:
+      - id: "{{ id_prefix_1 }}"
+        prefix: "{{ prefix_1 }}"
+      - id: "{{ id_prefix_2 }}"
+        prefix: "{{ prefix_2 }}"
+      - id: "{{ id_prefix_3 }}"
+        prefix: "{{ prefix_3 }}"
+      - id: "{{ id_prefix_4 }}"
+        prefix: "{{ prefix_4 }}"
+      - id: "{{ id_prefix_5 }}"
+        prefix: "{{ prefix_5 }}"
+      - id: "{{ id_prefix_6 }}"
+        prefix: "{{ prefix_6 }}"
+      - id: "{{ id_prefix_7 }}"
+        prefix: "{{ prefix_7 }}"
+      - id: "{{ id_prefix_8 }}"
+        prefix: "{{ prefix_8 }}"
+      - id: "{{ id_prefix_9 }}"
+        prefix: "{{ prefix_9 }}"
+      - id: "{{ id_prefix_10 }}"
+        prefix: "{{ prefix_10 }}"
   
   # Tareas
   tasks:
@@ -24,12 +63,14 @@
 
     - name: Crea PREFIX-LIST
       arista.eos.eos_config:
-        lines:
-          - ip prefix-list {{ nom_prefix }}
-          - seq {{ id_prefix }} permit {{ prefix }}
-     #    - switchport vlan translation {{ vlan_real }} {{ vlan_map }}
-     #    - switchport trunk allowed vlan {{ vlan_map }}
-     # when: "'not found' not in vlan_check.stdout[0]"
+        lines: |
+          ip prefix-list {{ nom_prefix }}
+          {% for item in prefix_list %}
+          {% if item.id and item.prefix %}
+          seq {{ item.id }} permit {{ item.prefix }}
+          {% endif %}
+          {% endfor %}
+      when: prefix_list | selectattr('id', 'defined') | selectattr('prefix', 'defined') | list | length > 0
     
     - name: Guardar cambios
       arista.eos.eos_command:
