@@ -185,12 +185,13 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
+
       when: 
         - site == 'CDLV'
         - vrf_check.stdout[0] == ''
-        - po_check_cdlv_a.stdout[0] == ''
-        - prefix_check.stdout[0] == ''
-        - routemap_check.stdout[0] == ''
+        - po_check_cdlv_a[0] == ''
+        - routemap_check[0] == ''
+        - routemap_check_resp[0] == ''
         - routemap_check_resp.stdout[0] == ''
         - vlan_check.stdout[0] == ''
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
