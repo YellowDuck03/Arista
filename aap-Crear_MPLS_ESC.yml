@@ -8,6 +8,7 @@
     vlan_id: ""
     segmento: ""
     vrf_name: ""
+    network: ""
     equipos_config:
       AMU-P5-E4-UR29-BLEAF-A:
         bgp_asn: "65021"
@@ -42,25 +43,23 @@
           - show vrf | in {{ vrf_name }}
       register: vrf_check
 
-      
-    - name: Verificar existencia del prefix-list
+
+
+
+
+    - name: Verificar existencia de la prefix-list
       arista.eos.eos_command:
         commands:
           - show running-config section ip prefix-list
       register: prefix_list_config
-          - name: Validar si la prefix-list existe
+
+    - name: Validar si la prefix-list existe
       set_fact:
         prefix_list_exists: "{{ ('ip prefix-list ' ~ filtro_in_bgp) in prefix_list_config.stdout[0] }}"
-        
 
-    - name: Verificar vecinos BGP existentes
-      arista.eos.eos_command:
-        commands:
-          - show running-config section bgp | sec vrf {{ vrf_name }}
-      register: bgp_running_config
-   - name: Validar si el vecino BGP ya existe
-      set_fact:
-        neighbor_exists: "{{ neighbor_ip in bgp_running_config.stdout[0] }}"
+
+
+
       
 
     - name: Verificar existencia del port-channel en equipo CDLV-212-G31-UR29-BLEAF-A
@@ -98,12 +97,14 @@
           - configure terminal
           - vrf instance {{ vrf_name }}
           - ip routing vrf {{ vrf_name }} 
+          
           - interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
           - description {{ vrf_name }}MPLS
           - encapsulation dot1q vlan {{ vlan_id }}
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
+          
           - router bgp {{ bgp_asn }}
           - vrf {{ vrf_name }}
           - router-id {{ router_id }}
