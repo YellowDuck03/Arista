@@ -104,7 +104,7 @@
           
           - router bgp {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].bgp_asn }}
           - vrf {{ vrf_name }}
-          - router-id {{ router_id }}
+          - router-id {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].router_id }} 
           - neighbor {{ neighbor_ip }} remote-as 27651
           - network {{ network }}
           - address-family ipv4
@@ -130,7 +130,7 @@
 
           - - router bgp {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].bgp_asn }}
           - vrf {{ vrf_name }}
-          - router-id {{ router_id }}
+          - router-id {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].router_id }} 
           - neighbor {{ neighbor_ip }} remote-as 27651
           - network {{ network }}
           - address-family ipv4
