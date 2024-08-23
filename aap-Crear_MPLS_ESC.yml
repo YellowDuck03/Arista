@@ -183,10 +183,10 @@
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
           - network {{ network }} area {{ area }}
 
-          - interface vlan {{ vlan_id }}/29
+          - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
           - vrf {{ vrf_name }}
-          - ip address {{ first_ip }}
+          - ip address {{ first_ip }}/29
           - no shutdown
           
           - router bgp {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].bgp_asn }}
@@ -230,10 +230,10 @@
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
           - network {{ network }} area {{ area }}
 
-          - interface vlan {{ vlan_id }}/29
+          - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
           - vrf {{ vrf_name }}
-          - ip address {{ second_ip }}
+          - ip address {{ second_ip }}/29
           - no shutdown
           
           
@@ -277,10 +277,10 @@
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
           - network {{ network }} area {{ area }}
 
-          - interface vlan {{ vlan_id }}/29
+          - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
           - vrf {{ vrf_name }}
-          - ip address {{ first_ip }}
+          - ip address {{ first_ip }}/29
           - no shutdown
           
           
@@ -329,10 +329,10 @@
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
           - network {{ network }} area {{ area }}
 
-          - interface vlan {{ vlan_id }}/29
+          - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
           - vrf {{ vrf_name }}
-          - ip address {{ second_ip }}
+          - ip address {{ second_ip }}/29
           - no shutdown
 
           
