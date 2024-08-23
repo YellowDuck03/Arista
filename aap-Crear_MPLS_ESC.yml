@@ -106,6 +106,7 @@
           - vrf {{ vrf_name }}
           - router-id {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].router_id }} 
           - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} remote-as 27651
+          
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
@@ -132,6 +133,7 @@
           - vrf {{ vrf_name }}
           - router-id {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].router_id }} 
           - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} remote-as 27651
+          
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
