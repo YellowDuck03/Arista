@@ -6,7 +6,11 @@
     site: ""
     vlan_po: ""
     vlan_id: ""
+    
     segmento: ""
+    first_ip: "{{ ipcalc(segmento)['network'] | ipmath(1) }}"
+    second_ip: "{{ ipcalc(segmento)['network'] | ipmath(2) }}"
+    
     vrf_name: ""
     network: ""
     prefix_in: ""
@@ -143,7 +147,7 @@
           - set metric {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].metric }}
 
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
-          - router-id {{ router_id }}
+          - router-id {{ second_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
           - network {{ network }} area {{ area }}
 
@@ -181,6 +185,12 @@
           - route-map {{ vrf_name }}-TO-OSPF permit 10
           - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - set metric {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].metric }}
+
+          - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
+          - router-id {{ first_ip }}
+          - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
+          - network {{ network }} area {{ area }}
+
           
           - router bgp {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].bgp_asn }}
           - vrf {{ vrf_name }}
