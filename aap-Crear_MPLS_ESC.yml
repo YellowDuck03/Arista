@@ -6,11 +6,7 @@
     site: ""
     vlan_po: ""
     vlan_id: ""
-    
     segmento: ""
-    first_ip: "{{ ipcalc(segmento)['network'] | ipmath(1) }}"
-    second_ip: "{{ ipcalc(segmento)['network'] | ipmath(2) }}"
-    
     vrf_name: ""
     network: ""
     prefix_in: ""
@@ -66,7 +62,16 @@
       debug:
         msg: "El próximo ID de OSPF disponible es: {{ ospf_process_id }}"
 
+    - name: Calcular direcciones IP
+      ansible.builtin.set_fact:
+        first_ip: "{{ (segmento | ipaddr('network') | ipaddr(1)) }}"
+        second_ip: "{{ (segmento | ipaddr('network') | ipaddr(2)) }}"
 
+    - name: Mostrar las IPs calculadas
+      debug:
+        msg:
+          - "Primera IP: {{ first_ip }}"
+          - "Segunda IP: {{ second_ip }}"
 
         
   
@@ -147,7 +152,7 @@
           - set metric {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].metric }}
 
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
-          - router-id {{ second_ip }}
+          - router-id {{ first_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
           - network {{ network }} area {{ area }}
 
@@ -187,7 +192,7 @@
           - set metric {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].metric }}
 
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
-          - router-id {{ first_ip }}
+          - router-id {{ second_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
           - network {{ network }} area {{ area }}
 
