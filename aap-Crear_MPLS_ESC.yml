@@ -189,7 +189,7 @@
       when: 
         - site == 'CDLV'
         - vrf_check.stdout[0] == ''
-        - po_check_cdlv_a[0] == ''
+        - po_check_cdlv_a == ''
         - routemap_check[0] == ''
         - routemap_check_resp[0] == ''
         - routemap_check_resp.stdout[0] == ''
