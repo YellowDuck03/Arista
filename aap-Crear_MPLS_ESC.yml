@@ -50,7 +50,10 @@
         commands:
           - show vrf | in {{ vrf_name }}
       register: vrf_check
-
+      
+    - name: Debug VRF check
+      debug:
+        var: vrf_check.stdout
 
     - name: Verificar existencia de la prefix-list
       arista.eos.eos_command:
@@ -58,12 +61,20 @@
           - show running-config section ip prefix-list | i {{ vrf_name }}-ESC-TO-BGP-IN
       register: prefix_check
 
-
+    - name: Debug prefix-list check
+      debug:
+        var: prefix_check.stdout
+    
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
         commands:
           - show running-config section route-map | i {{ vrf_name }}-TO-OSPF
       register: routemap_check
+
+    - name: Debug route-map check
+      debug:
+        var: routemap_check.stdout
+    
 
     - name: Verificar existencia del route-map
       arista.eos.eos_command:
@@ -71,7 +82,11 @@
           - show running-config section route-map | i MPLS-RESPALDO-{{ vrf_name }}
       register: routemap_check_resp
       
+    - name: Debug route-map check
+      debug:
+        var: routemap_check_resp.stdout
 
+        
     - name: Verificar existencia del port-channel en equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
@@ -79,6 +94,12 @@
       register: po_check_cdlv_a
       when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
+    - name: Debug port-channel check CDLV-A
+      debug:
+        var: po_check_cdlv_a.stdout
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+
+  
     - name: Verificar existencia del port-channel en equipo CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
         commands:
@@ -86,12 +107,25 @@
       register: po_check_cdlv_b
       when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
+
+    - name: Debug port-channel check CDLV-B
+      debug:
+        var: po_check_cdlv_b.stdout
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+
+  
     - name: Verificar existencia del port-channel en equipo AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
           - show ip int brief | i {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
       register: po_check_amu_a
       when: site == 'AMU' and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+
+    - name: Debug port-channel check AMU-A
+      debug:
+        var: po_check_amu_a.stdout
+      when: site == 'AMU' and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+
 
     - name: Verificar existencia del port-channel en equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -100,12 +134,22 @@
       register: po_check_amu_b
       when: site == 'AMU' and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
 
+    - name: Debug port-channel check AMU-B
+      debug:
+        var: po_check_amu_b.stdout
+      when: site == 'AMU' and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+
+
     - name: Obtener la configuración OSPF actual
       arista.eos.eos_command:
         commands:
           - show running-config section router ospf
       register: ospf_config
 
+    - name: Debug OSPF config
+      debug:
+        var: ospf_config.stdout
+    
     - name: Analizar IDs de OSPF actuales
       set_fact:
         ospf_ids: "{{ ospf_config.stdout[0] | regex_findall('router ospf (\\d+)') | map('int') | list }}"
@@ -126,12 +170,25 @@
       register: vlan_check
       ignore_errors: yes  # Ignorar errores en caso de que la VLAN no exista
 
+      
+    - name: Debug VLAN check
+      debug:
+        var: vlan_check.stdout
 
     - name: Extraer la dirección base y la máscara del segmento
       set_fact:
         ip_base: "{{ segmento.split('/')[0].split('.')[:-1] | join('.') }}"
         last_octet: "{{ segmento.split('/')[0].split('.')[-1] }}"
         subnet_mask: "{{ segmento.split('/')[1] }}"
+
+    - name: Debug IP base y máscara
+      debug:
+        msg:
+      - "IP Base: {{ ip_base }}"
+      - "Último octeto: {{ last_octet }}"
+      - "Máscara de subred: {{ subnet_mask }}"
+
+      
 
     - name: Calcular la primera IP disponible en el segmento
       set_fact:
