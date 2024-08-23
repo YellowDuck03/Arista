@@ -235,6 +235,7 @@
           - vrf {{ vrf_name }}
           - ip address {{ first_ip }}/29
           - no shutdown
+          - exit
           - router bgp {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].bgp_asn }}
           - vrf {{ vrf_name }}
           - router-id {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].router_id }} 
