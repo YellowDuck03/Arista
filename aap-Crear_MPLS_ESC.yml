@@ -79,14 +79,20 @@
 
         
 
+    - name: Extraer la dirección base y la máscara del segmento
+      set_fact:
+        ip_base: "{{ segmento.split('/')[0].split('.')[:-1] | join('.') }}"
+        last_octet: "{{ segmento.split('/')[0].split('.')[-1] }}"
+        subnet_mask: "{{ segmento.split('/')[1] }}"
 
     - name: Calcular la primera IP disponible en el segmento
       set_fact:
-        first_ip: "{{ segmento | community.general.ipmath(1) }}"
+        first_ip: "{{ ip_base }}.{{ last_octet | int + 1 }}"
 
     - name: Calcular la segunda IP disponible en el segmento
       set_fact:
-        second_ip: "{{ segmento | community.general.ipmath(2) }}"
+        second_ip: "{{ ip_base }}.{{ last_octet | int + 2 }}"
+        
 
         
     - name: Mostrar las IPs calculadas
