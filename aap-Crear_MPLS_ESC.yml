@@ -184,9 +184,9 @@
     - name: Debug IP base y máscara
       debug:
         msg:
-      - "IP Base: {{ ip_base }}"
-      - "Último octeto: {{ last_octet }}"
-      - "Máscara de subred: {{ subnet_mask }}"
+        - "IP Base: {{ ip_base }}"
+        - "Último octeto: {{ last_octet }}"
+        - "Máscara de subred: {{ subnet_mask }}"
 
       
 
