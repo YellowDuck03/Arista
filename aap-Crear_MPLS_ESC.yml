@@ -109,7 +109,7 @@
           
           - network {{ network }}
           - address-family ipv4
-          - neighbor {{ neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
+          - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
       when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_a[0]" and "'' in prefix_check[0]" and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
 
@@ -136,7 +136,7 @@
           
           - network {{ network }}
           - address-family ipv4
-          - neighbor {{ neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
+          - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
       when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_b[0]" and "'' in prefix_check[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
 
