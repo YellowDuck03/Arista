@@ -73,7 +73,7 @@
 
   
   
-: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
+- name: Configurar la interfaz para equipo CDLV-212-G31-UR29-BLEAF-A
   arista.eos.eos_command:
     commands:
       - configure terminal
