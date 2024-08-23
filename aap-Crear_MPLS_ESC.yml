@@ -17,24 +17,30 @@
         router_id: "169.254.196.10"
         id_po: "Port-Channel5."
         ip_po: "169.254.196.10/30"
+        metric: "30000"
       AMU-P5-E3-UR29-BLEAF-B:
         bgp_asn: "65021"
         neighbor_ip: "169.254.196.13"
         router_id: "169.254.196.14"
         id_po: "Port-Channel6."
         ip_po: "169.254.196.14/30"
+        as_path_prepend: "65021"
+        metric: "40000"
       CDLV-212-G31-UR29-BLEAF-A:
         bgp_asn: "65121"
         neighbor_ip: "169.254.196.17"
         router_id: "169.254.196.18"
         id_po: "Port-Channel5."
         ip_po: "169.254.196.18/30"
+        metric: "10000"
       CDLV-212-G32-UR29-BLEAF-B:
         bgp_asn: "65121"
         neighbor_ip: "169.254.196.21"
         router_id: "169.254.196.22"
         id_po: "Port-Channel6."
         ip_po: "169.254.196.22/30"
+        as_path_prepend: "65121"
+        metric: "20000"
 
   tasks:
   
@@ -54,7 +60,11 @@
       register: prefix_check
 
 
-
+    - name: Verificar existencia del route-map
+      arista.eos.eos_command:
+        commands:
+          - show running-config section route-map | i {{ vrf_name }}-TO-OSPF
+      register: routemap_check
       
 
     - name: Verificar existencia del port-channel en equipo CDLV-212-G31-UR29-BLEAF-A
@@ -110,7 +120,12 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
-      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_a[0]" and "'' in prefix_check[0]" and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+
+          - route-map {{ vrf_name }}-TO-OSPF permit 10
+          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
+          - set metric {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].metric }}
+          
+      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_a[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
 
     - name: Configurar la interfaz para equipo CDLV-212-G32-UR29-BLEAF-B
@@ -137,7 +152,12 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
-      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_b[0]" and "'' in prefix_check[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+
+          - route-map {{ vrf_name }}-TO-OSPF permit 10
+          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
+          - set metric {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].metric }}
+          
+      when: site == 'CDLV' and "'' in vrf_check.stdout[0]" and "'' in po_check_cdlv_b[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
 
     - name: Configurar la interfaz para equipo AMU-P5-E4-UR29-BLEAF-A
@@ -163,8 +183,12 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
+
+          - route-map {{ vrf_name }}-TO-OSPF permit 10
+          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
+          - set metric {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].metric }}
           
-      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_a[0]" and "'' in prefix_check[0]" and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_a[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
 
     - name: Configurar la interfaz para equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -188,9 +212,14 @@
           
           - network {{ network }}
           - address-family ipv4
-          - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
+          - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
+
+          - route-map {{ vrf_name }}-TO-OSPF permit 10
+          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
+          - set metric {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].metric }}
           
-      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_b[0]" and "'' in prefix_check[0]" and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+          
+      when: site == 'AMU' and "'' in vrf_check.stdout[0]" and "'' in po_check_amu_b[0]" and "'' in prefix_check[0]" and "'' in routemap_check[0]" and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
 
     - name: Guardar cambios
       arista.eos.eos_command:
