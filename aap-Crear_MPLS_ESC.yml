@@ -264,12 +264,14 @@
           - ip routing vrf {{ vrf_name }} 
           - vlan {{ vlan_id }}
           - name INTER-RED-TDS-{{ vrf_name }}
+          
           - interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
           - description {{ vrf_name }}MPLS
           - encapsulation dot1q vlan {{ vlan_id }}
           - no shutdown
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].ip_po }}
+          
           - ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN permit {{ prefix_in }}
           - route-map MPLS-RESPALDO-{{ vrf_name }} permit 10
           - set as-path prepend {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].as_path_prepend }}
@@ -355,7 +357,7 @@
           - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - set metric {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].metric }}
           - route-map MPLS-RESPALDO-{{ vrf_name }} permit 10
-          - set as-path prepend {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].as_path_prepend }}
+          - set as-path prepend {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].as_path_prepend }}
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
           - router-id {{ second_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
