@@ -293,7 +293,7 @@
       when: 
         - site == 'CDLV'
         - vrf_check.stdout == ""
-        - po_check_cdlv_a.stdout == ""''
+        - po_check_cdlv_b.stdout == ""''
         - routemap_check.stdout == ""
         - routemap_check_resp.stdout == ""
         - vlan_check.stdout == ""
