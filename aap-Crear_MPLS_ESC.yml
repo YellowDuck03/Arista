@@ -251,9 +251,7 @@
           - address-family ipv4
           - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
 
-      when: 
-        - site == 'CDLV'
-        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
 
     - name: Configurar MPLS OSPF SVI ROUTE-MAP
@@ -295,9 +293,7 @@
           - network {{ network }}
           - address-family ipv4
           - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} prefix-list {{ vrf_name }}-ESC-TO-BGP-IN in
-      when: 
-        - site == 'CDLV'
-        - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
 
 
