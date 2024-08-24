@@ -209,7 +209,7 @@
 
 
   
-    - name: Configurar MPLS OSPF SVI ROUTE-MAP
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP en CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -258,7 +258,7 @@
         - "'not found' in vlan_check.stdout[0]"
         - "vrf_check.stdout[0] == ''"
 
-    - name: Configurar MPLS OSPF SVI ROUTE-MAP
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP en CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -304,7 +304,7 @@
         - "vrf_check.stdout[0] == ''"
 
 
-    - name: Configurar MPLS OSPF SVI ROUTE-MAP
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
           - configure terminal
@@ -341,7 +341,7 @@
       when: site == 'AMU' and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
 
         
-    - name: Configurar MPLS OSPF SVI ROUTE-MAP
+    - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
         commands:
           - configure terminal
