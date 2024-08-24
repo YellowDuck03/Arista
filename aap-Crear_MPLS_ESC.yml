@@ -256,6 +256,7 @@
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
         - "'not found' in vlan_check.stdout[0]"
+        - "'' in vrf_check.stdout[0]"
 
     - name: Configurar MPLS OSPF SVI ROUTE-MAP
       arista.eos.eos_command:
@@ -300,7 +301,7 @@
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
         - "'not found' in vlan_check.stdout[0]"
-
+        - "'' in vrf_check.stdout[0]"
 
 
     - name: Configurar MPLS OSPF SVI ROUTE-MAP
