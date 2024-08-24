@@ -260,7 +260,7 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-
+        - po_check_cdlv_a.stdout[0] == ''       
         
         
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en CDLV-212-G32-UR29-BLEAF-B
@@ -310,6 +310,7 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
+        - po_check_cdlv_b.stdout[0] == '' 
 
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
