@@ -262,7 +262,7 @@
            routemap_check.stdout = {{ routemap_check.stdout }},
            routemap_check_resp.stdout = {{ routemap_check_resp.stdout }},
            po_check_cdlv_a.stdout = {{ po_check_amu_b.stdout }}
-      when: task_result is failed
+      when: task_result.skipped or task_result.failed
       
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -330,7 +330,7 @@
            routemap_check.stdout = {{ routemap_check.stdout }},
            routemap_check_resp.stdout = {{ routemap_check_resp.stdout }},
            po_check_cdlv_b.stdout = {{ po_check_amu_b.stdout }}
-      when: task_result is failed
+      when: task_result.skipped or task_result.failed
           
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -395,7 +395,7 @@
            routemap_check.stdout = {{ routemap_check.stdout }},
            routemap_check_resp.stdout = {{ routemap_check_resp.stdout }},
            po_check_amu_a.stdout = {{ po_check_amu_b.stdout }}
-      when: task_result is failed
+      when: task_result.skipped or task_result.failed
   
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -464,7 +464,7 @@
            routemap_check.stdout = {{ routemap_check.stdout }},
            routemap_check_resp.stdout = {{ routemap_check_resp.stdout }},
            po_check_amu_b.stdout = {{ po_check_amu_b.stdout }}
-      when: task_result is failed
+      when: task_result.skipped or task_result.failed
       
 
     - name: Guardar cambios
