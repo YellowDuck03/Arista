@@ -225,7 +225,7 @@
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
           - router-id {{ first_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
-          - network {{ network }} area {{ area }}
+          - network {{ segmento }} area {{ area }}
           
           - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
@@ -280,7 +280,7 @@
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
           - router-id {{ second_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
-          - network {{ network }} area {{ area }}
+          - network {{ segmento }} area {{ area }}
           
           - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
@@ -334,7 +334,7 @@
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
           - router-id {{ first_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
-          - network {{ network }} area {{ area }}
+          - network {{ segmento }} area {{ area }}
           
           - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
@@ -390,7 +390,7 @@
           - router ospf {{ ospf_process_id }} vrf {{ vrf_name }}
           - router-id {{ second_ip }}
           - redistribute bgp route-map {{ vrf_name }}-TO-OSPF
-          - network {{ network }} area {{ area }}
+          - network {{ segmento }} area {{ area }}
           
           - interface vlan {{ vlan_id }}
           - description INTER-RED-TDS-{{ vrf_name }}
