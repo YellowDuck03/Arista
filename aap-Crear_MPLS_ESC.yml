@@ -250,21 +250,7 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_cdlv_a.stdout[0] == ''       
       changed_when: true
-      register: task_result
-      ignore_errors: true
-    - name: Mostrar mensaje de debug si la tarea fue omitida o fallida
-      debug:
-        msg: >
-         La tarea no se ejecutó porque:
-         site = {{ site | default('no definido') }},
-         inventory_hostname = {{ inventory_hostname | default('no definido') }},
-         vlan_check.stdout = {{ vlan_check.stdout | default('no definido') }},
-         vrf_check.stdout = {{ vrf_check.stdout | default('no definido') }},
-         prefix_check.stdout = {{ prefix_check.stdout | default('no definido') }},
-         routemap_check.stdout = {{ routemap_check.stdout | default('no definido') }},
-         routemap_check_resp.stdout = {{ routemap_check_resp.stdout | default('no definido') }},
-         po_check_amu_b.stdout = {{ po_check_amu_b.stdout | default('no definido') }}
-      when: task_result is not defined or task_result.skipped or task_result.failed
+     
       
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -320,21 +306,7 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_cdlv_b.stdout[0] == '' 
       changed_when: true
-      register: task_result
-      ignore_errors: true
-    - name: Mostrar mensaje de debug si no se cumplen las condiciones
-      debug:
-         msg: >
-          La tarea no se ejecutó porque:
-          site = {{ site | default('no definido') }},
-          inventory_hostname = {{ inventory_hostname | default('no definido') }},
-          vlan_check.stdout = {{ vlan_check.stdout | default('no definido') }},
-          vrf_check.stdout = {{ vrf_check.stdout | default('no definido') }},
-          prefix_check.stdout = {{ prefix_check.stdout | default('no definido') }},
-          routemap_check.stdout = {{ routemap_check.stdout | default('no definido') }},
-          routemap_check_resp.stdout = {{ routemap_check_resp.stdout | default('no definido') }},
-          po_check_amu_b.stdout = {{ po_check_amu_b.stdout | default('no definido') }}
-      when: task_result is not defined or task_result.skipped or task_result.failed
+      
           
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -387,21 +359,7 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_amu_a.stdout[0] == ''       
       changed_when: true
-      register: task_result
-      ignore_errors: true
-    - name: Mostrar mensaje de debug si no se cumplen las condiciones
-      debug:
-         msg: >
-           La tarea no se ejecutó porque:
-           site = {{ site }},
-           inventory_hostname = {{ inventory_hostname }},
-           vlan_check.stdout = {{ vlan_check.stdout }},
-           vrf_check.stdout = {{ vrf_check.stdout }},
-           prefix_check.stdout = {{ prefix_check.stdout }},
-           routemap_check.stdout = {{ routemap_check.stdout }},
-           routemap_check_resp.stdout = {{ routemap_check_resp.stdout }},
-           po_check_amu_a.stdout = {{ po_check_amu_b.stdout }}
-      when: task_result.skipped or task_result.failed
+      
   
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -458,21 +416,6 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_amu_b.stdout[0] == ''   
       changed_when: true
-      register: task_result
-      ignore_errors: true
-    - name: Mostrar mensaje de debug si no se cumplen las condiciones
-      debug:
-         msg: >
-           La tarea no se ejecutó porque:
-           site = {{ site }},
-           inventory_hostname = {{ inventory_hostname }},
-           vlan_check.stdout = {{ vlan_check.stdout }},
-           vrf_check.stdout = {{ vrf_check.stdout }},
-           prefix_check.stdout = {{ prefix_check.stdout }},
-           routemap_check.stdout = {{ routemap_check.stdout }},
-           routemap_check_resp.stdout = {{ routemap_check_resp.stdout }},
-           po_check_amu_b.stdout = {{ po_check_amu_b.stdout }}
-      when: task_result.skipped or task_result.failed
       
 
     - name: Guardar cambios
