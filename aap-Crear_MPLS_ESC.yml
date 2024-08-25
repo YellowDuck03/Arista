@@ -250,7 +250,7 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_cdlv_a.stdout[0] == ''       
       changed_when: true
-     - name: Mostrar mensaje de debug si no se cumplen las condiciones
+    - name: Mostrar mensaje de debug si no se cumplen las condiciones
        debug:
          msg: >
            La tarea no se ejecutó porque:
@@ -318,7 +318,7 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_cdlv_b.stdout[0] == '' 
       changed_when: true
-      - name: Mostrar mensaje de debug si no se cumplen las condiciones
+    - name: Mostrar mensaje de debug si no se cumplen las condiciones
        debug:
          msg: >
            La tarea no se ejecutó porque:
@@ -383,7 +383,7 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_amu_a.stdout[0] == ''       
       changed_when: true
-      - name: Mostrar mensaje de debug si no se cumplen las condiciones
+    - name: Mostrar mensaje de debug si no se cumplen las condiciones
        debug:
          msg: >
            La tarea no se ejecutó porque:
@@ -452,7 +452,7 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_amu_b.stdout[0] == ''   
       changed_when: true
-      - name: Mostrar mensaje de debug si no se cumplen las condiciones
+    - name: Mostrar mensaje de debug si no se cumplen las condiciones
        debug:
          msg: >
            La tarea no se ejecutó porque:
