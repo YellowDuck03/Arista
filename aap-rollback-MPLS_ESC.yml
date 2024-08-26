@@ -2,7 +2,7 @@
   hosts: all
   gather_facts: no
   vars_prompt:
-    - name: job_id
+    - job_id: ""
       prompt: "Por favor, ingresa el ID del job que deseas hacer rollback"
       private: no
 
