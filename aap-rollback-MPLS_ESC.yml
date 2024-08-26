@@ -4,6 +4,9 @@
   
   vars:
     job_id: ""
+    
+   collections:
+    - awx.awx
 
   tasks:
 
