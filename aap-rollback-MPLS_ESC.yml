@@ -1,4 +1,4 @@
-- name: Rollback basado en ID de Job en Ansible Tower usando API
+- name: Rollback basado en ID de Job en Ansible Tower
   hosts: all
   gather_facts: no
   vars_prompt:
@@ -7,20 +7,24 @@
       private: no
 
   tasks:
-    - name: Obtener detalles del job ejecutado desde la API de Tower
-      uri:
-        url: "https://10.47.165.211/api/v2/jobs/{{ job_id }}/"
-        method: GET
-        headers:
-          Authorization: RnyOThGgLKxG8kgrTSTTkgZ1MI3Ysy
-          Content-Type: "application/json"
-        return_content: yes
-        status_code: 200
-      register: job_details_api
+
+    - name: Obtener detalles del job ejecutado
+      awx.awx.tower_job_list:
+        tower_host: "https://10.47.165.211"
+        tower_username: "admin"
+        tower_password: "<redhat>"
+        validate_certs: false
+        id: "{{ job_id }}"
+      register: job_details
+
+    - name: Verificar si el job fue encontrado
+      fail:
+        msg: "El Job con ID {{ job_id }} no fue encontrado."
+      when: job_details.json is not defined
 
     - name: Obtener variables utilizadas en el job
       set_fact:
-        job_vars: "{{ job_details_api.json.extra_vars }}"
+        job_vars: "{{ job_details.json.results[0].extra_vars | from_json }}"
 
     - name: Debug de variables obtenidas del job
       debug:
