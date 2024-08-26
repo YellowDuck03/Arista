@@ -253,7 +253,8 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_cdlv_a.stdout[0] == ''       
       changed_when: true
-     
+      
+
       
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -428,6 +429,17 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_amu_b.stdout[0] == ''   
       changed_when: true
+
+    - name: Registrar configuración realizada en CDLV-212-G31-UR29-BLEAF-A
+      set_fact:
+      configuraciones_realizadas: "{{ configuraciones_realizadas + config_result.commands }}"
+      when: config_result is changed
+
+    - name: Mostrar toda la configuración realizada
+      debug:
+       msg: "Configuraciones realizadas: {{ configuraciones_realizadas }}"
+
+       
       
 
     - name: Guardar cambios
