@@ -1,59 +1,63 @@
-- name: Rollback basado en ID de Job en Ansible Tower
-  hosts: all
+---
+- name: Eliminar configuración de MORADO basada en show run para Arista
+  hosts: switches
   gather_facts: no
-  
-  vars:
-    job_id: ""
-    
-   collections:
-    - awx.awx
-
   tasks:
-
-    - name: Obtener detalles del job ejecutado
-      awx.awx.tower_job_list:
-        tower_host: "https://10.47.165.211"
-        tower_username: "admin"
-        tower_password: "<redhat>"
-        validate_certs: false
-        id: "{{ job_id }}"
-      register: job_details
-      failed_when: job_details.json.results | length == 0
-
-    - name: Verificar si el job fue encontrado
-      fail:
-        msg: "El Job con ID {{ job_id }} no fue encontrado."
-      when: job_details.json.results | length == 0
-
-    - name: Obtener variables utilizadas en el job
-      set_fact:
-        job_vars: "{{ job_details.json.results[0].extra_vars | from_json }}"
-
-    - name: Debug de variables obtenidas del job
-      debug:
-        var: job_vars
-
-    - name: Eliminar configuraciones de BGP, OSPF, SVI, Route-map en equipo {{ inventory_hostname }}
-      arista.eos.eos_command:
+    - name: Obtener la configuración de la sección MORADO
+      eos_command:
         commands:
-          - configure terminal
-          - no router bgp {{ job_vars.equipos_config[inventory_hostname].bgp_asn }} vrf {{ job_vars.vrf_name }}
-          - no router ospf vrf {{ job_vars.vrf_name }}
-          - no route-map {{ job_vars.vrf_name }}-TO-OSPF
-          - no ip prefix-list {{ job_vars.vrf_name }}-ESC-TO-BGP-IN
-          - no vlan {{ job_vars.vlan_id }}
-          - no vrf instance {{ job_vars.vrf_name }}
-          - interface {{ job_vars.equipos_config[inventory_hostname].id_po }}{{ job_vars.vlan_id }}
-          - no ip address
-          - no shutdown
-          - default interface {{ job_vars.equipos_config[inventory_hostname].id_po }}{{ job_vars.vlan_id }}
-          - interface vlan {{ job_vars.vlan_id }}
-          - no ip address
-          - no vrf {{ job_vars.vrf_name }}
-          - shutdown
-          - default interface vlan {{ job_vars.vlan_id }}
-          - no interface vlan {{ job_vars.vlan_id }}
-          - write memory
-      when: 
-        - job_vars.site == 'AMU' and inventory_hostname in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
-        - job_vars.site == 'CDLV' and inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
+          - show running-config section morado
+      register: morado_config
+
+    - name: Extraer VLAN ID
+      set_fact:
+        vlan_id: "{{ morado_config.stdout[0] | regex_search('vlan (\\d+)', '\\1') }}"
+
+    - name: Extraer VRF name
+      set_fact:
+        vrf_name: "{{ morado_config.stdout[0] | regex_search('vrf instance (\\S+)', '\\1') }}"
+
+    - name: Extraer Port-Channel
+      set_fact:
+        port_channel: "{{ morado_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
+
+    - name: Extraer VLAN interface
+      set_fact:
+        vlan_interface: "{{ morado_config.stdout[0] | regex_search('interface Vlan(\\d+)', 'Vlan\\1') }}"
+
+    - name: Extraer prefix-list name
+      set_fact:
+        prefix_list: "{{ morado_config.stdout[0] | regex_search('ip prefix-list (\\S+)', '\\1') }}"
+
+    - name: Extraer route-map name
+      set_fact:
+        route_map: "{{ morado_config.stdout[0] | regex_search('route-map (\\S+)', '\\1') }}"
+
+    - name: Eliminar toda la configuración de MORADO
+      eos_config:
+        lines:
+          - "no vlan {{ vlan_id }}"
+          - "no vrf definition {{ vrf_name }}"
+          - "interface {{ port_channel }}"
+          - "  no vrf forwarding {{ vrf_name }}"
+          - "  no description"
+          - "  no interface {{ port_channel }}"
+          - "interface {{ vlan_interface }}"
+          - "  no vrf forwarding {{ vrf_name }}"
+          - "  no description"
+          - "  no interface {{ vlan_interface }}"
+          - "no ip routing vrf {{ vrf_name }}"
+          - "no ip prefix-list {{ prefix_list }} seq 10 permit 10.200.0.0/24"
+          - "no route-map {{ route_map }} permit 10"
+          - "router bgp 65121"
+          - "  no vrf {{ vrf_name }}"
+          - "  no neighbor 169.254.196.17 remote-as 27651"
+          - "  no network 192.168.100.0/24"
+          - "  no address-family ipv4"
+          - "router ospf 3 vrf {{ vrf_name }}"
+          - "  no router-id 10.20.20.1"
+          - "  no redistribute bgp route-map {{ route_map }}"
+          - "  no network 10.20.20.0/29 area 0.0.0.0"
+          - "  no max-lsa 12000"
+        save_when: modified
+
