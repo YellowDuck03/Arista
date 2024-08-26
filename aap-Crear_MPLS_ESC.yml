@@ -11,6 +11,7 @@
     network: ""
     prefix_in: ""
     area: "0.0.0.0"
+    configuraciones_realizadas: []  # Variable para almacenar las configuraciones
     equipos_config:
       AMU-P5-E4-UR29-BLEAF-A:
         bgp_asn: "65021"
@@ -253,7 +254,12 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_cdlv_a.stdout[0] == ''       
       changed_when: true
-      
+      register: config_result_1
+
+    - name: Registrar configuración realizada en CDLV-212-G31-UR29-BLEAF-A
+      set_fact:
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_1.commands }}"
+      when: config_result_1 is changed
 
       
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en CDLV-212-G32-UR29-BLEAF-B
@@ -313,7 +319,12 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_cdlv_b.stdout[0] == '' 
       changed_when: true
-      
+      register: config_result_2
+
+    - name: Registrar configuración realizada en CDLV-212-G32-UR29-BLEAF-B
+      set_fact:
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_2.commands }}"
+      when: config_result_2 is changed
           
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -369,7 +380,12 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_amu_a.stdout[0] == ''       
       changed_when: true
-      
+      register: config_result_3
+
+    - name: Registrar configuración realizada en AMU-P5-E4-UR29-BLEAF-A
+      set_fact:
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_3.commands }}"
+      when: config_result_3 is changed
   
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
@@ -429,19 +445,19 @@
         - routemap_check_resp.stdout[0] == ''
         - po_check_amu_b.stdout[0] == ''   
       changed_when: true
+      register: config_result_4
 
-    - name: Registrar configuración realizada en CDLV-212-G31-UR29-BLEAF-A
+    - name: Registrar configuración realizada en AMU-P5-E3-UR29-BLEAF-B
       set_fact:
-      configuraciones_realizadas: "{{ configuraciones_realizadas + config_result.commands }}"
-      when: config_result is changed
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_4.commands }}"
+      when: config_result_3 is changed
 
     - name: Mostrar toda la configuración realizada
       debug:
-       msg: "Configuraciones realizadas: {{ configuraciones_realizadas }}"
+        msg: "Configuraciones realizadas: {{ configuraciones_realizadas }}"
 
-       
-      
 
+    
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
