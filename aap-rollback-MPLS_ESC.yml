@@ -1,63 +1,61 @@
 ---
-- name: Eliminar configuración de MORADO basada en show run para Arista
+- name: rollback de configuracion CREAR_MPLS_ESC
   hosts: switches
   gather_facts: no
+  
+  vars:
+    vrf: ""
+  
   tasks:
-    - name: Obtener la configuración de la sección MORADO
+    - name: Obtener la configuración 
       eos_command:
         commands:
-          - show running-config section morado
-      register: morado_config
+          - show running-config section {{ vrf_name }}
+      register: vrf_config
 
     - name: Extraer VLAN ID
       set_fact:
-        vlan_id: "{{ morado_config.stdout[0] | regex_search('vlan (\\d+)', '\\1') }}"
+        vlan_id: "{{ vrf_config.stdout[0] | regex_search('vlan (\\d+)', '\\1') }}"
 
     - name: Extraer VRF name
       set_fact:
-        vrf_name: "{{ morado_config.stdout[0] | regex_search('vrf instance (\\S+)', '\\1') }}"
+        vrf_name: "{{ vrf_config.stdout[0] | regex_search('vrf instance (\\S+)', '\\1') }}"
 
     - name: Extraer Port-Channel
       set_fact:
-        port_channel: "{{ morado_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
+        port_channel: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
 
     - name: Extraer VLAN interface
       set_fact:
-        vlan_interface: "{{ morado_config.stdout[0] | regex_search('interface Vlan(\\d+)', 'Vlan\\1') }}"
+        vlan_interface: "{{ vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)', 'Vlan\\1') }}"
 
     - name: Extraer prefix-list name
       set_fact:
-        prefix_list: "{{ morado_config.stdout[0] | regex_search('ip prefix-list (\\S+)', '\\1') }}"
+        prefix_list: "{{ vrf_config.stdout[0] | regex_search('ip prefix-list (\\S+)', '\\1') }}"
 
     - name: Extraer route-map name
       set_fact:
-        route_map: "{{ morado_config.stdout[0] | regex_search('route-map (\\S+)', '\\1') }}"
+        route_map: "{{ vrf_config.stdout[0] | regex_search('route-map (\\S+)', '\\1') }}"
 
-    - name: Eliminar toda la configuración de MORADO
-      eos_config:
-        lines:
-          - "no vlan {{ vlan_id }}"
-          - "no vrf definition {{ vrf_name }}"
-          - "interface {{ port_channel }}"
-          - "  no vrf forwarding {{ vrf_name }}"
-          - "  no description"
-          - "  no interface {{ port_channel }}"
-          - "interface {{ vlan_interface }}"
-          - "  no vrf forwarding {{ vrf_name }}"
-          - "  no description"
-          - "  no interface {{ vlan_interface }}"
-          - "no ip routing vrf {{ vrf_name }}"
-          - "no ip prefix-list {{ prefix_list }} seq 10 permit 10.200.0.0/24"
-          - "no route-map {{ route_map }} permit 10"
-          - "router bgp 65121"
-          - "  no vrf {{ vrf_name }}"
-          - "  no neighbor 169.254.196.17 remote-as 27651"
-          - "  no network 192.168.100.0/24"
-          - "  no address-family ipv4"
-          - "router ospf 3 vrf {{ vrf_name }}"
-          - "  no router-id 10.20.20.1"
-          - "  no redistribute bgp route-map {{ route_map }}"
-          - "  no network 10.20.20.0/29 area 0.0.0.0"
-          - "  no max-lsa 12000"
+    - name: Extraer el ID de OSPF para la VRF
+      set_fact:
+        ospf_id: "{{ vrf_config.stdout[0] | regex_search('router ospf (\\d+) vrf {{ vrf_name }}', '\\1') }}"
+
+    - name: Eliminar toda la configuración 
+      arista.eos.eos_command:
+        commands:
+          - no vlan {{ vlan_id }}
+          - no vrf definition {{ vrf_name }}
+          - no interface {{ port_channel }}
+          - no vrf forwarding {{ vrf_name }}
+          - no interface {{ port_channel }}
+          - no interface {{ vlan_interface }}
+          - no vrf forwarding {{ vrf_name }}
+          - no interface {{ vlan_interface }}
+          - no ip prefix-list {{ prefix_list }} 
+          - no route-map {{ route_map }} p
+          - router bgp 65121
+          - no vrf {{ vrf_name }}
+          - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
         save_when: modified
 
