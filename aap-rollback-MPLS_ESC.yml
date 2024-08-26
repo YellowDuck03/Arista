@@ -1,6 +1,6 @@
 ---
 - name: rollback de configuracion CREAR_MPLS_ESC
-  hosts: switches
+  hosts: all
   gather_facts: no
   
   vars:
