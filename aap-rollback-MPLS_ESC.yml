@@ -4,11 +4,21 @@
   gather_facts: no
   
   vars:
-    vrf: ""
+    vrf_name: ""
   
   tasks:
-    - name: Obtener la configuración 
-      eos_command:
+    - name: Verificar existencia de la VRF
+      arista.eos.eos_command:
+        commands:
+          - show vrf | include {{ vrf_name }}
+      register: vrf_check
+      
+    - name: Debug VRF check
+      debug:
+        var: vrf_check.stdout
+        
+    - name: Obtener la configuración
+      arista.eos.eos_command:
         commands:
           - show running-config section {{ vrf_name }}
       register: vrf_config
@@ -16,10 +26,6 @@
     - name: Extraer VLAN ID
       set_fact:
         vlan_id: "{{ vrf_config.stdout[0] | regex_search('vlan (\\d+)', '\\1') }}"
-
-    - name: Extraer VRF name
-      set_fact:
-        vrf_name: "{{ vrf_config.stdout[0] | regex_search('vrf instance (\\S+)', '\\1') }}"
 
     - name: Extraer Port-Channel
       set_fact:
@@ -42,20 +48,23 @@
         ospf_id: "{{ vrf_config.stdout[0] | regex_search('router ospf (\\d+) vrf {{ vrf_name }}', '\\1') }}"
 
     - name: Eliminar toda la configuración 
+      arista.eos.eos_config:
+        lines:
+          - "no vlan {{ vlan_id }}"
+          - "no vrf definition {{ vrf_name }}"
+          - "no interface {{ port_channel }}"
+          - "no interface {{ vlan_interface }}"
+          - "no ip prefix-list {{ prefix_list }}"
+          - "no route-map {{ route_map }}"
+          - "router bgp 65121"
+          - "no vrf {{ vrf_name }}"
+          - "no router ospf {{ ospf_id }} vrf {{ vrf_name }}"
+      when: 
+       - vrf_check.stdout[0] != ''
+      changed_when: true
+      
+    - name: Guardar cambios
       arista.eos.eos_command:
         commands:
-          - no vlan {{ vlan_id }}
-          - no vrf definition {{ vrf_name }}
-          - no interface {{ port_channel }}
-          - no vrf forwarding {{ vrf_name }}
-          - no interface {{ port_channel }}
-          - no interface {{ vlan_interface }}
-          - no vrf forwarding {{ vrf_name }}
-          - no interface {{ vlan_interface }}
-          - no ip prefix-list {{ prefix_list }} 
-          - no route-map {{ route_map }} p
-          - router bgp 65121
-          - no vrf {{ vrf_name }}
-          - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
-        save_when: modified
+          - write memory
 
