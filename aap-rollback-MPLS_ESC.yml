@@ -6,13 +6,14 @@
   vars:
     vrf_name: ""
     site: ""
+  
   tasks:
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
           - show vrf | include {{ vrf_name }}
       register: vrf_check
-      
+
     - name: Debug VRF check
       debug:
         var: vrf_check.stdout
@@ -23,33 +24,65 @@
           - show running-config section {{ vrf_name }}
       register: vrf_config
 
+    - name: Debug VRF config
+      debug:
+        var: vrf_config.stdout
+
     - name: Extraer VLAN ID
       set_fact:
         vlan_id: "{{ vrf_config.stdout[0] | regex_search('vlan (\\d+)', '\\1') }}"
 
-- name: Extraer BGP ID
-  set_fact:
-    bgp_id: "{{ vrf_config.stdout[0] | regex_search('router bgp (\\d+)', '\\1') }}"
+    - name: Debug VLAN ID
+      debug:
+        var: vlan_id
+
+    - name: Extraer BGP ID
+      set_fact:
+        bgp_id: "{{ vrf_config.stdout[0] | regex_search('router bgp (\\d+)', '\\1') }}"
     
+    - name: Debug BGP ID
+      debug:
+        var: bgp_id
+
     - name: Extraer Port-Channel
       set_fact:
         port_channel: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
+
+    - name: Debug Port-Channel
+      debug:
+        var: port_channel
 
     - name: Extraer VLAN interface
       set_fact:
         vlan_interface: "{{ vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)', 'Vlan\\1') }}"
 
+    - name: Debug VLAN interface
+      debug:
+        var: vlan_interface
+
     - name: Extraer prefix-list name
       set_fact:
         prefix_list: "{{ vrf_config.stdout[0] | regex_search('ip prefix-list (\\S+)', '\\1') }}"
+
+    - name: Debug prefix-list name
+      debug:
+        var: prefix_list
 
     - name: Extraer route-map name
       set_fact:
         route_map: "{{ vrf_config.stdout[0] | regex_search('route-map (\\S+)', '\\1') }}"
 
+    - name: Debug route-map name
+      debug:
+        var: route_map
+
     - name: Extraer el ID de OSPF para la VRF
       set_fact:
         ospf_id: "{{ vrf_config.stdout[0] | regex_search('router ospf (\\d+) vrf {{ vrf_name }}', '\\1') }}"
+
+    - name: Debug OSPF ID
+      debug:
+        var: ospf_id
 
     - name: Eliminar toda la configuración para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
@@ -60,14 +93,17 @@
           - no interface {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
-          - router {{ bgp bgp_id }}
-          - no vrf {{ vrf_name }}
+          - no router bgp {{ bgp_id }}
           - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
       when: 
        - vrf_check.stdout[0] != ''
        - site == 'CDLV' 
        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
       changed_when: true
+
+    - name: Debug eliminación configuración CDLV-212-G31-UR29-BLEAF-A
+      debug:
+        msg: "Configuración eliminada para CDLV-212-G31-UR29-BLEAF-A"
 
     - name: Eliminar toda la configuración para CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_config:
@@ -78,8 +114,7 @@
           - no interface {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
-          - router {{ bgp bgp_id }}
-          - no vrf {{ vrf_name }}
+          - no router bgp {{ bgp_id }}
           - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
       when: 
        - vrf_check.stdout[0] != ''
@@ -87,6 +122,9 @@
        - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
       changed_when: true
 
+    - name: Debug eliminación configuración CDLV-212-G32-UR29-BLEAF-B
+      debug:
+        msg: "Configuración eliminada para CDLV-212-G32-UR29-BLEAF-B"
 
     - name: Eliminar toda la configuración para AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_config:
@@ -97,8 +135,7 @@
           - no interface {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
-          - router {{ bgp bgp_id }}
-          - no vrf {{ vrf_name }}
+          - no router bgp {{ bgp_id }}
           - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
       when: 
        - vrf_check.stdout[0] != ''
@@ -106,27 +143,37 @@
        - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
       changed_when: true
 
+    - name: Debug eliminación configuración AMU-P5-E4-UR29-BLEAF-A
+      debug:
+        msg: "Configuración eliminada para AMU-P5-E4-UR29-BLEAF-A"
+
     - name: Eliminar toda la configuración para AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_config:
-        lines:
+        commands:
           - no vlan {{ vlan_id }}
           - no vrf definition {{ vrf_name }}
           - no interface {{ port_channel }}
           - no interface {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
-          - router {{ bgp bgp_id }}
-          - no vrf {{ vrf_name }}
+          - no router bgp {{ bgp_id }}
           - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
       when: 
        - vrf_check.stdout[0] != ''
        - site == 'AMU' 
        - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
       changed_when: true
+
+    - name: Debug eliminación configuración AMU-P5-E3-UR29-BLEAF-B
+      debug:
+        msg: "Configuración eliminada para AMU-P5-E3-UR29-BLEAF-B"
     
-      
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
+
+    - name: Debug guardado de cambios
+      debug:
+        msg: "Cambios guardados en el dispositivo."
 
