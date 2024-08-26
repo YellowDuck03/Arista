@@ -1,10 +1,9 @@
 - name: Rollback basado en ID de Job en Ansible Tower
   hosts: all
   gather_facts: no
-  vars_prompt:
-    - job_id: ""
-      prompt: "Por favor, ingresa el ID del job que deseas hacer rollback"
-      private: no
+  
+  vars:
+    job_id: ""
 
   tasks:
 
