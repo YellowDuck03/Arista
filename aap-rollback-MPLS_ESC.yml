@@ -5,7 +5,7 @@
   
   vars:
     vrf_name: ""
-  
+    site: ""
   tasks:
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
@@ -27,6 +27,10 @@
       set_fact:
         vlan_id: "{{ vrf_config.stdout[0] | regex_search('vlan (\\d+)', '\\1') }}"
 
+- name: Extraer BGP ID
+  set_fact:
+    bgp_id: "{{ vrf_config.stdout[0] | regex_search('router bgp (\\d+)', '\\1') }}"
+    
     - name: Extraer Port-Channel
       set_fact:
         port_channel: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
@@ -47,21 +51,79 @@
       set_fact:
         ospf_id: "{{ vrf_config.stdout[0] | regex_search('router ospf (\\d+) vrf {{ vrf_name }}', '\\1') }}"
 
-    - name: Eliminar toda la configuración 
+    - name: Eliminar toda la configuración para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
-        lines:
-          - "no vlan {{ vlan_id }}"
-          - "no vrf definition {{ vrf_name }}"
-          - "no interface {{ port_channel }}"
-          - "no interface {{ vlan_interface }}"
-          - "no ip prefix-list {{ prefix_list }}"
-          - "no route-map {{ route_map }}"
-          - "router bgp 65121"
-          - "no vrf {{ vrf_name }}"
-          - "no router ospf {{ ospf_id }} vrf {{ vrf_name }}"
+        commands:
+          - no vlan {{ vlan_id }}
+          - no vrf definition {{ vrf_name }}
+          - no interface {{ port_channel }}
+          - no interface {{ vlan_interface }}
+          - no ip prefix-list {{ prefix_list }}
+          - no route-map {{ route_map }}
+          - router {{ bgp bgp_id }}
+          - no vrf {{ vrf_name }}
+          - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
       when: 
        - vrf_check.stdout[0] != ''
+       - site == 'CDLV' 
+       - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
       changed_when: true
+
+    - name: Eliminar toda la configuración para CDLV-212-G32-UR29-BLEAF-B
+      arista.eos.eos_config:
+        commands:
+          - no vlan {{ vlan_id }}
+          - no vrf definition {{ vrf_name }}
+          - no interface {{ port_channel }}
+          - no interface {{ vlan_interface }}
+          - no ip prefix-list {{ prefix_list }}
+          - no route-map {{ route_map }}
+          - router {{ bgp bgp_id }}
+          - no vrf {{ vrf_name }}
+          - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
+      when: 
+       - vrf_check.stdout[0] != ''
+       - site == 'CDLV' 
+       - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+      changed_when: true
+
+
+    - name: Eliminar toda la configuración para AMU-P5-E4-UR29-BLEAF-A
+      arista.eos.eos_config:
+        commands:
+          - no vlan {{ vlan_id }}
+          - no vrf definition {{ vrf_name }}
+          - no interface {{ port_channel }}
+          - no interface {{ vlan_interface }}
+          - no ip prefix-list {{ prefix_list }}
+          - no route-map {{ route_map }}
+          - router {{ bgp bgp_id }}
+          - no vrf {{ vrf_name }}
+          - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
+      when: 
+       - vrf_check.stdout[0] != ''
+       - site == 'AMU' 
+       - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+      changed_when: true
+
+    - name: Eliminar toda la configuración para AMU-P5-E3-UR29-BLEAF-B
+      arista.eos.eos_config:
+        lines:
+          - no vlan {{ vlan_id }}
+          - no vrf definition {{ vrf_name }}
+          - no interface {{ port_channel }}
+          - no interface {{ vlan_interface }}
+          - no ip prefix-list {{ prefix_list }}
+          - no route-map {{ route_map }}
+          - router {{ bgp bgp_id }}
+          - no vrf {{ vrf_name }}
+          - no router ospf {{ ospf_id }} vrf {{ vrf_name }}
+      when: 
+       - vrf_check.stdout[0] != ''
+       - site == 'AMU' 
+       - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+      changed_when: true
+    
       
     - name: Guardar cambios
       arista.eos.eos_command:
