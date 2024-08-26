@@ -258,7 +258,7 @@
 
     - name: Registrar configuración realizada en CDLV-212-G31-UR29-BLEAF-A
       set_fact:
-        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_1.commands }}"
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_1.stdout }}"
       when: config_result_1 is changed
 
       
@@ -323,7 +323,7 @@
 
     - name: Registrar configuración realizada en CDLV-212-G32-UR29-BLEAF-B
       set_fact:
-        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_2.commands }}"
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_2.stdout }}"
       when: config_result_2 is changed
           
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E4-UR29-BLEAF-A
@@ -384,7 +384,7 @@
 
     - name: Registrar configuración realizada en AMU-P5-E4-UR29-BLEAF-A
       set_fact:
-        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_3.commands }}"
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_3.stdout }}"
       when: config_result_3 is changed
   
     - name: Configurar MPLS OSPF SVI ROUTE-MAP en AMU-P5-E3-UR29-BLEAF-B
@@ -449,7 +449,7 @@
 
     - name: Registrar configuración realizada en AMU-P5-E3-UR29-BLEAF-B
       set_fact:
-        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_4.commands }}"
+        configuraciones_realizadas: "{{ configuraciones_realizadas + config_result_4.stdout }}"
       when: config_result_3 is changed
 
     - name: Mostrar toda la configuración realizada
