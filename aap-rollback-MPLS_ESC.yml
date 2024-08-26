@@ -1,134 +1,46 @@
-- name: Configurar BGP en el dispositivo Arista CDLV
+- name: Rollback basado en ID de Job en Ansible Tower
   hosts: all
   gather_facts: no
-
-  vars:
-    vrf_name: "" 
-    equipo: ""
-    bgp_asn: ""
-    neighbor_ip: ""           
-    router_id: "" 
-    network: ""               
-    filtro_in_bgp: ""
-    equipos_config:
-      AMU-P5-E4-UR29-BLEAF-A:
-        bgp_asn: "65021"
-        neighbor_ip: "169.254.196.9"
-        router_id: "169.254.196.9"
-      AMU-P5-E3-UR29-BLEAF-B:
-        bgp_asn: "65021"
-        neighbor_ip: "169.254.196.13"
-        router_id: "169.254.196.13"
-      CDLV-212-G31-UR29-BLEAF-A:
-        bgp_asn: "65121"
-        neighbor_ip: "169.254.196.17"
-        router_id: "169.254.196.17"
-      CDLV-212-G32-UR29-BLEAF-B:
-        bgp_asn: "65121"
-        neighbor_ip: "169.254.196.21"
-        router_id: "169.254.196.21"
+  vars_prompt:
+    - name: job_id
+      private: no
 
   tasks:
-    - name: Depurar valor de equipos
-      debug:
-        msg: "Valores de equipos: '{{ equipo }}'"
 
-    - name: Asignar valores según equipos seleccionados
+    - name: Obtener detalles del job ejecutado
+      awx.awx.tower_job_list:
+        id: "{{ job_id }}"
+      register: job_details
+
+    - name: Obtener variables utilizadas en el job
       set_fact:
-        bgp_asn: "{{ equipos_config[item].bgp_asn }}"
-        neighbor_ip: "{{ equipos_config[item].neighbor_ip }}"
-        router_id: "{{ equipos_config[item].router_id }}"
-      with_items: "{{ equipo }}"
-      when: item in equipos_config
+        job_vars: "{{ job_details.json.extra_vars }}"
 
-    - name: Debug Asignar bgp_asn, neighbor_ip y router_id
+    - name: Debug de variables obtenidas del job
       debug:
-        msg: 
-          - "ASN BGP asignado: {{ bgp_asn }}"
-          - "IP del vecino BGP asignada: {{ neighbor_ip }}"
-          - "IP del ID BGP asignada: {{ router_id }}"
+        var: job_vars
 
-    - name: Verificar existencia de la VRF
-      arista.eos.eos_command:
-        commands:
-          - show vrf
-      register: vrf_config
-
-    - name: Debug Verificar existencia de la VRF
-      debug:
-        msg: "Resultado de la verificación de la VRF: {{ vrf_config.stdout }}"
-
-    - name: Verificar existencia de la prefix-list
-      arista.eos.eos_command:
-        commands:
-          - show running-config section ip prefix-list
-      register: prefix_list_config
-
-    - name: Debug Verificar existencia de la prefix-list
-      debug:
-        msg: "Resultado de la verificación de la prefix-list: {{ prefix_list_config.stdout }}"
-
-    - name: Validar si la VRF existe
-      set_fact:
-        vrf_exists: "{{ vrf_name in vrf_config.stdout[0] }}"
-
-    - name: Debug Validar si la VRF existe
-      debug:
-        msg: "La VRF '{{ vrf_name }}' existe: {{ vrf_exists }}"
-
-    - name: Validar si la prefix-list existe
-      set_fact:
-        prefix_list_exists: "{{ ('ip prefix-list ' ~ filtro_in_bgp) in prefix_list_config.stdout[0] }}"
-
-    - name: Debug Validar si la prefix-list existe
-      debug:
-        msg: "El prefix-list '{{ filtro_in_bgp }}' existe: {{ prefix_list_exists }}"
-
-    - name: Verificar vecinos BGP existentes
-      arista.eos.eos_command:
-        commands:
-          - show running-config section bgp | sec vrf {{ vrf_name }}
-      register: bgp_running_config
-
-    - name: Debug Verificar vecinos BGP existentes
-      debug:
-        msg: "Configuración BGP actual: {{ bgp_running_config.stdout }}"
-
-    - name: Validar si el vecino BGP ya existe
-      set_fact:
-        neighbor_exists: "{{ neighbor_ip in bgp_running_config.stdout[0] }}"
-
-    - name: Debug Validar si el vecino BGP ya existe
-      debug:
-        msg: "El vecino BGP '{{ neighbor_ip }}' ya existe: {{ neighbor_exists }}"
-
-    - name: Configurar BGP solo si existen la VRF, la prefix-list y el vecino no existe
+    - name: Eliminar configuraciones de BGP, OSPF, SVI, Route-map en equipo {{ inventory_hostname }}
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - router bgp {{ bgp_asn }}
-          - vrf {{ vrf_name }}
-          - router-id {{ router_id }}
-          - neighbor {{ neighbor_ip }} remote-as 27651
-          - network {{ network }}
-          - address-family ipv4
-          - neighbor {{ neighbor_ip }} prefix-list {{ filtro_in_bgp }} in
-      register: bgp_config_result
-      when: vrf_exists and prefix_list_exists and not neighbor_exists
-      changed_when: true
-
-    - name: Debug Configurar BGP
-      debug:
-        msg: "Resultado de la configuración de BGP: {{ bgp_config_result }}"
-      when: vrf_exists and prefix_list_exists and not neighbor_exists
-
-    - name: Guardar cambios
-      arista.eos.eos_command:
-        commands:
+          - no router bgp {{ job_vars.equipos_config[inventory_hostname].bgp_asn }} vrf {{ job_vars.vrf_name }}
+          - no router ospf vrf {{ job_vars.vrf_name }}
+          - no route-map {{ job_vars.vrf_name }}-TO-OSPF
+          - no ip prefix-list {{ job_vars.vrf_name }}-ESC-TO-BGP-IN
+          - no vlan {{ job_vars.vlan_id }}
+          - no vrf instance {{ job_vars.vrf_name }}
+          - interface {{ job_vars.equipos_config[inventory_hostname].id_po }}{{ job_vars.vlan_id }}
+          - no ip address
+          - no shutdown
+          - default interface {{ job_vars.equipos_config[inventory_hostname].id_po }}{{ job_vars.vlan_id }}
+          - interface vlan {{ job_vars.vlan_id }}
+          - no ip address
+          - no vrf {{ job_vars.vrf_name }}
+          - shutdown
+          - default interface vlan {{ job_vars.vlan_id }}
+          - no interface vlan {{ job_vars.vlan_id }}
           - write memory
-      when: vrf_exists and prefix_list_exists and not neighbor_exists
-
-    - name: Debug Guardar cambios
-      debug:
-        msg: "Cambios guardados en la configuración."
-      when: vrf_exists and prefix_list_exists and not neighbor_exists
+      when: 
+        - job_vars.site == 'AMU' and (inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')
+        - job_vars.site == 'CDLV' and (inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')
