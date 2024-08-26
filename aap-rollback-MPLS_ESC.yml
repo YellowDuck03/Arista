@@ -15,11 +15,12 @@
         validate_certs: false
         id: "{{ job_id }}"
       register: job_details
+      failed_when: job_details.json.results | length == 0
 
     - name: Verificar si el job fue encontrado
       fail:
         msg: "El Job con ID {{ job_id }} no fue encontrado."
-      when: job_details.json is not defined
+      when: job_details.json.results | length == 0
 
     - name: Obtener variables utilizadas en el job
       set_fact:
@@ -51,5 +52,5 @@
           - no interface vlan {{ job_vars.vlan_id }}
           - write memory
       when: 
-        - job_vars.site == 'AMU' and (inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')
-        - job_vars.site == 'CDLV' and (inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')
+        - job_vars.site == 'AMU' and inventory_hostname in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
+        - job_vars.site == 'CDLV' and inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
