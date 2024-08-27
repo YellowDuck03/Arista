@@ -87,6 +87,7 @@
     - name: Eliminar toda la configuración para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
         commands:
+          - configure terminal
           - no vlan {{ vlan_id }}
           - no vrf definition {{ vrf_name }}
           - no interface {{ port_channel }}
