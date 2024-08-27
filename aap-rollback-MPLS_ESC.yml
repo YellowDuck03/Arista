@@ -54,7 +54,7 @@
 
     - name: Extraer VLAN interface
       set_fact:
-       vlan_interface: "{{ vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)') | first | default('') }}"
+       vlan_interface: "{{ (vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)')) | first | default('') }}"
 
     - name: Debug VLAN interface
       debug:
