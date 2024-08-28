@@ -21,20 +21,12 @@
     - name: Obtener la configuración
       arista.eos.eos_command:
         commands:
-          - show running-config section {{ vrf_name }}
+          - show running-config section vrf {{ vrf_name }}
       register: vrf_config
 
     - name: Debug VRF config
       debug:
         var: vrf_config.stdout
-
-    - name: Extraer VLAN ID
-      set_fact:
-        vlan_id: "{{ (vrf_config.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | default('') | join('') }}"
-
-    - name: Debug VLAN ID
-      debug:
-        var: vlan_id
 
     - name: Extraer BGP ID
       set_fact:
@@ -94,7 +86,7 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
-          - no vlan {{ vlan_id }}
+          - no vlan {{ vlan_interface }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
           - no interface vlan {{ vlan_interface }}
@@ -116,7 +108,7 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
-          - no vlan {{ vlan_id }}
+          - no vlan {{ vlan_interface }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
           - no interface vlan {{ vlan_interface }}
@@ -138,7 +130,7 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
-          - no vlan {{ vlan_id }}
+          - no vlan {{ vlan_interface }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
           - no interface vlan {{ vlan_interface }}
@@ -160,7 +152,7 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
-          - no vlan {{ vlan_id }}
+          - no vlan {{ vlan_interface }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
           - no interface vlan {{ vlan_interface }}
