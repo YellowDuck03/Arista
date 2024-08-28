@@ -72,6 +72,8 @@
           - configure terminal
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
+          - router bgp 65121 
+          - no vrf {{ vrf_name }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
@@ -95,6 +97,8 @@
           - configure terminal
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
+          - router bgp 65121 
+          - no vrf {{ vrf_name }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
