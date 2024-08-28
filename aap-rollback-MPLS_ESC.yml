@@ -63,7 +63,7 @@
 
     - name: Mostrar la instancia de OSPF extraída
       debug:
-      msg: "Instancia de OSPF: {{ ospf_instance_id }}"
+        msg: "Instancia de OSPF: {{ ospf_instance_id }}"
 
 
     - name: Eliminar toda la configuración para CDLV-212-G31-UR29-BLEAF-A
