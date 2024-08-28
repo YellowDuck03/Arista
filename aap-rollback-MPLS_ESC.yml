@@ -46,7 +46,8 @@
 
     - name: Extraer Port-Channel 
       set_fact:
-        port_channel: "{{ vrf_config.stdout[0] | regex_search('interface Port-Channel(\\d+\\.\\d+)', '\\1') | default('') | join('') }}"
+        port_channel: "{{ (vrf_config.stdout[0] | regex_search('interface Port-Channel(\\d+\\.\\d+)') | default('')) | string }}"
+        
 
     - name: Debug  Port-Channel 
       debug:
