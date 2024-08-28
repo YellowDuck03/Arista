@@ -48,8 +48,8 @@
       set_fact:
         port_channel_raw: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') | default('') }}"
 
-   - name: Convertir Port-Channel a cadena
-     set_fact:
+    - name: Convertir Port-Channel a cadena
+      set_fact:
        port_channel: "{{ port_channel_raw | join('') if port_channel_raw else '' }}"
 
     - name: Debug Port-Channel
