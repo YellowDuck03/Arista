@@ -71,9 +71,10 @@
         commands:
           - configure terminal
           - router bgp 65121
-          - router bgp 65121
+          - vrf {{ vrf_name }}
+          - address-family ipv4
           - no vrf {{ vrf_name }}
-          - exit
+          
       when: 
           - vrf_check.stdout[0] != ''
           - site == 'CDLV' 
@@ -105,9 +106,9 @@
         commands:
           - configure terminal
           - router bgp 65121
-          - router bgp 65121
-          - no vrf {{ vrf_name }}
-          - exit     
+          - vrf {{ vrf_name }}
+          - address-family ipv4
+          - no vrf {{ vrf_name }}    
       when: 
         - vrf_check.stdout[0] != ''
         - site == 'CDLV' 
