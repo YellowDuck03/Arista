@@ -57,13 +57,17 @@
           - show ip ospf nei vrf {{ vrf_name }}
       register: ospf_output
 
+    - name: Verificar la salida completa del comando OSPF
+      debug:
+      var: ospf_output.stdout
+
     - name: Extraer la instancia de OSPF
       set_fact:
-       ospf_instance: "{{ ospf_output.stdout[0] | regex_search('\\d+\\s+{{ vrf_name }}', '\\d+') }}"
-
+      ospf_instance: "{{ ospf_output.stdout[0] | regex_search('\\d+\\s+{{ vrf_name }}', '\\d+') | default('No encontrado') }}"
+  
     - name: Mostrar la instancia de OSPF extraída
       debug:
-         msg: "Instancia de OSPF: {{ ospf_instance }}"
+      msg: "Instancia de OSPF: {{ ospf_instance }}"
 
 
     - name: Eliminar toda la configuración para CDLV-212-G31-UR29-BLEAF-A
