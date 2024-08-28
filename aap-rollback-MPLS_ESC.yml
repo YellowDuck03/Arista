@@ -54,16 +54,12 @@
     - name: Ejecutar el comando para obtener la información de OSPF
       arista.eos.eos_command:
         commands:
-          - show ip ospf nei vrf {{ vrf_name }}
+          - show ip ospf vrf {{ vrf_name }} | i instance 
       register: ospf_output
-
-    - name: Verificar la salida completa del comando OSPF
-      debug:
-        var: ospf_output.stdout
 
     - name: Extraer la instancia de OSPF
       set_fact:
-       ospf_instance: "{{ (ospf_output.stdout[0] | regex_search('^\\S+\\s+(\\d+)\\s+{{ vrf_name }}', '\\1', multiline=True)) | default('No encontrado') }}"
+       ospf_instance_id: "{{ (ospf_output.stdout[0] | regex_search('OSPF instance \\d+ with ID (\\S+)', '\\1')) | default('No encontrado') }}"
   
     - name: Mostrar la instancia de OSPF extraída
       debug:
