@@ -34,7 +34,7 @@
     - name: Ejecutar el comando para obtener la información de la VRF
       arista.eos.eos_command:
       commands:
-        - show ip route vrf {{ vrf_name }} | i C
+        - show ip route vrf {{ vrf_name }} connected
       register: vrf_output
 
     - name: Extraer la VLAN ID
@@ -137,6 +137,7 @@
           - configure terminal
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
+          - no route-map MPLS-RESPALDO-{{ vrf_name }} 
           - router ospf {{ ospf_instance }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - interface Port-Channel12
