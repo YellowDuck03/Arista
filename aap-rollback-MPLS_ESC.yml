@@ -59,7 +59,7 @@
 
     - name: Verificar la salida completa del comando OSPF
       debug:
-      var: ospf_output.stdout
+        var: ospf_output.stdout
 
     - name: Extraer la instancia de OSPF
       set_fact:
