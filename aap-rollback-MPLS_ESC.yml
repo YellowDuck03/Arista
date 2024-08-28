@@ -30,7 +30,7 @@
 
     - name: Extraer VLAN ID
       set_fact:
-          vlan_id: "{{ (vrf_config.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | default('') }}"
+          vlan_id: "{{ (vrf_config.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | default('') | first }}"
 
     - name: Debug VLAN ID
       debug:
