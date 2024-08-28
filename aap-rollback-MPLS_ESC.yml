@@ -71,6 +71,7 @@
         commands:
           - configure terminal
           - router bgp 65121
+          - router bgp 65121
           - no vrf {{ vrf_name }}
           - exit
       when: 
@@ -103,6 +104,7 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
+          - router bgp 65121
           - router bgp 65121
           - no vrf {{ vrf_name }}
           - exit     
