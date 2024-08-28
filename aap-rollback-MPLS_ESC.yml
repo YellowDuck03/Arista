@@ -70,7 +70,7 @@
       arista.eos.eos_bgp_global:
         asn: 65121
         vrf: "{{ vrf_name }}"
-        state: absent
+        state: deleted
       when: 
           - vrf_check.stdout[0] != ''
           - site == 'CDLV' 
@@ -101,7 +101,7 @@
       arista.eos.eos_bgp_global:
         asn: 65121
         vrf: "{{ vrf_name }}"
-        state: absent      
+        state: deleted      
       when: 
         - vrf_check.stdout[0] != ''
         - site == 'CDLV' 
