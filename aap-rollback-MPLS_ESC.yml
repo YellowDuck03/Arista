@@ -66,7 +66,18 @@
         msg: "Instancia de OSPF: {{ ospf_instance_id }}"
 
 
-    - name: Eliminar toda la configuración para CDLV-212-G31-UR29-BLEAF-A
+    - name: Eliminar configuración BGP para CDLV-212-G31-UR29-BLEAF-A
+      arista.eos.eos_bgp_global:
+        asn: 65121
+        vrf: "{{ vrf_name }}"
+        state: absent
+      when: 
+          - vrf_check.stdout[0] != ''
+          - site == 'CDLV' 
+          - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+      changed_when: true
+
+    - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
         commands:
           - configure terminal
@@ -79,19 +90,25 @@
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-      arista.eos.eos_bgp_global:
-        asn: 65121
-        vrf: "{{ vrf_name }}"
-        state: absent
-
       when: 
-       - vrf_check.stdout[0] != ''
-       - site == 'CDLV' 
-       - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+          - vrf_check.stdout[0] != ''
+          - site == 'CDLV' 
+          - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
       changed_when: true
 
 
-    - name: Eliminar toda la configuración para CDLV-212-G32-UR29-BLEAF-B
+    - name: Eliminar configuración BGP para CDLV-212-G32-UR29-BLEAF-B
+      arista.eos.eos_bgp_global:
+        asn: 65121
+        vrf: "{{ vrf_name }}"
+        state: absent      
+      when: 
+        - vrf_check.stdout[0] != ''
+        - site == 'CDLV' 
+        - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+      changed_when: true
+
+    - name: Eliminar configuraciones relacionadas para CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_config:
         commands:
           - configure terminal
@@ -105,16 +122,13 @@
           - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-
-      arista.eos.eos_bgp_global:
-        asn: 65121
-        vrf: "{{ vrf_name }}"
-        state: absent      
       when: 
-       - vrf_check.stdout[0] != ''
-       - site == 'CDLV' 
-       - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+          - vrf_check.stdout[0] != ''
+          - site == 'CDLV' 
+          - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
       changed_when: true
+
+  
 
     - name: Eliminar toda la configuración para AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_config:
