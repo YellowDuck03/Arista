@@ -70,12 +70,12 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
+          - interface Port-Channel 12
+          - switchport trunk allowed vlan remove {{ vlan_id }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
-          - interface Port-Channel12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
           - router bgp {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].bgp_asn }}
           - no vrf {{ vrf_name }}
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
@@ -92,13 +92,13 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
+          - interface Port-Channel 12
+          - switchport trunk allowed vlan remove {{ vlan_id }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
           - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
-          - interface Port-Channel12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
           - router bgp {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].bgp_asn }}
           - no vrf {{ vrf_name }}
           - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
@@ -114,12 +114,12 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
+          - interface Port-Channel 12
+          - switchport trunk allowed vlan remove {{ vlan_id }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
-          - interface Port-Channel12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
           - router bgp {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].bgp_asn }}
           - no vrf {{ vrf_name }}
           - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }}
@@ -135,13 +135,13 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
+          - interface Port-Channel 12
+          - switchport trunk allowed vlan remove {{ vlan_id }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
           - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
-          - no interface vlan {{ vlan_id }}
-          - interface Port-Channel12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
+          - no interface vlan {{ vlan_id }}   
           - router bgp {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].bgp_asn }}
           - no vrf {{ vrf_name }}
           - no interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ port_channel }}
