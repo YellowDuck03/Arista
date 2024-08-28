@@ -79,9 +79,6 @@
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-          
-      arista.eos.eos_config:
-        lines:
           - no vrf {{ vrf_name }}
         parents:
           - router bgp 65121
@@ -107,8 +104,6 @@
           - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-      arista.eos.eos_config:
-        lines:
           - no vrf {{ vrf_name }}
         parents:
           - router bgp 65121
