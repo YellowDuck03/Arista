@@ -30,7 +30,7 @@
 
     - name: Extraer VLAN ID
       set_fact:
-          vlan_id: "{{ (vrf_config.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | default('') | join('') }}"
+        vlan_id: "{{ (vrf_config.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | default('') | join('') }}"
 
     - name: Debug VLAN ID
       debug:
@@ -38,7 +38,7 @@
 
     - name: Extraer BGP ID
       set_fact:
-        bgp_id: "{{ vrf_config.stdout[0] | regex_search('router bgp (\\d+)', '\\1') }}"
+        bgp_id: "{{ (vrf_config.stdout[0] | regex_search('router bgp (\\d+)', '\\1')) | default('') | join('') }}"
     
     - name: Debug BGP ID
       debug:
@@ -46,7 +46,7 @@
 
     - name: Extraer Port-Channel
       set_fact:
-        port_channel: "{{ (vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1')) | first }}"
+        port_channel: "{{ (vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1')) | default('') | join('') }}"
 
     - name: Debug Port-Channel
       debug:
@@ -54,7 +54,7 @@
 
     - name: Extraer VLAN interface
       set_fact:
-       vlan_interface: "{{ (vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)', '\\1')) | default('') }}"
+        vlan_interface: "{{ (vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)', '\\1')) | default('') | join('') }}"
 
     - name: Debug VLAN interface
       debug:
@@ -62,7 +62,7 @@
 
     - name: Extraer prefix-list name
       set_fact:
-        prefix_list: "{{ vrf_config.stdout[0] | regex_search('ip prefix-list (\\S+)', '\\1') }}"
+        prefix_list: "{{ (vrf_config.stdout[0] | regex_search('ip prefix-list (\\S+)', '\\1')) | default('') | join('') }}"
 
     - name: Debug prefix-list name
       debug:
@@ -70,7 +70,7 @@
 
     - name: Extraer route-map name
       set_fact:
-        route_map: "{{ vrf_config.stdout[0] | regex_search('route-map (\\S+)', '\\1') }}"
+        route_map: "{{ (vrf_config.stdout[0] | regex_search('route-map (\\S+)', '\\1')) | default('') | join('') }}"
 
     - name: Debug route-map name
       debug:
@@ -78,7 +78,7 @@
 
     - name: Extraer el ID de OSPF para la VRF
       set_fact:
-        ospf_id: "{{ vrf_config.stdout[0] | regex_search('router ospf (\\d+) vrf {{ vrf_name }}', '\\1') }}"
+        ospf_id: "{{ (vrf_config.stdout[0] | regex_search('router ospf (\\d+) vrf {{ vrf_name }}', '\\1')) | default('') | join('') }}"
 
     - name: Debug OSPF ID
       debug:
