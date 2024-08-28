@@ -73,7 +73,7 @@
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - exit
-          - router bgp 65121 
+          - router bgp 65121
           - no vrf {{ vrf_name }}
           - exit
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
@@ -100,7 +100,7 @@
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - exit
-          - router bgp 65121 
+          - router bgp 65121
           - no vrf {{ vrf_name }}
           - exit
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
