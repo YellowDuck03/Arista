@@ -46,17 +46,7 @@
 
     - name: Extraer Port-Channel sin join
       set_fact:
-        port_channel: >-
-            {% for line in vrf_config.stdout[0].splitlines() %}
-              {% if 'interface Port-Channel' in line %}
-                {{ line | regex_search('Port-Channel\\d+\\.\\d+') }}
-              {% endif %}
-            {% endfor %}
-            {{ '' }}
-
-    - name: Debug Port-Channel
-      debug:
-        var: port_channel
+        port_channel: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
 
     - name: Extraer VLAN interface
       set_fact:
