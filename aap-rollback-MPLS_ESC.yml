@@ -97,7 +97,7 @@
           - no vlan {{ vlan_id }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
-          - no interface {{ vlan_interface }}
+          - no interface vlan {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
           - no router bgp {{ bgp_id }}
@@ -119,7 +119,7 @@
           - no vlan {{ vlan_id }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
-          - no interface {{ vlan_interface }}
+          - no interface vlan {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
           - no router bgp {{ bgp_id }}
@@ -141,7 +141,7 @@
           - no vlan {{ vlan_id }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
-          - no interface {{ vlan_interface }}
+          - no interface vlan {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
           - no router bgp {{ bgp_id }}
@@ -163,7 +163,7 @@
           - no vlan {{ vlan_id }}
           - no vrf definition {{ vrf_name }}
           - no {{ port_channel }}
-          - no interface {{ vlan_interface }}
+          - no interface vlan {{ vlan_interface }}
           - no ip prefix-list {{ prefix_list }}
           - no route-map {{ route_map }}
           - no router bgp {{ bgp_id }}
