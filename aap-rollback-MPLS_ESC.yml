@@ -79,7 +79,7 @@
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-          - router bgp {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].bgp_asn }}
+          - router bgp 65121
           - no vrf {{ vrf_name }}
 
       when: 
@@ -103,7 +103,7 @@
           - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-          - router bgp {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].bgp_asn }}
+          - router bgp 65121
           - no vrf {{ vrf_name }}
           
       when: 
@@ -125,7 +125,7 @@
           - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-          - router bgp {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].bgp_asn }}
+          - router bgp 65021
           - no vrf {{ vrf_name }}
           
       when: 
@@ -148,7 +148,7 @@
           - no interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-          - router bgp {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].bgp_asn }}
+          - router bgp 65021
           - no vrf {{ vrf_name }}
           
       when: 
