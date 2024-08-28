@@ -44,10 +44,15 @@
       debug:
         var: bgp_id
 
-    - name: Extraer Port-Channel sin join
+    - name: Extraer Port-Channel 
       set_fact:
         port_channel: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
 
+    - name: Debug  Port-Channel 
+      debug:
+        var: port_channel
+
+        
     - name: Extraer VLAN interface
       set_fact:
         vlan_interface: "{{ (vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)', '\\1')) | default('') | join('') }}"
