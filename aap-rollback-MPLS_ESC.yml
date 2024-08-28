@@ -43,7 +43,7 @@
 
     - name: Extraer el Port-Channel
       set_fact:
-      port_channel: "{{ vrf_output.stdout[0] | regex_search('Port-Channel(\\d+)', '\\1') }}"
+       port_channel: "{{ vrf_output.stdout[0] | regex_search('Port-Channel(\\d+)', '\\1') }}"
 
     - name: Mostrar los valores extraídos
       debug:
