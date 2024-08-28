@@ -39,7 +39,7 @@
 
     - name: Extraer la VLAN ID
       set_fact:
-      vlan_id: "{{ vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1') }}"
+       vlan_id: "{{ vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1') }}"
 
     - name: Extraer el Port-Channel
       set_fact:
@@ -59,7 +59,7 @@
 
     - name: Extraer la instancia de OSPF
       set_fact:
-      ospf_instance: "{{ ospf_output.stdout[0] | regex_search('\\s+(\\d+)\\s+GATO', '\\1') }}"
+       ospf_instance: "{{ ospf_output.stdout[0] | regex_search('\\s+(\\d+)\\s+GATO', '\\1') }}"
 
     - name: Mostrar la instancia de OSPF extraída
       debug:
