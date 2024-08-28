@@ -46,11 +46,7 @@
 
     - name: Extraer Port-Channel sin join
       set_fact:
-        port_channel_raw: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') | default('') }}"
-
-    - name: Convertir Port-Channel a cadena
-      set_fact:
-       port_channel: "{{ port_channel_raw | join('') if port_channel_raw else '' }}"
+        port_channel: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
 
     - name: Debug Port-Channel
       debug:
