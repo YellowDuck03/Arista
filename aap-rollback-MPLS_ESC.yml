@@ -72,7 +72,7 @@
           - configure terminal
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
-          - router ospf {{ ospf_instance }} vrf {{ vrf_name }}
+          - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - interface Port-Channel12
           - switchport trunk allowed vlan remove {{ vlan_id }}
@@ -95,7 +95,7 @@
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
-          - router ospf {{ ospf_instance }} vrf {{ vrf_name }}
+          - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - interface Port-Channel12
           - switchport trunk allowed vlan remove {{ vlan_id }}
@@ -116,7 +116,7 @@
           - configure terminal
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
-          - router ospf {{ ospf_instance }} vrf {{ vrf_name }}
+          - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - interface Port-Channel12
           - switchport trunk allowed vlan remove {{ vlan_id }}
@@ -138,7 +138,7 @@
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
-          - router ospf {{ ospf_instance }} vrf {{ vrf_name }}
+          - router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - interface Port-Channel12
           - switchport trunk allowed vlan remove {{ vlan_id }}
