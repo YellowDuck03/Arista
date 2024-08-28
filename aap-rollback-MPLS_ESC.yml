@@ -53,17 +53,17 @@
 
     - name: Ejecutar el comando para obtener la información de OSPF
       arista.eos.eos_command:
-        commands:
+         commands:
           - show ip ospf vrf {{ vrf_name }} | i instance 
       register: ospf_output
 
     - name: Extraer la instancia de OSPF
       set_fact:
        ospf_instance_id: "{{ ospf_output.stdout | regex_search('OSPF instance (\\d+)') }}"
-  
+
     - name: Mostrar la instancia de OSPF extraída
       debug:
-        msg: "Instancia de OSPF: {{ ospf_instance }}"
+      msg: "Instancia de OSPF: {{ ospf_instance_id }}"
 
 
     - name: Eliminar toda la configuración para CDLV-212-G31-UR29-BLEAF-A
