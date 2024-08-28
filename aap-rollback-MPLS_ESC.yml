@@ -46,7 +46,7 @@
 
     - name: Extraer Port-Channel sin join
       set_fact:
-        port_channel: "{{ vrf_config.stdout[0] | regex_search('interface (Port-Channel\\d+\\.\\d+)', '\\1') }}"
+        port_channel: "{{ vrf_config.stdout[0].splitlines() | select('search', 'interface Port-Channel') | map('regex_search', 'Port-Channel\\d+\\.\\d+') | first | default('') }}"
 
     - name: Debug Port-Channel
       debug:
