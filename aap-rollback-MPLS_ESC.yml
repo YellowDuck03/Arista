@@ -59,7 +59,7 @@
 
     - name: Extraer la instancia de OSPF
       set_fact:
-       ospf_instance_id: "{{ (ospf_output.stdout[0] | regex_search('OSPF instance \\d+ with ID (\\S+)', '\\1')) | default('No encontrado') }}"
+       ospf_instance_id: "{{ (ospf_output.stdout[0] | regex_search('ID (\\S+)', '\\1')) | default('No encontrado') }}"
   
     - name: Mostrar la instancia de OSPF extraída
       debug:
