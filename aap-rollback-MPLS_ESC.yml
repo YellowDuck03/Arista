@@ -67,7 +67,8 @@
 
 
     - name: Eliminar configuración BGP para CDLV-212-G31-UR29-BLEAF-A
-      commands:
+      arista.eos.eos_config:
+        commands:
           - configure terminal
           - router bgp 65121
           - no vrf {{ vrf_name }}
@@ -99,7 +100,8 @@
 
 
     - name: Eliminar configuración BGP para CDLV-212-G32-UR29-BLEAF-B
-      commands:
+      arista.eos.eos_config:
+        commands:
           - configure terminal
           - router bgp 65121
           - no vrf {{ vrf_name }}
