@@ -53,8 +53,8 @@
 
     - name: Ejecutar el comando para obtener la información de OSPF
       arista.eos.eos_command:
-      commands:
-        - show ip ospf nei vrf {{ vrf_name }}
+        commands:
+          - show ip ospf nei vrf {{ vrf_name }}
       register: ospf_output
 
     - name: Extraer la instancia de OSPF
