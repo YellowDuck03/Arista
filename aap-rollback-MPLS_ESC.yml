@@ -79,9 +79,11 @@
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
+      arista.eos.eos_bgp_global:
+        asn: 65121
+        vrf: "{{ vrf_name }}"
+        state: absent
 
-          - router bgp 65121
-          - no vrf {{ vrf_name }}
       when: 
        - vrf_check.stdout[0] != ''
        - site == 'CDLV' 
@@ -104,8 +106,10 @@
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
 
-          - router bgp 65121
-          - no vrf {{ vrf_name }}       
+      arista.eos.eos_bgp_global:
+        asn: 65121
+        vrf: "{{ vrf_name }}"
+        state: absent      
       when: 
        - vrf_check.stdout[0] != ''
        - site == 'CDLV' 
