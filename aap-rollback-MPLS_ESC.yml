@@ -63,7 +63,7 @@
 
     - name: Extraer la instancia de OSPF
       set_fact:
-       ospf_instance: "{{ ospf_output.stdout[0] | regex_search('\\d+\\s+\\d+\\s+{{ vrf_name }}', '\\d+', multiline=True) | default('No encontrado') }}"
+       ospf_instance: "{{ (ospf_output.stdout[0] | regex_search('^\\S+\\s+(\\d+)\\s+{{ vrf_name }}', '\\1', multiline=True)) | default('No encontrado') }}"
   
     - name: Mostrar la instancia de OSPF extraída
       debug:
