@@ -30,7 +30,7 @@
 
     - name: Extraer VLAN ID
       set_fact:
-         vlan_id: "{{ (vrf_config.stdout[0] | regex_search('vlan (\\d+)')) | default('') }}"
+         vlan_id: "{{ (vrf_config.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | default('') }}"
 
     - name: Debug VLAN ID
       debug:
@@ -54,7 +54,7 @@
 
     - name: Extraer VLAN interface
       set_fact:
-       vlan_interface: "{{ (vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)')) | first | default('') }}"
+       vlan_interface: "{{ (vrf_config.stdout[0] | regex_search('interface Vlan(\\d+)', '\\1')) | default('') }}"
 
     - name: Debug VLAN interface
       debug:
