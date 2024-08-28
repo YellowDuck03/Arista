@@ -66,27 +66,14 @@
         msg: "Instancia de OSPF: {{ ospf_instance_id }}"
 
 
-    - name: Eliminar configuración BGP para CDLV-212-G31-UR29-BLEAF-A
-      arista.eos.eos_config:
-        commands:
-          - configure terminal
-          - router bgp 65121
-          - vrf {{ vrf_name }}
-          - address-family ipv4
-          - no vrf instance {{ vrf_name }}
-          
-      when: 
-          - vrf_check.stdout[0] != ''
-          - site == 'CDLV' 
-          - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
-      changed_when: true
-
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
         commands:
           - configure terminal
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
+          - router bgp 65121
+          - default vrf {{ vrf_name }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
@@ -121,6 +108,8 @@
           - configure terminal
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
+          - router bgp 65121
+          - default vrf {{ vrf_name }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
