@@ -70,6 +70,8 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
+          - router bgp 65121
+          - no vrf {{ vrf_name }}
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
@@ -79,9 +81,8 @@
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
-          - router bgp 65121
-          - vrf {{ vrf_name }}
-          - no vrf {{ vrf_name }}
+          
+          
 
       when: 
        - vrf_check.stdout[0] != ''
@@ -95,6 +96,8 @@
         commands:
           - configure terminal
           - interface Port-Channel 12
+          - router bgp 65121
+          - no vrf {{ vrf_name }}
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
           - no route-map {{ vrf_name }}-TO-OSPF
@@ -103,9 +106,7 @@
           - no interface vlan {{ vlan_id }}
           - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
-          - router bgp 65121
-          - vrf {{ vrf_name }}
-          - no vrf {{ vrf_name }}
+          - no vrf instance {{ vrf_name }}
           
       when: 
        - vrf_check.stdout[0] != ''
