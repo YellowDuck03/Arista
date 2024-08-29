@@ -69,20 +69,9 @@
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
         commands:
-          - exit
-          - enable
           - configure terminal
           - router bgp 65121
           - no vrf {{ vrf_name }}
-          - interface Port-Channel 12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
-          - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - no route-map {{ vrf_name }}-TO-OSPF
-          - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
-          - no interface vlan {{ vlan_id }}
-          - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
-          - no vlan {{ vlan_id }}
-          - no vrf instance {{ vrf_name }}
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
@@ -91,21 +80,9 @@
     - name: Eliminar configuraciones relacionadas para CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_config:
         commands:
-          - exit
-          - enable
           - configure terminal
           - router bgp 65121
           - no vrf {{ vrf_name }}
-          - interface Port-Channel 12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
-          - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - no route-map {{ vrf_name }}-TO-OSPF
-          - no route-map MPLS-RESPALDO-{{ vrf_name }} 
-          - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
-          - no interface vlan {{ vlan_id }}
-          - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
-          - no vlan {{ vlan_id }}
-          - no vrf instance {{ vrf_name }}
       when: 
           - site == 'CDLV' 
           - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
