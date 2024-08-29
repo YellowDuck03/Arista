@@ -6,6 +6,7 @@
     vrf_name: ""
     site: ""
   tasks:
+    - name: Eliminar la definición de la VRF
       arista.eos.eos_config:
         commands:
           - configure terminal
