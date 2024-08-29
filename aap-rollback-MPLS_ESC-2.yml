@@ -70,8 +70,8 @@
       arista.eos.eos_config:
         commands:
           - configure terminal
-          - router bgp 65121
-          - no vrf LG
+          -  router bgp 65121
+          -  no vrf {{ vrf_name }}
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
