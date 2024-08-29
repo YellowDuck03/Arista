@@ -9,21 +9,6 @@
     
   
   tasks:
-    - name: Verificar existencia de la VRF
-      arista.eos.eos_command:
-        commands:
-          - show vrf | include {{ vrf_name }}
-      register: vrf_check
-
-    - name: Debug VRF check
-      debug:
-        var: vrf_check.stdout
-
-    - name: Ejecutar el comando para obtener la información de la VRF
-      arista.eos.eos_command:
-        commands:
-        - show ip route vrf {{ vrf_name }} connected
-      register: vrf_output
 
     - name: Extraer la VLAN ID
       set_fact:
