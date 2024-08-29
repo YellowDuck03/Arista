@@ -16,7 +16,7 @@
         commands:
           - configure terminal
           - router bgp 65121
-          - no vrf {{ vrf_name }}
+          - no vrf LG
       
       changed_when: true
 
