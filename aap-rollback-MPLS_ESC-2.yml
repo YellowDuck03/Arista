@@ -22,16 +22,6 @@
         - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
       changed_when: true
 
-    - name: Eliminar configuraciones relacionadas para CDLV-212-G32-UR29-BLEAF-B
-      arista.eos.eos_config:
-        commands:
-          - configure terminal
-          - router bgp 65121
-          - no vrf {{ vrf_name }}
-      when: 
-          - site == 'CDLV' 
-          - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
-      changed_when: true
 
   
 
