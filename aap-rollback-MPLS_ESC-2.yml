@@ -2,15 +2,10 @@
 - name: rollback de configuracion CREAR_MPLS_ESC
   hosts: all
   gather_facts: no
-  
   vars:
     vrf_name: ""
     site: ""
-    
-  
   tasks:
-
-
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
         commands:
@@ -21,8 +16,3 @@
       arista.eos.eos_command:
         commands:
           - write memory
-
-    - name: Debug guardado de cambios
-      debug:
-        msg: "Cambios guardados en el dispositivo."
-
