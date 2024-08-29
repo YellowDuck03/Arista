@@ -6,13 +6,8 @@
     vrf_name: ""
     site: ""
   tasks:
-    - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
         commands:
           - configure terminal
           - router bgp 65121
           - no vrf LG
-    - name: Guardar cambios
-      arista.eos.eos_command:
-        commands:
-          - write memory
