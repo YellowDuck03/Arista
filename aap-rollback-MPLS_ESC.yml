@@ -27,7 +27,7 @@
         commands:
           - configure terminal
           - router bgp 65121
-          - no vrf ARCEUS
+          - no vrf {{ vrf_name }}
       when: 
           - site == 'CDLV' 
           - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
