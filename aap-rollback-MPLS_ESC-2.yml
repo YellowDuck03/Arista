@@ -10,34 +10,6 @@
   
   tasks:
 
-    - name: Extraer la VLAN ID
-      set_fact:
-       vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
-
-    - name: Extraer el Port-Channel
-      set_fact:
-       port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
-
-    - name: Mostrar los valores extraídos
-      debug:
-        msg: 
-           - "VLAN ID: {{ vlan_id }}"
-           - "Port-Channel: {{ port_channel }}"
-
-    - name: Ejecutar el comando para obtener la información de OSPF
-      arista.eos.eos_command:
-         commands:
-          - show ip ospf vrf {{ vrf_name }} | i instance 
-      register: ospf_output
-
-    - name: Extraer la instancia de OSPF
-      set_fact:
-       ospf_instance_id: "{{ ospf_output.stdout | regex_search('OSPF instance (\\d+)', '\\1') | first }}"
-
-    - name: Mostrar la instancia de OSPF extraída
-      debug:
-        msg: "Instancia de OSPF: {{ ospf_instance_id }}"
-
 
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
