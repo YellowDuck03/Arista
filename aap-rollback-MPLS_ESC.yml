@@ -25,6 +25,8 @@
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_config:
          lines:
+          - enable
+          - configure terminal
           - router bgp 65121
           - vrf {{ vrf_name }}
           - no vrf {{ vrf_name }}
