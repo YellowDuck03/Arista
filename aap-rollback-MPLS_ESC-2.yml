@@ -8,7 +8,7 @@
   tasks:
     - name: Eliminar la definición de la VRF
       arista.eos.eos_config:
-        commands:
+        lines:
         - enable
         - configure terminal
         - router bgp 65121
