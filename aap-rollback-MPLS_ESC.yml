@@ -23,10 +23,9 @@
   tasks:
 
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
-      arista.eos.eos_config:
-        commands:
-          - router bgp 65121
-          - no vrf {{ vrf_name }}
+      arista.eos.eos_vrf:
+        name: "{{ vrf_name }}"
+        state: delete
       when: 
           - site == 'CDLV' 
           - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
