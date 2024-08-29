@@ -9,6 +9,7 @@
     - name: Eliminar la definición de la VRF
       arista.eos.eos_config:
         commands:
-          - configure terminal
-          - router bgp 65121
-          - no vrf LG
+        - enable
+        - configure terminal
+        - router bgp 65121
+        - no vrf LG
