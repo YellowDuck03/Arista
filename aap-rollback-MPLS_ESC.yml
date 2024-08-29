@@ -28,7 +28,6 @@
           - router bgp 65121
           - no vrf {{ vrf_name }}
       when: 
-          - vrf_check.stdout[0] != ''
           - site == 'CDLV' 
           - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
       changed_when: true
