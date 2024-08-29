@@ -17,14 +17,6 @@
           - configure terminal
           - router bgp 65121
           - no vrf LG
-      
-      changed_when: true
-
-
-  
-
-  
-    
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
