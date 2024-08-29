@@ -19,7 +19,7 @@
           - no vrf {{ vrf_name }}
       when: 
         - site == 'CDLV' 
-        - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
       changed_when: true
 
 
