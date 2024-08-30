@@ -35,20 +35,11 @@
         - "Máscara de subred: {{ subnet_mask }}"
       
 
-    - name: Calcular la primera IP disponible en el segmento
+    - name: Calcular las primeras cuatro IPs disponibles en el segmento
       set_fact:
         first_ip: "{{ ip_base }}.{{ last_octet | int + 1 }}"
-
-    - name: Calcular la segunda IP disponible en el segmento
-      set_fact:
         second_ip: "{{ ip_base }}.{{ last_octet | int + 2 }}"
-
-     -name: Calcular la tercera IP disponible en el segmento
-      set_fact:
         third_ip: "{{ ip_base }}.{{ last_octet | int + 3 }}"
-
-    - name: Calcular la cuarta IP disponible en el segmento
-      set_fact:
         fourth_ip: "{{ ip_base }}.{{ last_octet | int + 4 }}"
         
     - name: Mostrar las IPs calculadas
@@ -57,8 +48,8 @@
           - "Primera IP: {{ first_ip }}"
           - "Segunda IP: {{ second_ip }}"
           - "Tercera IP: {{ third_ip }}"
-          - "Cuarta IP: {{ Fourth_ip }}"
           - "Cuarta IP: {{ fourth_ip }}"
+      
 
     - name: Configurar VRRP y Ruta Estatica Publica en CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
