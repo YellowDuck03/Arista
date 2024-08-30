@@ -43,7 +43,7 @@
       set_fact:
         second_ip: "{{ ip_base }}.{{ last_octet | int + 2 }}"
 
-     - name: Calcular la tercera IP disponible en el segmento
+     -name: Calcular la tercera IP disponible en el segmento
       set_fact:
         third_ip: "{{ ip_base }}.{{ last_octet | int + 3 }}"
 
