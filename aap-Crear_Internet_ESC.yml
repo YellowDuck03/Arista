@@ -60,9 +60,9 @@
           - interface vlan {{ vlan_id }}
           - vrf Internet
           - ip address {{ first_ip }}/29
-          - vrrp {{ vlan_id }} ip {{ third_ip }}
-          - vrrp {{ vlan_id }} priority 200  
-          - vrrp {{ vlan_id }} preempt
+          - vrrp 100 ipv4 {{ third_ip }}
+          - vrrp 100 priority-level 200 
+          - vrrp 100 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
@@ -82,9 +82,9 @@
           - interface vlan {{ vlan_id }}
           - vrf Internet
           - ip address {{ second_ip }}/29
-          - vrrp {{ vlan_id }} ip {{ third_ip }}
-          - vrrp {{ vlan_id }} priority 200  
-          - vrrp {{ vlan_id }} preempt
+          - vrrp 100 ipv4 {{ third_ip }}
+          - vrrp 100 priority-level 150 
+          - vrrp 100 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
@@ -102,9 +102,9 @@
           - interface vlan {{ vlan_id }}
           - vrf Internet
           - ip address {{ first_ip }}/29
-          - vrrp {{ vlan_id }} ip {{ third_ip }}
-          - vrrp {{ vlan_id }} priority 200  
-          - vrrp {{ vlan_id }} preempt
+          - vrrp 200 ipv4 {{ third_ip }}
+          - vrrp 200 priority-level 200
+          - vrrp 200 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
@@ -122,9 +122,9 @@
           - interface vlan {{ vlan_id }}
           - vrf Internet
           - ip address {{ second_ip }}/29
-          - vrrp {{ vlan_id }} ip {{ third_ip }}
-          - vrrp {{ vlan_id }} priority 200  
-          - vrrp {{ vlan_id }} preempt
+          - vrrp 200 ipv4 {{ third_ip }}
+          - vrrp 200 priority-level 150
+          - vrrp 200 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
