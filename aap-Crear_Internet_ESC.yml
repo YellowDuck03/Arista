@@ -63,7 +63,7 @@
           - vrrp {{ vlan_id }} ip {{ third_ip }}
           - vrrp {{ vlan_id }} priority 200  
           - vrrp {{ vlan_id }} preempt
-          - ip route vrf Internet {{ ip_publica }} {{ Fourth_ip }}
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
@@ -85,7 +85,7 @@
           - vrrp {{ vlan_id }} ip {{ third_ip }}
           - vrrp {{ vlan_id }} priority 200  
           - vrrp {{ vlan_id }} preempt
-          - ip route vrf Internet {{ ip_publica }} {{ Fourth_ip }}
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
@@ -105,7 +105,7 @@
           - vrrp {{ vlan_id }} ip {{ third_ip }}
           - vrrp {{ vlan_id }} priority 200  
           - vrrp {{ vlan_id }} preempt
-          - ip route vrf Internet {{ ip_publica }} {{ Fourth_ip }}
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
@@ -125,7 +125,7 @@
           - vrrp {{ vlan_id }} ip {{ third_ip }}
           - vrrp {{ vlan_id }} priority 200  
           - vrrp {{ vlan_id }} preempt
-          - ip route vrf Internet {{ ip_publica }} {{ Fourth_ip }}
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
