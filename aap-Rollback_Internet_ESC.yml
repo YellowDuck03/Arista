@@ -38,7 +38,7 @@
 
     - name: Convertir la IP VIP VRRP a entero y sumar 1
       set_fact:
-       vrrp_ip_int: "{{ (vrrp_ip[0] | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') }}""
+       vrrp_ip_int: "{{ (vrrp_ip[0] | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') }}"
 
     - name: Mostrar nueva IP GW de TDS
       debug:
