@@ -38,11 +38,11 @@
 
     - name: Convertir la IP VIP VRRP a entero y sumar 1
       set_fact:
-       vrrp_ip_int: "{{ (vrrp_ip[0] | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') }}"
+       vrrp_ip_int: "{{ (vrrp_ip[0] | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
 
-    - name: Mostrar nueva IP GW de TDS
+    - name: Mostrar IP GW de TDS
       debug:
-        msg: "La nueva IP es {{ vrrp_ip_int }}"
+        msg: "La ip GW de TDS es  {{ vrrp_ip_int }}"
 
     - name: Obtener la configuración completa de las rutas estáticas
       arista.eos.eos_command:
