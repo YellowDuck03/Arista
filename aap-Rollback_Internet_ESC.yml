@@ -5,6 +5,7 @@
   vars:
     site: ""
     vlan_id: ""
+
   tasks:
 
     - name: Verificar existencia de la VLAN 
@@ -23,23 +24,22 @@
           - show vrrp group 100 interface vlan {{ vlan_id }}
       register: vrrp_check
 
-    - name: Debug VLAN check
+    - name: Debug VRRP check
       debug:
         var: vrrp_check.stdout
 
     - name: Extraer las IP VIP de VRRP
-      sset_fact:
-       vrrp_ip: "{{ some_command_output.stdout | regex_search('vrrp 100 ipv4 (\\d+\\.\\d+\\.\\d+\\.\\d+)') }}"
+      set_fact:
+        vrrp_ip: "{{ vrrp_check.stdout[0] | regex_search('vrrp 100 ipv4 (\\d+\\.\\d+\\.\\d+\\.\\d+)') }}"
 
     - name: Convertir la IP VIP VRRP a entero y sumar 1
       set_fact:
-       vrrp_ip_int: "{{ (vrrp_ip | ipaddr('int') + 1) | ipaddr('ipv4') }}"
+        vrrp_ip_int: "{{ (vrrp_ip | ipaddr('int') + 1) | ipaddr('ipv4') }}"
 
     - name: Mostrar nueva IP GW de TDS
       debug:
         msg: "La nueva IP es {{ vrrp_ip_int }}"
       
-
     - name: Obtener la configuración completa de las rutas estáticas
       arista.eos.eos_command:
         commands: "show running-config | include {{ vrrp_ip_int }}"
@@ -48,14 +48,14 @@
     - name: Generar comandos para eliminar rutas estáticas
       set_fact:
         delete_commands: >
-      {{
-        static_routes_output.stdout[0].splitlines() | select("search", vrrp_ip_int) |
-        map("regex_replace", "^", "no ") | list
-      }}
+          {{
+            static_routes_output.stdout[0].splitlines() | select("search", vrrp_ip_int) |
+            map("regex_replace", "^", "no ") | list
+          }}
 
     - name: Ejecutar los comandos para eliminar las rutas estáticas
       arista.eos.eos_command:
-       commands: "{{ delete_commands }}"
+        commands: "{{ delete_commands }}"
 
     - name: Configurar VRRP y Ruta Estatica Publica en CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -63,12 +63,7 @@
           - configure terminal
           - no interface vlan {{ vlan_id }}
           - no vlan {{ vlan_id }}
-        delete_commands: >
-      {{
-        static_routes_output.stdout[0].splitlines() | select("search", vrrp_ip_int) |
-        map("regex_replace", "^", "no ") | list
-      }}
-      
+          - "{{ delete_commands | join('\n') }}"
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
@@ -76,10 +71,6 @@
         - vrrp_check.stdout[0] != ''
       changed_when: true
 
-     
-
-      
-    
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
