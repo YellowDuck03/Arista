@@ -75,8 +75,7 @@
           - configure terminal
           - no interface vlan {{ vlan_id }}
           - no vlan {{ vlan_id }}
-          - configure terminal
-          - "{{ delete_commands | join('\n') }}"
+          - no {{ delete_commands 
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
