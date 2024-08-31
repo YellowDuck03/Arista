@@ -45,6 +45,10 @@
         commands: "show running-config | include {{ vrrp_ip_int }}"
       register: static_routes_output
 
+    - name: Mostrar la configuración completa de las rutas estáticas
+      debug:
+        var: static_routes_output.stdout
+
     - name: Generar comandos para eliminar rutas estáticas
       set_fact:
         delete_commands: >
