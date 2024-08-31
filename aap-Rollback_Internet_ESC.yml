@@ -18,7 +18,7 @@
       debug:
         var: vlan_check.stdout
 
-    - name: Verificar existencia de vrrp
+    - name: Verificar existencia de VRRP
       arista.eos.eos_command:
         commands:
           - show vrrp group 100 interface vlan {{ vlan_id }}
@@ -38,7 +38,7 @@
 
     - name: Convertir la IP VIP VRRP a entero y sumar 1
       set_fact:
-       vrrp_ip_int: "{{ (vrrp_ip[0] | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
+       vrrp_ip_int: "{{ (vrrp_ip | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
 
     - name: Mostrar IP GW de TDS
       debug:
@@ -59,7 +59,7 @@
 
     - name: Ejecutar los comandos para eliminar las rutas estáticas
       arista.eos.eos_command:
-        commands: "{{ delete_commands }}"
+        commands: "{{ delete_static_routes }}"
 
     - name: Configurar VRRP y Ruta Estatica Publica en CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -83,6 +83,7 @@
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
