@@ -55,15 +55,7 @@
 
     - name: Generar comandos para eliminar rutas estáticas
       set_fact:
-        delete_commands: >
-          {{
-            static_routes_output.stdout[0].splitlines() | select("search", vrrp_ip_int) |
-            map("regex_replace", "^", "no ") | list
-          }}
-
-    - name: Debug comandos de eliminación de rutas
-      debug:
-        var: delete_commands
+       delete_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', '10.136.0.4') | map('regex_replace', '^ip route (.+)$', 'no ip route \\1') | list }}"
 
     - name: Ejecutar los comandos para eliminar las rutas estáticas
       arista.eos.eos_command:
@@ -75,7 +67,6 @@
           - configure terminal
           - no interface vlan {{ vlan_id }}
           - no vlan {{ vlan_id }}
-          - no {{ delete_commands 
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
@@ -83,6 +74,15 @@
         - vrrp_check.stdout[0] != ''
       changed_when: true
 
+    - name: Eliminar rutas estáticas
+      arista.eos.eos_config:
+        lines: "{{ delete_static_routes }}"
+      when: 
+        - delete_static_routes | length > 0
+        - site == 'CDLV' 
+        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
