@@ -28,9 +28,10 @@
       debug:
         var: vrrp_check.stdout
 
-    - name: Extraer las IP VIP de VRRP
+    - name: Extraer la IP VIP de VRRP
       set_fact:
-        vrrp_ip: "{{ vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1') }}"
+        vrrp_ip: "{{ (vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1')) | first }}"
+      when: vrrp_check.stdout is not none and vrrp_check.stdout[0] != ''
 
     - name: Debug IP VIP de VRRP
       debug:
@@ -38,11 +39,11 @@
 
     - name: Convertir la IP VIP VRRP a entero y sumar 1
       set_fact:
-       vrrp_ip_int: "{{ (vrrp_ip | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
+        vrrp_ip_int: "{{ (vrrp_ip | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
 
     - name: Mostrar IP GW de TDS
       debug:
-        msg: "La ip GW de TDS es  {{ vrrp_ip_int }}"
+        msg: "La ip GW de TDS es {{ vrrp_ip_int }}"
 
     - name: Obtener la configuración completa de las rutas estáticas
       arista.eos.eos_command:
@@ -55,11 +56,23 @@
 
     - name: Generar comandos para eliminar rutas estáticas
       set_fact:
-       delete_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', '10.136.0.4') | map('regex_replace', '^ip route (.+)$', 'no ip route \\1') | list }}"
+        delete_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', '10.136.0.4') | map('regex_replace', '^ip route (.+)$', 'no ip route \\1') | list }}"
 
     - name: Ejecutar los comandos para eliminar las rutas estáticas
       arista.eos.eos_command:
         commands: "{{ delete_static_routes }}"
+
+
+    - name: Eliminar rutas estáticas
+      arista.eos.eos_config:
+        lines: "{{ delete_static_routes }}"
+      when: 
+        - delete_static_routes | length > 0
+        - site == 'CDLV' 
+        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+        
 
     - name: Configurar VRRP y Ruta Estatica Publica en CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
@@ -74,15 +87,7 @@
         - vrrp_check.stdout[0] != ''
       changed_when: true
 
-    - name: Eliminar rutas estáticas
-      arista.eos.eos_config:
-        lines: "{{ delete_static_routes }}"
-      when: 
-        - delete_static_routes | length > 0
-        - site == 'CDLV' 
-        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
-        - "'not found' not in vlan_check.stdout[0]"
-        - vrrp_check.stdout[0] != ''
+
 
     - name: Guardar cambios
       arista.eos.eos_command:
