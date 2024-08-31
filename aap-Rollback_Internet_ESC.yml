@@ -63,9 +63,10 @@
         commands: "{{ delete_static_routes }}"
 
 
-    - name: Eliminar rutas estáticas
-      arista.eos.eos_config:
-        lines: "{{ delete_static_routes }}"
+    - name: Eliminar rutas estáticas individualmente
+      arista.eos.eos_command:
+        commands: "{{ item }}"
+      loop: "{{ delete_static_routes }}"
       when: 
         - delete_static_routes | length > 0
         - site == 'CDLV' 
