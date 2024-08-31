@@ -30,7 +30,11 @@
 
     - name: Extraer las IP VIP de VRRP
       set_fact:
-        vrrp_ip: "{{ vrrp_check.stdout[0] | regex_search('vrrp 100 ipv4 (\\d+\\.\\d+\\.\\d+\\.\\d+)') }}"
+        vrrp_ip: "{{ vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1') }}"
+
+    - name: Debug IP VIP de VRRP
+      debug:
+        var: vrrp_ip
 
     - name: Convertir la IP VIP VRRP a entero y sumar 1
       set_fact:
@@ -39,13 +43,13 @@
     - name: Mostrar nueva IP GW de TDS
       debug:
         msg: "La nueva IP es {{ vrrp_ip_int }}"
-      
+
     - name: Obtener la configuración completa de las rutas estáticas
       arista.eos.eos_command:
         commands: "show running-config | include {{ vrrp_ip_int }}"
       register: static_routes_output
 
-    - name: Mostrar la configuración completa de las rutas estáticas
+    - name: Debug rutas estáticas
       debug:
         var: static_routes_output.stdout
 
@@ -56,6 +60,10 @@
             static_routes_output.stdout[0].splitlines() | select("search", vrrp_ip_int) |
             map("regex_replace", "^", "no ") | list
           }}
+
+    - name: Debug comandos de eliminación de rutas
+      debug:
+        var: delete_commands
 
     - name: Ejecutar los comandos para eliminar las rutas estáticas
       arista.eos.eos_command:
