@@ -1,4 +1,4 @@
-- name: crear mpls, vrf, ospf, bgp, svi, route-map
+- name: eliminar vlan svi-vrrp y rutas
   hosts: all
   gather_facts: no
 
