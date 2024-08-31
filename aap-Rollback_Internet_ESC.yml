@@ -75,6 +75,7 @@
           - configure terminal
           - no interface vlan {{ vlan_id }}
           - no vlan {{ vlan_id }}
+          - configure terminal
           - "{{ delete_commands | join('\n') }}"
       when: 
         - site == 'CDLV' 
