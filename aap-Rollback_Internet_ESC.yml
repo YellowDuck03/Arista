@@ -1,0 +1,145 @@
+- name: crear mpls, vrf, ospf, bgp, svi, route-map
+  hosts: all
+  gather_facts: no
+
+  vars:
+    site: ""
+    vlan_id: ""
+    desc: ""
+    segmento: ""
+    ip_publica: ""
+    
+  tasks:
+
+    - name: Verificar existencia de la VLAN
+      arista.eos.eos_command:
+        commands:
+          - show vlan id {{ vlan_id }}
+      register: vlan_check
+
+    - name: Debug VLAN check
+      debug:
+        var: vlan_check.stdout
+
+    - name: Extraer la dirección base y la máscara del segmento
+      set_fact:
+        ip_base: "{{ segmento.split('/')[0].split('.')[:-1] | join('.') }}"
+        last_octet: "{{ segmento.split('/')[0].split('.')[-1] }}"
+        subnet_mask: "{{ segmento.split('/')[1] }}"
+
+    - name: Debug IP base y máscara
+      debug:
+        msg:
+        - "IP Base: {{ ip_base }}"
+        - "Último octeto: {{ last_octet }}"
+        - "Máscara de subred: {{ subnet_mask }}"
+      
+
+    - name: Calcular las primeras cuatro IPs disponibles en el segmento
+      set_fact:
+        first_ip: "{{ ip_base }}.{{ last_octet | int + 1 }}"
+        second_ip: "{{ ip_base }}.{{ last_octet | int + 2 }}"
+        third_ip: "{{ ip_base }}.{{ last_octet | int + 3 }}"
+        fourth_ip: "{{ ip_base }}.{{ last_octet | int + 4 }}"
+        
+    - name: Mostrar las IPs calculadas
+      debug:
+        msg:
+          - "Primera IP: {{ first_ip }}"
+          - "Segunda IP: {{ second_ip }}"
+          - "Tercera IP: {{ third_ip }}"
+          - "Cuarta IP: {{ fourth_ip }}"
+      
+
+    - name: Configurar VRRP y Ruta Estatica Publica en CDLV-212-G31-UR29-BLEAF-A
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vlan {{ vlan_id }}
+          - name {{ desc }}-INTERNET-TDS
+          - interface vlan {{ vlan_id }}
+          - vrf Internet
+          - description {{ desc }}-INTERNET-TDS
+          - ip address {{ first_ip }}/29
+          - vrrp 100 ipv4 {{ third_ip }}
+          - vrrp 100 priority-level 200 
+          - vrrp 100 preempt
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
+      when: 
+        - site == 'CDLV' 
+        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+        - "'not found' in vlan_check.stdout[0]"
+      changed_when: true
+
+     
+
+      
+    - name: Configurar VRRP y Ruta Estatica Publica en CDLV-212-G32-UR29-BLEAF-B
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vlan {{ vlan_id }}
+          - name {{ desc }}-INTERNET-TDS
+          - interface vlan {{ vlan_id }}
+          - vrf Internet
+          - description {{ desc }}-INTERNET-TDS
+          - ip address {{ second_ip }}/29
+          - vrrp 100 ipv4 {{ third_ip }}
+          - vrrp 100 priority-level 150 
+          - vrrp 100 preempt
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
+      when: 
+        - site == 'CDLV' 
+        - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+        - "'not found' in vlan_check.stdout[0]"
+      changed_when: true
+     
+          
+    - name: Configurar VRRP y Ruta Estatica Publica en AMU-P5-E4-UR29-BLEAF-A
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vlan {{ vlan_id }}
+          - name {{ desc }}-INTERNET-TDS
+          - interface vlan {{ vlan_id }}
+          - vrf Internet
+          - description {{ desc }}-INTERNET-TDS
+          - ip address {{ first_ip }}/29
+          - vrrp 200 ipv4 {{ third_ip }}
+          - vrrp 200 priority-level 200
+          - vrrp 200 preempt
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
+      when: 
+        - site == 'CDLV' 
+        - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+        - "'not found' in vlan_check.stdout[0]"
+      changed_when: true
+      
+  
+    - name: Configurar VRRP y Ruta Estatica Publica en AMU-P5-E3-UR29-BLEAF-B
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vlan {{ vlan_id }}
+          - name {{ desc }}-INTERNET-TDS
+          - interface vlan {{ vlan_id }}
+          - vrf Internet
+          - description {{ desc }}-INTERNET-TDS
+          - ip address {{ second_ip }}/29
+          - vrrp 200 ipv4 {{ third_ip }}
+          - vrrp 200 priority-level 150
+          - vrrp 200 preempt
+          - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
+      when: 
+        - site == 'CDLV' 
+        - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+        - "'not found' in vlan_check.stdout[0]"
+      changed_when: true
+      
+
+
+    
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
