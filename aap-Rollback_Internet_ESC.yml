@@ -81,29 +81,26 @@
         - "Ruta 9: {{ static_route_9 }}"
         - "Ruta 10: {{ static_route_10 }}"
 
-    - name: Generar comandos para eliminar rutas estáticas
-      set_fact:
-       delete_static_routes: "{{ filtered_static_routes | map('regex_replace', '^ip route (.+)$', 'no ip route \\1') | list }}"
 
 
-    - name: Eliminar rutas estáticas individualmente
-      arista.eos.eos_command:
-        commands: "{{ item }}"
-      loop: "{{ delete_static_routes }}"
-      when: 
-        - delete_static_routes | length > 0
-        - site == 'CDLV' 
-        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
-        - "'not found' not in vlan_check.stdout[0]"
-        - vrrp_check.stdout[0] != ''
-        
-
-    - name: Configurar VRRP y Ruta Estatica Publica en CDLV-212-G31-UR29-BLEAF-A
+    - name: eliminar VRRP y Ruta Estatica Publica en CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
           - configure terminal
           - no interface vlan {{ vlan_id }}
           - no vlan {{ vlan_id }}
+          - no {{ static_route_1 }}
+          - no {{ static_route_2 }}
+          - no {{ static_route_3 }}
+          - no {{ static_route_4 }}
+          - no {{ static_route_5 }}
+          - no {{ static_route_6 }}
+          - no {{ static_route_7 }}
+          - no {{ static_route_8 }}
+          - no {{ static_route_9 }}
+          - no {{ static_route_10 }}
+
+          
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
