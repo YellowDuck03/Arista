@@ -89,18 +89,17 @@
           - configure terminal
           - no interface vlan {{ vlan_id }}
           - no vlan {{ vlan_id }}
-          - no {{ static_route_1 }}
-          - no {{ static_route_2 }}
-          - no {{ static_route_3 }}
-          - no {{ static_route_4 }}
-          - no {{ static_route_5 }}
-          - no {{ static_route_6 }}
-          - no {{ static_route_7 }}
-          - no {{ static_route_8 }}
-          - no {{ static_route_9 }}
-          - no {{ static_route_10 }}
+          - "no {{ static_route_1 }}" if static_route_1 != ''
+          - "no {{ static_route_2 }}" if static_route_2 != ''
+          - "no {{ static_route_3 }}" if static_route_3 != ''
+          - "no {{ static_route_4 }}" if static_route_4 != ''
+          - "no {{ static_route_5 }}" if static_route_5 != ''
+          - "no {{ static_route_6 }}" if static_route_6 != ''
+          - "no {{ static_route_7 }}" if static_route_7 != ''
+          - "no {{ static_route_8 }}" if static_route_8 != ''
+          - "no {{ static_route_9 }}" if static_route_9 != ''
+          - "no {{ static_route_10 }}" if static_route_10 != ''
 
-          
       when: 
         - site == 'CDLV' 
         - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
