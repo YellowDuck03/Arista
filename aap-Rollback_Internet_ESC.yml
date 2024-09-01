@@ -54,13 +54,40 @@
       debug:
         var: static_routes_output.stdout
 
+    - name: Filtrar rutas estáticas con salto GW TDS
+      set_fact:
+       filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
+
+    - name: Separar rutas estáticas en variables
+      set_fact:
+        static_route_1: "{{ filtered_static_routes[0] | default('') }}"
+        static_route_2: "{{ filtered_static_routes[1] | default('') }}"
+        static_route_3: "{{ filtered_static_routes[2] | default('') }}"
+        static_route_4: "{{ filtered_static_routes[3] | default('') }}"
+        static_route_5: "{{ filtered_static_routes[4] | default('') }}"
+        static_route_6: "{{ filtered_static_routes[5] | default('') }}"
+        static_route_7: "{{ filtered_static_routes[6] | default('') }}"
+        static_route_8: "{{ filtered_static_routes[7] | default('') }}"
+        static_route_9: "{{ filtered_static_routes[8] | default('') }}"
+        static_route_10: "{{ filtered_static_routes[9] | default('') }}"
+
+    - name: Debug rutas estáticas separadas
+      debug:
+      msg:
+        - "Ruta 1: {{ static_route_1 }}"
+        - "Ruta 2: {{ static_route_2 }}"
+        - "Ruta 3: {{ static_route_3 }}"
+        - "Ruta 4: {{ static_route_4 }}"
+        - "Ruta 5: {{ static_route_5 }}"
+        - "Ruta 6: {{ static_route_6 }}"
+        - "Ruta 7: {{ static_route_7 }}"
+        - "Ruta 8: {{ static_route_8 }}"
+        - "Ruta 9: {{ static_route_9 }}"
+        - "Ruta 10: {{ static_route_10 }}"
+
     - name: Generar comandos para eliminar rutas estáticas
       set_fact:
-        delete_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', '10.136.0.4') | map('regex_replace', '^ip route (.+)$', 'no ip route \\1') | list }}"
-
-    - name: Ejecutar los comandos para eliminar las rutas estáticas
-      arista.eos.eos_command:
-        commands: "{{ delete_static_routes }}"
+       delete_static_routes: "{{ filtered_static_routes | map('regex_replace', '^ip route (.+)$', 'no ip route \\1') | list }}"
 
 
     - name: Eliminar rutas estáticas individualmente
