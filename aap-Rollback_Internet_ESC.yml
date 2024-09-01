@@ -50,10 +50,6 @@
         commands: "show running-config | include {{ vrrp_ip_int }}"
       register: static_routes_output
 
-    - name: Debug rutas estáticas
-      debug:
-        var: static_routes_output.stdout
-
     - name: Filtrar rutas estáticas con salto GW TDS
       set_fact:
        filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
