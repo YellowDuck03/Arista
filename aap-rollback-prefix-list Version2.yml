@@ -3,16 +3,13 @@
   hosts: all
   gather_facts: no
   
-  # Variables
   vars:
     site: ""
     eliminar: ""
     nom_prefix: ""
     id_prefix: ""
     
-  # Tareas
   tasks:
-
     - name: Verificar existencia del prefix-list
       arista.eos.eos_command:
         commands:
@@ -23,62 +20,58 @@
       debug:
         var: prefix_check.stdout 
 
-    - name: eliminar id de prefix-list
+    - name: eliminar id de prefix-list en CDLV
       arista.eos.eos_command:
         commands:
           - configure terminal
           - ip prefix-list {{ nom_prefix }}
           - no seq {{ id_prefix }} 
-  when: 
+      when: 
         - site == 'CDLV' 
         - eliminar == 'ID' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
         - prefix_check.stdout[0] != ''
-  changed_when: true
+      changed_when: true
 
-      - name: eliminar id de prefix-list
+    - name: eliminar id de prefix-list en AMU
       arista.eos.eos_command:
         commands:
           - configure terminal
           - ip prefix-list {{ nom_prefix }}
           - no seq {{ id_prefix }} 
-  when: 
+      when: 
         - site == 'AMU' 
         - eliminar == 'ID' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - inventory_hostname in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
         - prefix_check.stdout[0] != ''
-  changed_when: true
+      changed_when: true
 
-
-
-
-
-
-  - name: eliminar PREFIX-LIST de prefix-list
+    - name: eliminar PREFIX-LIST de prefix-list en CDLV
       arista.eos.eos_command:
         commands:
           - configure terminal
           - no ip prefix-list {{ nom_prefix }}   
-  when: 
-        - site == 'AMU' 
+      when: 
+        - site == 'CDLV' 
         - eliminar == 'PREFIX-LIST' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B']
         - prefix_check.stdout[0] != ''
-  changed_when: true
+      changed_when: true
 
-      - name: eliminar id de prefix-list
+    - name: eliminar PREFIX-LIST de prefix-list en AMU
       arista.eos.eos_command:
         commands:
           - configure terminal
           - no ip prefix-list {{ nom_prefix }}    
-  when: 
+      when: 
         - site == 'AMU' 
         - eliminar == 'PREFIX-LIST' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - inventory_hostname in ['AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
         - prefix_check.stdout[0] != ''
-  changed_when: true
+      changed_when: true
 
-   - name: Guardar cambios
+    - name: Guardar cambios
       arista.eos.eos_command:
         commands:
           - write memory
+
