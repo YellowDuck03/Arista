@@ -1,5 +1,5 @@
 ---
-- name: Crear PREFIX-LIST switch Arista
+- name: Rollback prefix-list o ID
   hosts: all
   gather_facts: no
   
