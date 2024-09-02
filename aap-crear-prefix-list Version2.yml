@@ -36,7 +36,7 @@
     - name: Crear PREFIX-LIST 1
       arista.eos.eos_command:
         commands:
-          - configure terminall
+          - configure terminal
           - ip prefix-list {{ nom_prefix }} permit {{ prefix_1 }}
       when: prefix_1 != ''
 
