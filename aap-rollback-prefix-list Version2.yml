@@ -26,6 +26,7 @@
           - configure terminal
           - ip prefix-list {{ nom_prefix }}
           - no seq {{ id_prefix }} 
+          - exit
       when: 
         - site == 'CDLV' 
         - eliminar == 'ID' 
