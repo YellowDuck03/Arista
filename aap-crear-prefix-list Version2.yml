@@ -36,31 +36,36 @@
     - name: Crear PREFIX-LIST 1
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_1 }}"
+          - configure terminall
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_1 }}
       when: prefix_1 != ''
 
     - name: Crear PREFIX-LIST 2
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_2 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_2 }}
       when: prefix_2 != ''
 
     - name: Crear PREFIX-LIST 3
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_3 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_3 }}
       when: prefix_3 != ''
 
     - name: Crear PREFIX-LIST 4
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_4 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_4 }}
       when: prefix_4 != ''
 
     - name: Crear PREFIX-LIST 5
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_5 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_5 }}
       when: prefix_5 != ''
 
     - name: Crear PREFIX-LIST 6
@@ -72,23 +77,27 @@
     - name: Crear PREFIX-LIST 7
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_7 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_7 }}
       when: prefix_7 != ''
 
     - name: Crear PREFIX-LIST 8
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_8 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_8 }}
       when: prefix_8 != ''
 
     - name: Crear PREFIX-LIST 9
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_9 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_9 }}
       when: prefix_9 != ''
 
     - name: Crear PREFIX-LIST 10
       arista.eos.eos_command:
         commands:
-          - "ip prefix-list {{ nom_prefix }} permit {{ prefix_10 }}"
+          - configure terminal
+          - ip prefix-list {{ nom_prefix }} permit {{ prefix_10 }}
       when: prefix_10 != ''
