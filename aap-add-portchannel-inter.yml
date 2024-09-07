@@ -30,6 +30,7 @@
     - name: Crear Port-channel con Interfaces si no existe
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - interface Port-channel {{ port_id }}
           - description {{ port_desc }}
           - switchport trunk allowed vlan {{ vlan_allowed }}
