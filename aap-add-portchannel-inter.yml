@@ -28,13 +28,13 @@
      
    
     - name: Crear Port-channel con Interfaces si no existe
-      arista.eos.eos_config:
-        lines:
+      arista.eos.eos_command:
+        commands:
           - interface Port-channel {{ port_id }}
           - description {{ port_desc }}
           - switchport trunk allowed vlan {{ vlan_allowed }}
           - switchport mode trunk
-          - mlag {{ mlag_id }}
+          - mlag {{ port_id }}
           - spanning-tree bpdufilter enable 
           - spanning-tree guard root
           - interface Ethernet {{ int_id }}
