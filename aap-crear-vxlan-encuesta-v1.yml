@@ -1,0 +1,69 @@
+---
+- name: Comprobar y crear VXLAN en el switch Arista
+  hosts: all
+  gather_facts: no
+  
+  # Variables
+  vars:
+    vlan_id: ""
+    nom_vlan: ""
+    vxlan_vni: ""
+   
+  # Tareas
+  tasks:
+    - name: Verificar existencia de VLAN
+      arista.eos.eos_command:
+        commands:
+          - show vlan id {{ vlan_id }}
+      register: vlan_check
+
+    # Salida por pantalla show vlan
+    - name: Resultado comando show vlan
+      debug:
+        msg: "{{ vlan_check.stdout }}"
+    
+    - name: Verificar existencia de VNI
+      arista.eos.eos_command:
+        commands:
+         
+          - sh running-config inter vxlan 1 | in vni {{ vxlan_vni }}
+      register: vxlan_vni_check
+
+    # Salida por pantalla show vxlan VNI 
+    - name: Resultado comando show vxlan vni | in VNI
+      debug:
+        msg: "{{ vxlan_vni_check.stdout }}"
+        
+    - name: Verificar existencia de VLAN en VNI
+      arista.eos.eos_command:
+        commands:
+         
+          - sh running-config inter vxlan 1 | in vlan {{ vlan_id }}
+      register: vxlan_vlan_check
+
+    # Salida por pantalla show vxlan VNI 
+    - name: Resultado comando show vxlan vni | in vlan_id
+      debug:
+        msg: "{{ vxlan_vlan_check.stdout }}"
+
+    - name: Crear VXLAN si existe VLAN pero no ha sido asignada a VNI
+      arista.eos.eos_config:
+        lines:
+          - interface vxlan1
+          - vxlan vlan {{ vlan_id }} vni {{ vxlan_vni }}
+      when: vlan_check.stdout[0] and not (vxlan_vni_check.stdout[0] or vxlan_vlan_check.stdout[0])
+
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
+        
+    - name: Verificar configuración de VXLAN nuevamente
+      arista.eos.eos_command:
+        commands:
+          - show vxlan vni | in {{ vlan_id }}
+      register: vxlan_check_new
+
+    - name: Mostrar resultado del comando  show vxlan vni después de configurar la VXLAN
+      debug:
+        msg: "{{ vxlan_check_new.stdout }}"
