@@ -37,7 +37,9 @@
         commands:
           - configure terminal
           - no ip route vrf {{ vrf_nam }} {{ des_mask }} {{ next_hop }}
-      when: vrf_nam  in des_mask_check.stdout
+      when: 
+        - vrf_check.stdout[0] != ''  
+        - des_mask_check.stdout[0] != '' 
       changed_when: true
    
     - name: Guardar cambios
