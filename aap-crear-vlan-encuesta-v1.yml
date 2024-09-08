@@ -77,9 +77,8 @@
           - interface vxlan1
           - vxlan vlan {{ vlan_id }} vni {{ vxlan_vni }}
       when:
-        - vlan_check.stdout
+        - vlan_check.stdout[0] != ''
         - "'not found' in vxlan_vni_check.stdout[0]"
-        - "'not found' in vxlan_vlan_check.stdout[0]"
         - extiende == 'SI'
         - crear == 'NO'
 
