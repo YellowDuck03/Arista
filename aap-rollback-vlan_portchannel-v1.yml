@@ -45,10 +45,11 @@
 
 
     - name: Agregar vlan a Portchannel si no existe
-      arista.eos.eos_config:
-        lines:
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
           - interface Port-channel {{ vlan_port }}
-          - switchport trunk allowed vlan add {{ vlan_id }}
+          - switchport trunk allowed vlan remove {{ vlan_id }}
       when: "'' in vlan_id_port_check.stdout[0]"
         
     - name: Guardar cambios
