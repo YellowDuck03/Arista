@@ -78,7 +78,7 @@
           - vxlan vlan {{ vlan_id }} vni {{ vxlan_vni }}
       when:
         - vlan_check.stdout[0] != ''
-        - vxlan_vni_check.stdout[0] = ''
+        - vxlan_vni_check.stdout[0] == ''
         - extiende == 'SI'
         - crear == 'NO'
 
