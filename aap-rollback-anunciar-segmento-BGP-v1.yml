@@ -1,5 +1,5 @@
 ---
-- name: Anunciar segmento publico BGP en switch Arista
+- name: rollback Anunciar segmento publico BGP en switch Arista
   hosts: all
   gather_facts: no
 
@@ -31,7 +31,7 @@
       debug:
         msg: "{{ vrf_check.stdout }}"
         
-    - name: Anunciar segmento BGP para la VRF
+    - name: rollback Anunciar segmento BGP para la VRF
       arista.eos.eos_command:
         commands:
           - configure terminal
