@@ -23,11 +23,12 @@
         msg: "{{ vlan_check.stdout }}"
 
     - name: Crea VLAN MAPPING en PORT-CHANNEL
-      arista.eos.eos_config:
-        lines:
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
           - interface Port-Channel {{ id_port }}
-          - switchport vlan translation {{ vlan_real }} {{ vlan_map }}
-          - switchport trunk allowed vlan add {{ vlan_map }}
+          - no switchport vlan translation {{ vlan_real }} {{ vlan_map }}
+          - switchport trunk allowed vlan remove {{ vlan_map }}
       when: "'not found' not in vlan_check.stdout[0]"
     
     - name: Guardar cambios
