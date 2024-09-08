@@ -20,13 +20,6 @@
     - name: Mostrar resultado del comando show bgp instance
       debug:
         msg: "{{ bgp_check.stdout }}"
-        
-    - name: Validacion BGP ID
-      fail:
-        msg: "No existe BGP ID"
-      when: bgp_id not in bgp_check.stdout[0]
-      run_once: true
-      meta: end_play
 
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
@@ -44,7 +37,7 @@
           - configure terminal
           - router bgp {{ bgp_id }}
           - vrf {{ vrf_nam }}
-          - network {{ prefix_mask }}
+          - no network {{ prefix_mask }}
       when: vrf_nam in vrf_check.stdout[0]
 
     - name: Guardar cambios
