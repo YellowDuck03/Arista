@@ -51,7 +51,7 @@
            - "VLAN ID: {{ vlan_id }}"
            - "Port-Channel: {{ port_channel }}"
 
-  - name: Verificar existencia de VRRP
+    - name: Verificar existencia de VRRP
       arista.eos.eos_command:
         commands:
           - show vrrp group 100 interface vlan {{ vlan_id }}
