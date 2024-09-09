@@ -10,7 +10,6 @@
     vrf_name: ""
     network: ""
     prefix_in: ""
-    area: "0.0.0.0"
     ip_socti: ""
     configuraciones_realizadas: []  # Variable para almacenar las configuraciones
     equipos_config:
