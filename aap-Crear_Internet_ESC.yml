@@ -110,7 +110,7 @@
           - vrrp 200 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
-        - site == 'CDLV' 
+        - site == 'AMU' 
         - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
         - "'not found' in vlan_check.stdout[0]"
       changed_when: true
@@ -131,7 +131,7 @@
           - vrrp 200 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
-        - site == 'CDLV' 
+        - site == 'AMU' 
         - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
         - "'not found' in vlan_check.stdout[0]"
       changed_when: true
