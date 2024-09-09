@@ -186,10 +186,6 @@
           - no shutdown
           
           
-          - route-map {{ vrf_name }}-TO-OSPF permit 10
-          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - set metric {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].metric }}
-          
           - interface vlan {{ vlan_id }}
           - vrf {{ vrf_name }}
           - description {{ vrf_name }}-INTER-RED-TDS-SOCTI
@@ -298,10 +294,6 @@
           - ip address {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].ip_po }}
           - no shutdown
           
-          
-          - route-map {{ vrf_name }}-TO-OSPF permit 10
-          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - set metric {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].metric }}
 
           - interface Port-Channel12
           - switchport trunk allowed vlan add {{ vlan_id }}
@@ -352,10 +344,6 @@
           - vrf {{ vrf_name }}
           - ip address {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].ip_po }}
           
-          
-          - route-map {{ vrf_name }}-TO-OSPF permit 10
-          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - set metric {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].metric }}
           
           - route-map MPLS-RESPALDO-{{ vrf_name }} permit 10
           - set as-path prepend {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].as_path_prepend }}
