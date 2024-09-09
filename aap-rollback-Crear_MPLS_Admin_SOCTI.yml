@@ -115,7 +115,7 @@
         - "Ruta 10: {{ static_route_10 }}"
 
 
-- name: Eliminar Ruta Estatica 1 (CDLV)
+    - name: Eliminar Ruta Estatica 1 (CDLV)
       arista.eos.eos_command:
         commands:
           - "no {{ static_route_1 }}"
