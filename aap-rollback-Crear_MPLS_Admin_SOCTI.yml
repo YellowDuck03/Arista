@@ -51,21 +51,6 @@
            - "VLAN ID: {{ vlan_id }}"
            - "Port-Channel: {{ port_channel }}"
 
-    - name: Ejecutar el comando para obtener la información de OSPF
-      arista.eos.eos_command:
-         commands:
-          - show ip ospf vrf {{ vrf_name }} | i instance 
-      register: ospf_output
-
-    - name: Extraer la instancia de OSPF
-      set_fact:
-       ospf_instance_id: "{{ ospf_output.stdout | regex_search('OSPF instance (\\d+)', '\\1') | first }}"
-
-    - name: Mostrar la instancia de OSPF extraída
-      debug:
-        msg: "Instancia de OSPF: {{ ospf_instance_id }}"
-
-
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
@@ -74,9 +59,6 @@
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - router bgp 65121
           - no vrf {{ vrf_name }}
-          - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - no route-map {{ vrf_name }}-TO-OSPF
-          - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
@@ -95,10 +77,7 @@
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - router bgp 65121
           - no vrf {{ vrf_name }}
-          - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
-          - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
@@ -117,9 +96,6 @@
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - router bgp 65021
           - no vrf {{ vrf_name }}
-          - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - no route-map {{ vrf_name }}-TO-OSPF
-          - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
@@ -138,10 +114,7 @@
           - switchport trunk allowed vlan remove {{ vlan_id }}
           - router bgp 65021
           - no vrf {{ vrf_name }}
-          - no ip prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - no route-map {{ vrf_name }}-TO-OSPF
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
-          - no router ospf {{ ospf_instance_id }} vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}   
           - no interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
