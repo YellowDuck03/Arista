@@ -92,6 +92,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 1 (CDLV)
       arista.eos.eos_command:
@@ -104,6 +105,8 @@
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
 
+      changed_when: true
+
     - name: Eliminar Ruta Estatica 2 (CDLV)
       arista.eos.eos_command:
         commands:
@@ -114,6 +117,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 3 (CDLV)
       arista.eos.eos_command:
@@ -125,6 +129,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 4 (CDLV)
       arista.eos.eos_command:
@@ -136,6 +141,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 5 (CDLV)
       arista.eos.eos_command:
@@ -147,6 +153,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 6 (CDLV)
       arista.eos.eos_command:
@@ -158,6 +165,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 7 (CDLV)
       arista.eos.eos_command:
@@ -169,6 +177,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 8 (CDLV)
       arista.eos.eos_command:
@@ -180,6 +189,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 9 (CDLV)
       arista.eos.eos_command:
@@ -191,6 +201,7 @@
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 10 (CDLV)
       arista.eos.eos_command:
@@ -214,6 +225,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 1 (AMU)
       arista.eos.eos_command:
@@ -225,6 +237,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 2 (AMU)
       arista.eos.eos_command:
@@ -236,6 +249,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 3 (AMU)
       arista.eos.eos_command:
@@ -247,6 +261,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 4 (AMU)
       arista.eos.eos_command:
@@ -258,6 +273,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 5 (AMU)
       arista.eos.eos_command:
@@ -269,6 +285,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 6 (AMU)
       arista.eos.eos_command:
@@ -280,6 +297,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 7 (AMU)
       arista.eos.eos_command:
@@ -291,6 +309,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 8 (AMU)
       arista.eos.eos_command:
@@ -302,6 +321,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 9 (AMU)
       arista.eos.eos_command:
@@ -313,6 +333,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Eliminar Ruta Estatica 10 (AMU)
       arista.eos.eos_command:
@@ -324,6 +345,7 @@
         - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
         - "'not found' not in vlan_check.stdout[0]"
         - vrrp_check.stdout[0] != ''
+      changed_when: true
 
     - name: Guardar cambios
       arista.eos.eos_command:
