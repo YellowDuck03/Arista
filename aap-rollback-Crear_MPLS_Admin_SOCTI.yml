@@ -118,6 +118,7 @@
     - name: Eliminar Ruta Estatica 1 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_1 }}"
       when: 
         - static_route_1 != ''
@@ -128,6 +129,7 @@
     - name: Eliminar Ruta Estatica 2 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_2 }}"
       when: 
         - static_route_2 != ''
@@ -138,6 +140,7 @@
     - name: Eliminar Ruta Estatica 3 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_3 }}"
       when: 
         - static_route_3 != ''
@@ -148,6 +151,7 @@
     - name: Eliminar Ruta Estatica 4 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_4 }}"
       when: 
         - static_route_4 != ''
@@ -158,6 +162,7 @@
     - name: Eliminar Ruta Estatica 5 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_5 }}"
       when: 
         - static_route_5 != ''
@@ -168,6 +173,7 @@
     - name: Eliminar Ruta Estatica 6 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_6 }}"
       when: 
         - static_route_6 != ''
@@ -178,6 +184,7 @@
     - name: Eliminar Ruta Estatica 7 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_7 }}"
       when: 
         - static_route_7 != ''
@@ -188,6 +195,7 @@
     - name: Eliminar Ruta Estatica 8 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_8 }}"
       when: 
         - static_route_8 != ''
@@ -198,6 +206,7 @@
     - name: Eliminar Ruta Estatica 9 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_9 }}"
       when: 
         - static_route_9 != ''
@@ -208,6 +217,7 @@
     - name: Eliminar Ruta Estatica 10 (CDLV)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_10 }}"
       when: 
         - static_route_10 != ''
@@ -218,6 +228,7 @@
     - name: Eliminar Ruta Estatica 1 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_1 }}"
       when: 
         - static_route_1 != ''
@@ -228,6 +239,7 @@
     - name: Eliminar Ruta Estatica 2 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_2 }}"
       when: 
         - static_route_2 != ''
@@ -238,6 +250,7 @@
     - name: Eliminar Ruta Estatica 3 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_3 }}"
       when: 
         - static_route_3 != ''
@@ -248,6 +261,7 @@
     - name: Eliminar Ruta Estatica 4 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_4 }}"
       when: 
         - static_route_4 != ''
@@ -258,6 +272,7 @@
     - name: Eliminar Ruta Estatica 5 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_5 }}"
       when: 
         - static_route_5 != ''
@@ -268,6 +283,7 @@
     - name: Eliminar Ruta Estatica 6 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_6 }}"
       when: 
         - static_route_6 != ''
@@ -278,6 +294,7 @@
     - name: Eliminar Ruta Estatica 7 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_7 }}"
       when: 
         - static_route_7 != ''
@@ -288,6 +305,7 @@
     - name: Eliminar Ruta Estatica 8 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_8 }}"
       when: 
         - static_route_8 != ''
@@ -298,6 +316,7 @@
     - name: Eliminar Ruta Estatica 9 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_9 }}"
       when: 
         - static_route_9 != ''
@@ -308,6 +327,7 @@
     - name: Eliminar Ruta Estatica 10 (AMU)
       arista.eos.eos_command:
         commands:
+          - configure terminal
           - "no {{ static_route_10 }}"
       when: 
         - static_route_10 != ''
