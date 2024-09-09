@@ -51,6 +51,307 @@
            - "VLAN ID: {{ vlan_id }}"
            - "Port-Channel: {{ port_channel }}"
 
+  - name: Verificar existencia de VRRP
+      arista.eos.eos_command:
+        commands:
+          - show vrrp group 100 interface vlan {{ vlan_id }}
+      register: vrrp_check
+
+    - name: Debug VRRP check
+      debug:
+        var: vrrp_check.stdout
+
+    - name: Extraer la IP VIP de VRRP
+      set_fact:
+        vrrp_ip: "{{ (vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1')) | first }}"
+      when: vrrp_check.stdout is not none and vrrp_check.stdout[0] != ''
+
+    - name: Debug IP VIP de VRRP
+      debug:
+        var: vrrp_ip
+
+    - name: Convertir la IP VIP VRRP a entero y sumar 1
+      set_fact:
+        vrrp_ip_int: "{{ (vrrp_ip | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
+
+    - name: Mostrar IP GW de TDS
+      debug:
+        msg: "La ip GW de TDS es {{ vrrp_ip_int }}"
+
+    - name: Obtener la configuración completa de las rutas estáticas
+      arista.eos.eos_command:
+        commands: "show running-config | include {{ vrrp_ip_int }}"
+      register: static_routes_output
+
+    - name: Filtrar rutas estáticas con salto GW TDS
+      set_fact:
+       filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
+
+    - name: Separar rutas estáticas en variables
+      set_fact:
+        static_route_1: "{{ filtered_static_routes[0] | default('') }}"
+        static_route_2: "{{ filtered_static_routes[1] | default('') }}"
+        static_route_3: "{{ filtered_static_routes[2] | default('') }}"
+        static_route_4: "{{ filtered_static_routes[3] | default('') }}"
+        static_route_5: "{{ filtered_static_routes[4] | default('') }}"
+        static_route_6: "{{ filtered_static_routes[5] | default('') }}"
+        static_route_7: "{{ filtered_static_routes[6] | default('') }}"
+        static_route_8: "{{ filtered_static_routes[7] | default('') }}"
+        static_route_9: "{{ filtered_static_routes[8] | default('') }}"
+        static_route_10: "{{ filtered_static_routes[9] | default('') }}"
+
+    - name: Debug rutas estáticas separadas
+      debug:
+        msg:
+        - "Ruta 1: {{ static_route_1 }}"
+        - "Ruta 2: {{ static_route_2 }}"
+        - "Ruta 3: {{ static_route_3 }}"
+        - "Ruta 4: {{ static_route_4 }}"
+        - "Ruta 5: {{ static_route_5 }}"
+        - "Ruta 6: {{ static_route_6 }}"
+        - "Ruta 7: {{ static_route_7 }}"
+        - "Ruta 8: {{ static_route_8 }}"
+        - "Ruta 9: {{ static_route_9 }}"
+        - "Ruta 10: {{ static_route_10 }}"
+
+
+- name: Eliminar Ruta Estatica 1 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_1 }}"
+      when: 
+        - static_route_1 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 2 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_2 }}"
+      when: 
+        - static_route_2 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 3 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_3 }}"
+      when: 
+        - static_route_3 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 4 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_4 }}"
+      when: 
+        - static_route_4 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 5 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_5 }}"
+      when: 
+        - static_route_5 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 6 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_6 }}"
+      when: 
+        - static_route_6 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 7 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_7 }}"
+      when: 
+        - static_route_7 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 8 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_8 }}"
+      when: 
+        - static_route_8 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 9 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_9 }}"
+      when: 
+        - static_route_9 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 10 (CDLV)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_10 }}"
+      when: 
+        - static_route_10 != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: eliminar SVI de VLAN (AMU)
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - no interface vlan {{ vlan_id }}
+          - no vlan {{ vlan_id }}
+      when: 
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 1 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_1 }}"
+      when: 
+        - static_route_1 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 2 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_2 }}"
+      when: 
+        - static_route_2 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 3 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_3 }}"
+      when: 
+        - static_route_3 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 4 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_4 }}"
+      when: 
+        - static_route_4 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 5 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_5 }}"
+      when: 
+        - static_route_5 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 6 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_6 }}"
+      when: 
+        - static_route_6 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 7 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_7 }}"
+      when: 
+        - static_route_7 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 8 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_8 }}"
+      when: 
+        - static_route_8 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 9 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_9 }}"
+      when: 
+        - static_route_9 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+    - name: Eliminar Ruta Estatica 10 (AMU)
+      arista.eos.eos_command:
+        commands:
+          - "no {{ static_route_10 }}"
+      when: 
+        - static_route_10 != ''
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+        - "'not found' not in vlan_check.stdout[0]"
+        - vrrp_check.stdout[0] != ''
+
+
+
+
+
+
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
