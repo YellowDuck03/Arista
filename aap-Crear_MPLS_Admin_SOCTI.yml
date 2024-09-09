@@ -152,7 +152,7 @@
         - "Máscara de subred: {{ subnet_mask }}"
       
 
-   - name: Calcular las primeras cuatro IPs disponibles en el segmento
+    - name: Calcular las primeras cuatro IPs disponibles en el segmento
       set_fact:
         first_ip: "{{ ip_base }}.{{ last_octet | int + 1 }}"
         second_ip: "{{ ip_base }}.{{ last_octet | int + 2 }}"
