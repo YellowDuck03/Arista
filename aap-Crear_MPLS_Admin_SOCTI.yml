@@ -198,7 +198,7 @@
           - vrrp 120 priority-level 200 
           - vrrp 120 preempt
           
-          - ip route vrf Internet {{ ip_socti }} {{ fourth_ip }}
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
 
           - interface Port-Channel12
           - switchport trunk allowed vlan add {{ vlan_id }}
@@ -259,7 +259,7 @@
           - vrrp 120 priority-level 150 
           - vrrp 120 preempt
           
-          - ip route vrf Internet {{ ip_socti }} {{ fourth_ip }}
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
           
           - router bgp {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].bgp_asn }}
           - vrf {{ vrf_name }}
@@ -314,7 +314,7 @@
           - vrrp 120 priority-level 200 
           - vrrp 120 preempt
           
-          - ip route vrf Internet {{ ip_socti }} {{ fourth_ip }}
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
           
           - router bgp {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].bgp_asn }}
           - vrf {{ vrf_name }}
@@ -371,7 +371,7 @@
           - vrrp 120 priority-level 150 
           - vrrp 120 preempt
           
-          - ip route vrf Internet {{ ip_socti }} {{ fourth_ip }}
+          - ip route vrf {{ vrf_name }}{{ ip_socti }} {{ fourth_ip }}
           
           - router bgp {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].bgp_asn }}
           - vrf {{ vrf_name }}
