@@ -348,6 +348,7 @@
           - no vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
+          - no track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_po }} line-protocol
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
       when: 
@@ -384,6 +385,7 @@
           - router bgp 65021
           - no vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
+          - no track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }} line-protocol
           - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }} 
