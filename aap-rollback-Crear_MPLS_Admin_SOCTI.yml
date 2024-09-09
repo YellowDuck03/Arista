@@ -54,7 +54,7 @@
     - name: Verificar existencia de VRRP
       arista.eos.eos_command:
         commands:
-          - show vrrp group 100 interface vlan {{ vlan_id }}
+          - show vrrp group 120 interface vlan {{ vlan_id }}
       register: vrrp_check
 
     - name: Debug VRRP check
