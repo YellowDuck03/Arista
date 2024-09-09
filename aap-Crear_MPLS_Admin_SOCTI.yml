@@ -177,6 +177,8 @@
           
           - vlan {{ vlan_id }}
           - name INTER-RED-TDS-{{ vrf_name }}
+
+          - track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_po }} line-protocol
           
           - interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_po }}
           - description {{ vrf_name }}MPLS
@@ -193,6 +195,7 @@
           - vrrp 120 ipv4 {{ third_ip }}
           - vrrp 120 priority-level 200 
           - vrrp 120 preempt
+          - vrrp 120 tracked-object {{ vrf_name }}TRACK decrement 60
           
           - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
 
@@ -243,10 +246,6 @@
           - route-map MPLS-RESPALDO-{{ vrf_name }} permit 10
           - set as-path prepend {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].as_path_prepend }}
           
-          - route-map {{ vrf_name }}-TO-OSPF permit 10
-          - match ip address prefix-list {{ vrf_name }}-ESC-TO-BGP-IN
-          - set metric {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].metric }}
-          
           - interface vlan {{ vlan_id }}
           - vrf {{ vrf_name }}
           - description {{ vrf_name }}-INTER-RED-TDS-SOCTI
@@ -287,6 +286,8 @@
           - vlan {{ vlan_id }}
           - name INTER-RED-TDS-{{ vrf_name }}
           
+          - track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_po }} line-protocol
+          
           - interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_po }}
           - description {{ vrf_name }}MPLS
           - encapsulation dot1q vlan {{ vlan_po }}
@@ -305,6 +306,7 @@
           - vrrp 120 ipv4 {{ third_ip }}
           - vrrp 120 priority-level 200 
           - vrrp 120 preempt
+          - vrrp 120 tracked-object {{ vrf_name }}TRACK decrement 60
           
           - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
           
