@@ -42,6 +42,7 @@
         vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
       when:
         - vrf_output.stdout is not none
+        - vrf_output.stdout[0] is not none
         - site in ['CDLV', 'AMU'] 
         - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
@@ -49,6 +50,8 @@
       set_fact:
         port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
       when:
+        - vrf_output.stdout is not none
+        - vrf_output.stdout[0] is not none
         - site in ['CDLV', 'AMU'] 
         - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
