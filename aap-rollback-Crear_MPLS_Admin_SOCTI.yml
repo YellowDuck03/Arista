@@ -37,12 +37,22 @@
         - show ip route vrf {{ vrf_name }} connected
       register: vrf_output
 
-    - name: Extraer la VLAN ID (para AMU y CDLV)
+    - name: Extraer la VLAN ID en CDLV
       set_fact:
        vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
       when:
        - vrf_output.stdout is not none
-       - site == 'AMU' or site == 'CDLV'
+       - site == 'CDLV' 
+       - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+
+    - name: Extraer la VLAN ID en CDLV
+      set_fact:
+       vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
+      when:
+       - vrf_output.stdout is not none
+       - site == 'AMU' 
+       - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+       
     
 
     - name: Extraer el Port-Channel
