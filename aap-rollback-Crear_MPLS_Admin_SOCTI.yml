@@ -37,9 +37,13 @@
         - show ip route vrf {{ vrf_name }} connected
       register: vrf_output
 
-    - name: Extraer la VLAN ID
+    - name: Extraer la VLAN ID (para AMU y CDLV)
       set_fact:
        vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
+      when:
+       - vrf_output.stdout is not none
+       - site == 'AMU' or site == 'CDLV'
+    
 
     - name: Extraer el Port-Channel
       set_fact:
@@ -348,7 +352,7 @@
           - no vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
           - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
-          - no track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_po }} line-protocol
+          - no track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }} line-protocol
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
       when: 
@@ -385,7 +389,7 @@
           - router bgp 65021
           - no vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
-          - no track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }} line-protocol
+          - no track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }} line-protocol
           - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }} 
