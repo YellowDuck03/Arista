@@ -71,14 +71,38 @@
 
         
 
-    - name: Obtener la configuración completa de las rutas estáticas
+    - name: Obtener la configuración completa de las rutas estáticas en CDLV
       arista.eos.eos_command:
         commands: "show running-config | include {{ vrrp_ip_int }}"
       register: static_routes_output
+       when: 
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
 
-    - name: Filtrar rutas estáticas con salto GW TDS
+    - name: Obtener la configuración completa de las rutas estáticas en AMU
+      arista.eos.eos_command:
+        commands: "show running-config | include {{ vrrp_ip_int }}"
+      register: static_routes_output
+      when: 
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+
+    - name: Filtrar rutas estáticas con salto GW TDS en CDLV
       set_fact:
        filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
+      when: 
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        
+    - name: Filtrar rutas estáticas con salto GW TDS en AMU
+      set_fact:
+       filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
+      when: 
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+    
 
     - name: Separar rutas estáticas en variables
       set_fact:
