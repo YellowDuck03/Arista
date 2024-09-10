@@ -37,12 +37,24 @@
           - show ip route vrf {{ vrf_name }} connected
       register: vrf_output
 
+    - name: Debug salida de vrf_output
+      debug:
+        var: vrf_output.stdout
+
+    - name: Verificar si la salida de vrf_output está vacía
+      fail:
+        msg: "La salida de vrf_output está vacía o no contiene la información esperada."
+      when: 
+        - vrf_output.stdout is defined
+        - vrf_output.stdout == [] or vrf_output.stdout[0] is none
+
     - name: Extraer la VLAN ID
       set_fact:
         vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
       when:
-        - vrf_output.stdout is not none
-        - vrf_output.stdout[0] is not none
+        - vrf_output.stdout is defined
+        - vrf_output.stdout[0] is defined
+        - vrf_output.stdout[0] | regex_search('Vlan(\\d+)')
         - site in ['CDLV', 'AMU'] 
         - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
@@ -50,8 +62,9 @@
       set_fact:
         port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
       when:
-        - vrf_output.stdout is not none
-        - vrf_output.stdout[0] is not none
+        - vrf_output.stdout is defined
+        - vrf_output.stdout[0] is defined
+        - vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?')
         - site in ['CDLV', 'AMU'] 
         - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
@@ -61,8 +74,8 @@
            - "VLAN ID: {{ vlan_id }}"
            - "Port-Channel: {{ port_channel }}"
       when:
-        - site in ['CDLV', 'AMU']
-        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
+        - vlan_id is defined
+        - port_channel is defined
 
     - name: Verificar existencia de VRRP
       arista.eos.eos_command:
@@ -138,3 +151,4 @@
     - name: Debug guardado de cambios
       debug:
         msg: "Cambios guardados en el dispositivo."
+
