@@ -20,7 +20,7 @@
         bgp_asn: "65121"
         id_po: "Port-Channel6."
   
-tasks:
+  tasks:
     - name: Verificar existencia de la VRF
       arista.eos.eos_command:
         commands:
