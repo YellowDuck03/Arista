@@ -89,13 +89,34 @@
           - show ip ospf vrf {{ vrf_name }} | i instance 
       register: ospf_output
 
-    - name: Extraer la instancia de OSPF
+    - name: Extraer la instancia de OSPF en AMU
       set_fact:
        ospf_instance_id: "{{ ospf_output.stdout | regex_search('OSPF instance (\\d+)', '\\1') | first }}"
+      when: 
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
 
-    - name: Mostrar la instancia de OSPF extraída
+    - name: Extraer la instancia de OSPF en CDLV
+      set_fact:
+       ospf_instance_id: "{{ ospf_output.stdout | regex_search('OSPF instance (\\d+)', '\\1') | first }}"
+      when: 
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+       
+
+    - name: Mostrar la instancia de OSPF extraída en AMU
       debug:
         msg: "Instancia de OSPF: {{ ospf_instance_id }}"
+      when: 
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+    - name: Mostrar la instancia de OSPF extraída en CDLV
+      debug:
+        msg: "Instancia de OSPF: {{ ospf_instance_id }}"
+      when: 
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
 
 
     - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
