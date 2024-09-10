@@ -28,10 +28,25 @@
       debug:
         var: vrrp_check.stdout
 
-    - name: Extraer la IP VIP de VRRP
+    - name: Extraer la IP VIP de VRRP en cdlv 
       set_fact:
         vrrp_ip: "{{ (vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1')) | first }}"
-      when: vrrp_check.stdout is not none and vrrp_check.stdout[0] != ''
+      when: 
+        - vrrp_check.stdout is not none 
+        - vrrp_check.stdout[0] != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+
+      - name: Extraer la IP VIP de VRRP en amu
+      set_fact:
+        vrrp_ip: "{{ (vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1')) | first }}"
+      when: 
+        - vrrp_check.stdout is not none 
+        - vrrp_check.stdout[0] != ''
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+      
 
     - name: Debug IP VIP de VRRP
       debug:
