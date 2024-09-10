@@ -75,7 +75,7 @@
       arista.eos.eos_command:
         commands: "show running-config | include {{ vrrp_ip_int }}"
       register: static_routes_output
-       when: 
+      when: 
         - site == 'CDLV' 
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
 
