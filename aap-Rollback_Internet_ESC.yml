@@ -37,7 +37,7 @@
         - site == 'CDLV' 
         - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
 
-      - name: Extraer la IP VIP de VRRP en amu
+    - name: Extraer la IP VIP de VRRP en amu
       set_fact:
         vrrp_ip: "{{ (vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1')) | first }}"
       when: 
