@@ -76,6 +76,20 @@
         msg: 
            - "VLAN ID: {{ vlan_id }}"
            - "Port-Channel: {{ port_channel }}"
+      when:
+       - site == 'CDLV' 
+       - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+
+    - name: Mostrar los valores extraídos
+      debug:
+        msg: 
+           - "VLAN ID: {{ vlan_id }}"
+           - "Port-Channel: {{ port_channel }}"
+      when:
+       - site == 'AMU' 
+       - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+           
 
     - name: Verificar existencia de VRRP
       arista.eos.eos_command:
