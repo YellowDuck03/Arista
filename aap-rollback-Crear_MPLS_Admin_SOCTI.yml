@@ -34,42 +34,23 @@
     - name: Ejecutar el comando para obtener la información de la VRF
       arista.eos.eos_command:
         commands:
-        - show ip route vrf {{ vrf_name }} connected
+          - show ip route vrf {{ vrf_name }} connected
       register: vrf_output
 
-    - name: Extraer la VLAN ID en CDLV
+    - name: Extraer la VLAN ID
       set_fact:
-       vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
+        vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
       when:
-       - vrf_output.stdout is not none
-       - site == 'CDLV' 
-       - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - vrf_output.stdout is not none
+        - site in ['CDLV', 'AMU'] 
+        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
-    - name: Extraer la VLAN ID en AMU
+    - name: Extraer el Port-Channel
       set_fact:
-       vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
+        port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
       when:
-       - vrf_output.stdout is not none
-       - site == 'AMU' 
-       - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-       
-    
-
-    - name: Extraer el Port-Channel en CDLV
-      set_fact:
-       port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
-      when:
-       - site == 'CDLV' 
-       - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-
-    - name: Extraer el Port-Channel en AMU
-      set_fact:
-       port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
-      when:
-       - site == 'AMU' 
-       - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-
-       
+        - site in ['CDLV', 'AMU'] 
+        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
     - name: Mostrar los valores extraídos
       debug:
@@ -77,19 +58,8 @@
            - "VLAN ID: {{ vlan_id }}"
            - "Port-Channel: {{ port_channel }}"
       when:
-       - site == 'CDLV' 
-       - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-
-    - name: Mostrar los valores extraídos
-      debug:
-        msg: 
-           - "VLAN ID: {{ vlan_id }}"
-           - "Port-Channel: {{ port_channel }}"
-      when:
-       - site == 'AMU' 
-       - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-
-           
+        - site in ['CDLV', 'AMU']
+        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
     - name: Verificar existencia de VRRP
       arista.eos.eos_command:
@@ -125,335 +95,38 @@
 
     - name: Filtrar rutas estáticas con salto GW TDS
       set_fact:
-       filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
+        filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
 
-    - name: Separar rutas estáticas en variables
-      set_fact:
-        static_route_1: "{{ filtered_static_routes[0] | default('') }}"
-        static_route_2: "{{ filtered_static_routes[1] | default('') }}"
-        static_route_3: "{{ filtered_static_routes[2] | default('') }}"
-        static_route_4: "{{ filtered_static_routes[3] | default('') }}"
-        static_route_5: "{{ filtered_static_routes[4] | default('') }}"
-        static_route_6: "{{ filtered_static_routes[5] | default('') }}"
-        static_route_7: "{{ filtered_static_routes[6] | default('') }}"
-        static_route_8: "{{ filtered_static_routes[7] | default('') }}"
-        static_route_9: "{{ filtered_static_routes[8] | default('') }}"
-        static_route_10: "{{ filtered_static_routes[9] | default('') }}"
-
-    - name: Debug rutas estáticas separadas
-      debug:
-        msg:
-        - "Ruta 1: {{ static_route_1 }}"
-        - "Ruta 2: {{ static_route_2 }}"
-        - "Ruta 3: {{ static_route_3 }}"
-        - "Ruta 4: {{ static_route_4 }}"
-        - "Ruta 5: {{ static_route_5 }}"
-        - "Ruta 6: {{ static_route_6 }}"
-        - "Ruta 7: {{ static_route_7 }}"
-        - "Ruta 8: {{ static_route_8 }}"
-        - "Ruta 9: {{ static_route_9 }}"
-        - "Ruta 10: {{ static_route_10 }}"
-
-
-    - name: Eliminar Ruta Estatica 1 (CDLV)
+    - name: Eliminar rutas estáticas en {{ inventory_hostname }}
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - "no {{ static_route_1 }}"
+          - "no {{ item }}"
+      loop: "{{ filtered_static_routes }}"
       when: 
-        - static_route_1 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+        - filtered_static_routes is defined
+        - site in ['CDLV', 'AMU']
+        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
         - vrrp_check.stdout[0] != ''
 
-    - name: Eliminar Ruta Estatica 2 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_2 }}"
-      when: 
-        - static_route_2 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 3 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_3 }}"
-      when: 
-        - static_route_3 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 4 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_4 }}"
-      when: 
-        - static_route_4 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 5 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_5 }}"
-      when: 
-        - static_route_5 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 6 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_6 }}"
-      when: 
-        - static_route_6 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 7 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_7 }}"
-      when: 
-        - static_route_7 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 8 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_8 }}"
-      when: 
-        - static_route_8 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 9 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_9 }}"
-      when: 
-        - static_route_9 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 10 (CDLV)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_10 }}"
-      when: 
-        - static_route_10 != ''
-        - site == 'CDLV' 
-        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 1 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_1 }}"
-      when: 
-        - static_route_1 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 2 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_2 }}"
-      when: 
-        - static_route_2 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 3 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_3 }}"
-      when: 
-        - static_route_3 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 4 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_4 }}"
-      when: 
-        - static_route_4 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 5 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_5 }}"
-      when: 
-        - static_route_5 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 6 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_6 }}"
-      when: 
-        - static_route_6 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 7 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_7 }}"
-      when: 
-        - static_route_7 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 8 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_8 }}"
-      when: 
-        - static_route_8 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 9 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_9 }}"
-      when: 
-        - static_route_9 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-    - name: Eliminar Ruta Estatica 10 (AMU)
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - "no {{ static_route_10 }}"
-      when: 
-        - static_route_10 != ''
-        - site == 'AMU' 
-        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
-        - vrrp_check.stdout[0] != ''
-
-
-
-
-    - name: Eliminar configuraciones relacionadas para CDLV-212-G31-UR29-BLEAF-A
+    - name: Eliminar configuraciones relacionadas para {{ inventory_hostname }}
       arista.eos.eos_command:
         commands:
           - configure terminal
           - interface Port-Channel 12
           - switchport trunk allowed vlan remove {{ vlan_id }}
-          - router bgp 65121
+          - router bgp {{ equipos_config[inventory_hostname].bgp_asn }}
           - no vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
-          - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
-          - no track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }} line-protocol
+          - no interface {{ equipos_config[inventory_hostname].id_po }}{{ port_channel }}
+          - no track {{ vrf_name }}TRACK interface {{ equipos_config[inventory_hostname].id_po }}{{ vlan_id }} line-protocol
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
       when: 
-          - vrf_check.stdout[0] != ''
-          - site == 'CDLV' 
-          - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
-      changed_when: true
+        - vrf_check.stdout[0] != ''
+        - site in ['CDLV', 'AMU']
+        - inventory_hostname in ['CDLV-212-G31-UR29-BLEAF-A', 'CDLV-212-G32-UR29-BLEAF-B', 'AMU-P5-E4-UR29-BLEAF-A', 'AMU-P5-E3-UR29-BLEAF-B']
 
-    - name: Eliminar configuraciones relacionadas para CDLV-212-G32-UR29-BLEAF-B
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - interface Port-Channel 12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
-          - router bgp 65121
-          - no vrf {{ vrf_name }}
-          - no route-map MPLS-RESPALDO-{{ vrf_name }} 
-          - no interface vlan {{ vlan_id }}
-          - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
-          - no vlan {{ vlan_id }}
-          - no vrf instance {{ vrf_name }}
-      when: 
-          - vrf_check.stdout[0] != ''
-          - site == 'CDLV' 
-          - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
-      changed_when: true
-
-    - name: Eliminar toda la configuración para AMU-P5-E4-UR29-BLEAF-A
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - interface Port-Channel 12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
-          - router bgp 65021
-          - no vrf {{ vrf_name }}
-          - no interface vlan {{ vlan_id }}
-          - no track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }} line-protocol
-          - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }}
-          - no vlan {{ vlan_id }}
-          - no vrf instance {{ vrf_name }} 
-      when: 
-       - vrf_check.stdout[0] != ''
-       - site == 'AMU' 
-       - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
-      changed_when: true
-
-    - name: Eliminar toda la configuración para AMU-P5-E3-UR29-BLEAF-B
-      arista.eos.eos_command:
-        commands:
-          - configure terminal
-          - interface Port-Channel 12
-          - switchport trunk allowed vlan remove {{ vlan_id }}
-          - router bgp 65021
-          - no vrf {{ vrf_name }}
-          - no route-map MPLS-RESPALDO-{{ vrf_name }} 
-          - no interface vlan {{ vlan_id }}   
-          - no interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ port_channel }}
-          - no vlan {{ vlan_id }}
-          - no vrf instance {{ vrf_name }}
-      when: 
-       - vrf_check.stdout[0] != ''
-       - site == 'AMU' 
-       - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
-      changed_when: true
-    
     - name: Guardar cambios
       arista.eos.eos_command:
         commands:
@@ -462,4 +135,3 @@
     - name: Debug guardado de cambios
       debug:
         msg: "Cambios guardados en el dispositivo."
-
