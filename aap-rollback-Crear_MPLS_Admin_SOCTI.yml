@@ -45,7 +45,7 @@
        - site == 'CDLV' 
        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
 
-    - name: Extraer la VLAN ID en CDLV
+    - name: Extraer la VLAN ID en AMU
       set_fact:
        vlan_id: "{{ (vrf_output.stdout[0] | regex_search('Vlan(\\d+)', '\\1')) | first }}"
       when:
@@ -55,9 +55,21 @@
        
     
 
-    - name: Extraer el Port-Channel
+    - name: Extraer el Port-Channel en CDLV
       set_fact:
        port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
+      when:
+       - site == 'CDLV' 
+       - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+
+    - name: Extraer el Port-Channel en AMU
+      set_fact:
+       port_channel: "{{ (vrf_output.stdout[0] | regex_search('Port-Channel\\d+\\.?(\\d+)?', '\\1')) | first }}"
+      when:
+       - site == 'AMU' 
+       - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+       
 
     - name: Mostrar los valores extraídos
       debug:
