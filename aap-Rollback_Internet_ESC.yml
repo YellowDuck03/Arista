@@ -37,13 +37,39 @@
       debug:
         var: vrrp_ip
 
-    - name: Convertir la IP VIP VRRP a entero y sumar 1
+    - name: Convertir la IP VIP VRRP a entero y sumar 1 en CDLV
       set_fact:
         vrrp_ip_int: "{{ (vrrp_ip | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
+      when: 
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
 
-    - name: Mostrar IP GW de TDS
+    - name: Convertir la IP VIP VRRP a entero y sumar 1 en AMU
+      set_fact:
+        vrrp_ip_int: "{{ (vrrp_ip | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
+      when: 
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+        
+
+    - name: Mostrar IP GW de TDS en CDLV
       debug:
         msg: "La ip GW de TDS es {{ vrrp_ip_int }}"
+      when: 
+        - site == 'CDLV' 
+        - "(inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A' or inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B')"
+
+        
+
+    - name: Mostrar IP GW de TDS en AMU
+      debug:
+        msg: "La ip GW de TDS es {{ vrrp_ip_int }}"
+      when: 
+        - site == 'AMU' 
+        - "(inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A' or inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B')"
+
+        
 
     - name: Obtener la configuración completa de las rutas estáticas
       arista.eos.eos_command:
