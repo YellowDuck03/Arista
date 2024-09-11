@@ -100,4 +100,3 @@
         - "Ruta estática 8: {{ static_route_8 }}"
         - "Ruta estática 9: {{ static_route_9 }}"
         - "Ruta estática 10: {{ static_route_10 }}"
-
