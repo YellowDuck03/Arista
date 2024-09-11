@@ -61,31 +61,15 @@
       debug:
         var: vrrp_check.stdout
 
-    - name: Extraer la IP VIP de VRRP
-      set_fact:
-        vrrp_ip: "{{ (vrrp_check.stdout[0] | regex_search('Virtual IPv4 address is (\\d+\\.\\d+\\.\\d+\\.\\d+)', '\\1')) | first }}"
-      when: vrrp_check.stdout is not none and vrrp_check.stdout[0] != ''
-
-    - name: Debug IP VIP de VRRP
-      debug:
-        var: vrrp_ip
-
-    - name: Convertir la IP VIP VRRP a entero y sumar 1
-      set_fact:
-        vrrp_ip_int: "{{ (vrrp_ip | ansible.utils.ipaddr('int') + 1) | ansible.utils.ipaddr('ipv4') | regex_replace('/32$', '') }}"
-
-    - name: Mostrar IP GW de TDS
-      debug:
-        msg: "La ip GW de TDS es {{ vrrp_ip_int }}"
-
+   
     - name: Obtener la configuración completa de las rutas estáticas
       arista.eos.eos_command:
-        commands: "show running-config | include {{ vrrp_ip_int }}"
+        commands: "show run | i ip route vrf {{ vrf_name }}"
       register: static_routes_output
 
-    - name: Filtrar rutas estáticas con salto GW TDS
+    - name: Filtrar rutas estáticas para el VRF especificado
       set_fact:
-       filtered_static_routes: "{{ static_routes_output.stdout[0].split('\n') | select('search', vrrp_ip_int) | list }}"
+        filtered_static_routes: "{{ static_routes_output.stdout_lines | select('search', 'ip route vrf {{ vrf_name }}') | list }}"
 
     - name: Separar rutas estáticas en variables
       set_fact:
@@ -99,6 +83,21 @@
         static_route_8: "{{ filtered_static_routes[7] | default('') }}"
         static_route_9: "{{ filtered_static_routes[8] | default('') }}"
         static_route_10: "{{ filtered_static_routes[9] | default('') }}"
+      
+    - name: Mostrar rutas estáticas obtenidas
+      debug:
+        msg:
+          - "Ruta estática 1: {{ static_route_1 }}"
+          - "Ruta estática 2: {{ static_route_2 }}"
+          - "Ruta estática 3: {{ static_route_3 }}"
+          - "Ruta estática 4: {{ static_route_4 }}"
+          - "Ruta estática 5: {{ static_route_5 }}"
+          - "Ruta estática 6: {{ static_route_6 }}"
+          - "Ruta estática 7: {{ static_route_7 }}"
+          - "Ruta estática 8: {{ static_route_8 }}"
+          - "Ruta estática 9: {{ static_route_9 }}"
+          - "Ruta estática 10: {{ static_route_10 }}"
+          
 
     - name: Debug rutas estáticas separadas
       debug:
