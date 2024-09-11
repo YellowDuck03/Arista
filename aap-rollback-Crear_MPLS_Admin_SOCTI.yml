@@ -346,8 +346,8 @@
           - router bgp 65121
           - no vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
-          - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
-          - no track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }} line-protocol
+          - no interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }}
+          - no track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ port_channel }} line-protocol
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
       when: 
@@ -366,7 +366,7 @@
           - no vrf {{ vrf_name }}
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
           - no interface vlan {{ vlan_id }}
-          - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
+          - no interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
       when: 
@@ -384,8 +384,8 @@
           - router bgp 65021
           - no vrf {{ vrf_name }}
           - no interface vlan {{ vlan_id }}
-          - no track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }} line-protocol
-          - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
+          - no track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }} line-protocol
+          - no interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }} 
       when: 
@@ -404,7 +404,7 @@
           - no vrf {{ vrf_name }}
           - no route-map MPLS-RESPALDO-{{ vrf_name }} 
           - no interface vlan {{ vlan_id }}   
-          - no interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_id}}
+          - no interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ port_channel }}
           - no vlan {{ vlan_id }}
           - no vrf instance {{ vrf_name }}
       when: 
