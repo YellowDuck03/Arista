@@ -64,12 +64,16 @@
    
     - name: Obtener la configuración completa de las rutas estáticas
       arista.eos.eos_command:
-        commands: "show run | i ip route vrf {{ vrf_name }}"
+       commands: "show run | i ip route vrf {{ vrf_name }}"
       register: static_routes_output
+
+    - name: Verificar la salida completa de las rutas estáticas
+      debug:
+       msg: "{{ static_routes_output.stdout_lines | flatten }}"
 
     - name: Filtrar rutas estáticas para el VRF especificado
       set_fact:
-        filtered_static_routes: "{{ static_routes_output.stdout_lines | select('search', 'ip route vrf {{ vrf_name }}') | list }}"
+       filtered_static_routes: "{{ static_routes_output.stdout_lines | flatten | select('search', 'ip route vrf') | list }}"
 
     - name: Separar rutas estáticas en variables
       set_fact:
@@ -83,35 +87,20 @@
         static_route_8: "{{ filtered_static_routes[7] | default('') }}"
         static_route_9: "{{ filtered_static_routes[8] | default('') }}"
         static_route_10: "{{ filtered_static_routes[9] | default('') }}"
-      
+
     - name: Mostrar rutas estáticas obtenidas
       debug:
         msg:
-          - "Ruta estática 1: {{ static_route_1 }}"
-          - "Ruta estática 2: {{ static_route_2 }}"
-          - "Ruta estática 3: {{ static_route_3 }}"
-          - "Ruta estática 4: {{ static_route_4 }}"
-          - "Ruta estática 5: {{ static_route_5 }}"
-          - "Ruta estática 6: {{ static_route_6 }}"
-          - "Ruta estática 7: {{ static_route_7 }}"
-          - "Ruta estática 8: {{ static_route_8 }}"
-          - "Ruta estática 9: {{ static_route_9 }}"
-          - "Ruta estática 10: {{ static_route_10 }}"
-          
-
-    - name: Debug rutas estáticas separadas
-      debug:
-        msg:
-        - "Ruta 1: {{ static_route_1 }}"
-        - "Ruta 2: {{ static_route_2 }}"
-        - "Ruta 3: {{ static_route_3 }}"
-        - "Ruta 4: {{ static_route_4 }}"
-        - "Ruta 5: {{ static_route_5 }}"
-        - "Ruta 6: {{ static_route_6 }}"
-        - "Ruta 7: {{ static_route_7 }}"
-        - "Ruta 8: {{ static_route_8 }}"
-        - "Ruta 9: {{ static_route_9 }}"
-        - "Ruta 10: {{ static_route_10 }}"
+        - "Ruta estática 1: {{ static_route_1 }}"
+        - "Ruta estática 2: {{ static_route_2 }}"
+        - "Ruta estática 3: {{ static_route_3 }}"
+        - "Ruta estática 4: {{ static_route_4 }}"
+        - "Ruta estática 5: {{ static_route_5 }}"
+        - "Ruta estática 6: {{ static_route_6 }}"
+        - "Ruta estática 7: {{ static_route_7 }}"
+        - "Ruta estática 8: {{ static_route_8 }}"
+        - "Ruta estática 9: {{ static_route_9 }}"
+        - "Ruta estática 10: {{ static_route_10 }}"
 
 
     - name: Eliminar Ruta Estatica 1 (CDLV)
