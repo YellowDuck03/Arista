@@ -67,6 +67,10 @@
         commands: "show run | i ip route vrf {{ vrf_name }}"
       register: static_routes_output
 
+    - name: Verificar la salida completa de las rutas estáticas
+      debug:
+        msg: "{{ static_routes_output.stdout_lines }}"
+
     - name: Filtrar rutas estáticas para el VRF especificado
       set_fact:
         filtered_static_routes: "{{ static_routes_output.stdout_lines | select('search', 'ip route vrf {{ vrf_name }}') | list }}"
