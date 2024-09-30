@@ -361,7 +361,7 @@
           - vrrp 120 priority-level 150 
           - vrrp 120 preempt
           
-          - ip route vrf {{ vrf_name }}{{ ip_socti }} {{ fourth_ip }}
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
           
           - router bgp {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].bgp_asn }}
           - vrf {{ vrf_name }}
