@@ -105,9 +105,9 @@
           - vrf Internet
           - description {{ desc }}-INTERNET-TDS
           - ip address {{ first_ip }}/29
-          - vrrp 200 ipv4 {{ third_ip }}
-          - vrrp 200 priority-level 200
-          - vrrp 200 preempt
+          - vrrp 100 ipv4 {{ third_ip }}
+          - vrrp 100 priority-level 200
+          - vrrp 100 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'AMU' 
@@ -126,9 +126,9 @@
           - vrf Internet
           - description {{ desc }}-INTERNET-TDS
           - ip address {{ second_ip }}/29
-          - vrrp 200 ipv4 {{ third_ip }}
-          - vrrp 200 priority-level 150
-          - vrrp 200 preempt
+          - vrrp 100 ipv4 {{ third_ip }}
+          - vrrp 100 priority-level 150
+          - vrrp 100 preempt
           - ip route vrf Internet {{ ip_publica }} {{ fourth_ip }}
       when: 
         - site == 'AMU' 
