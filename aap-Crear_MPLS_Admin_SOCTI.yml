@@ -1,0 +1,391 @@
+- name: crear mpls, vrf, ospf, bgp, svi, route-map
+  hosts: all
+  gather_facts: no
+
+  vars:
+    site: ""
+    vlan_po: ""
+    vlan_id: ""
+    segmento: ""
+    vrf_name: ""
+    network: ""
+    ip_socti: ""
+    configuraciones_realizadas: []  # Variable para almacenar las configuraciones
+    equipos_config:
+      AMU-P5-E4-UR29-BLEAF-A:
+        bgp_asn: "65021"
+        neighbor_ip: "169.254.196.9"
+        router_id: "169.254.196.10"
+        id_po: "Port-Channel5."
+        ip_po: "169.254.196.10/30"
+        metric: "30000"
+      AMU-P5-E3-UR29-BLEAF-B:
+        bgp_asn: "65021"
+        neighbor_ip: "169.254.196.13"
+        router_id: "169.254.196.14"
+        id_po: "Port-Channel6."
+        ip_po: "169.254.196.14/30"
+        as_path_prepend: "65021"
+        metric: "40000"
+      CDLV-212-G31-UR29-BLEAF-A:
+        bgp_asn: "65121"
+        neighbor_ip: "169.254.196.17"
+        router_id: "169.254.196.18"
+        id_po: "Port-Channel5."
+        ip_po: "169.254.196.18/30"
+        metric: "10000"
+      CDLV-212-G32-UR29-BLEAF-B:
+        bgp_asn: "65121"
+        neighbor_ip: "169.254.196.21"
+        router_id: "169.254.196.22"
+        id_po: "Port-Channel6."
+        ip_po: "169.254.196.22/30"
+        as_path_prepend: "65121"
+        metric: "20000"
+
+  tasks:
+
+    - name: Verificar existencia de la VRF
+      arista.eos.eos_command:
+        commands:
+          - show vrf | in {{ vrf_name }}
+      register: vrf_check
+      
+    - name: Debug VRF check
+      debug:
+        var: vrf_check.stdout
+    
+    - name: Verificar existencia del route-map
+      arista.eos.eos_command:
+        commands:
+          - show running-config section route-map | i {{ vrf_name }}-TO-OSPF
+      register: routemap_check
+
+    - name: Debug route-map check
+      debug:
+        var: routemap_check.stdout
+
+    - name: Verificar existencia del route-map de respaldo
+      arista.eos.eos_command:
+        commands:
+          - show running-config section route-map | i MPLS-RESPALDO-{{ vrf_name }}
+      register: routemap_check_resp
+      
+    - name: Debug route-map respaldo check
+      debug:
+        var: routemap_check_resp.stdout
+        
+    - name: Verificar existencia del port-channel en equipo CDLV-212-G31-UR29-BLEAF-A
+      arista.eos.eos_command:
+        commands:
+          - show ip int brief | i {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
+      register: po_check_cdlv_a
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+
+    - name: Debug port-channel check CDLV-A
+      debug:
+        var: po_check_cdlv_a.stdout
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+
+  
+    - name: Verificar existencia del port-channel en equipo CDLV-212-G32-UR29-BLEAF-B
+      arista.eos.eos_command:
+        commands:
+          - show ip int brief | i {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
+      register: po_check_cdlv_b
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+
+    - name: Debug port-channel check CDLV-B
+      debug:
+        var: po_check_cdlv_b.stdout
+      when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+
+  
+    - name: Verificar existencia del port-channel en equipo AMU-P5-E4-UR29-BLEAF-A
+      arista.eos.eos_command:
+        commands:
+          - show ip int brief | i {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
+      register: po_check_amu_a
+      when: site == 'AMU' and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+
+    - name: Debug port-channel check AMU-A
+      debug:
+        var: po_check_amu_a.stdout
+      when: site == 'AMU' and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+
+
+    - name: Verificar existencia del port-channel en equipo AMU-P5-E3-UR29-BLEAF-B
+      arista.eos.eos_command:
+        commands:
+          - show ip int brief | i {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
+      register: po_check_amu_b
+      when: site == 'AMU' and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+
+    - name: Debug port-channel check AMU-B
+      debug:
+        var: po_check_amu_b.stdout
+      when: site == 'AMU' and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+
+
+    - name: Verificar existencia de la VLAN
+      arista.eos.eos_command:
+        commands:
+          - show vlan id {{ vlan_id }}
+      register: vlan_check
+
+      
+    - name: Debug VLAN check
+      debug:
+        var: vlan_check.stdout
+
+    - name: Extraer la dirección base y la máscara del segmento
+      set_fact:
+        ip_base: "{{ segmento.split('/')[0].split('.')[:-1] | join('.') }}"
+        last_octet: "{{ segmento.split('/')[0].split('.')[-1] }}"
+        subnet_mask: "{{ segmento.split('/')[1] }}"
+
+    - name: Debug IP base y máscara
+      debug:
+        msg:
+        - "IP Base: {{ ip_base }}"
+        - "Último octeto: {{ last_octet }}"
+        - "Máscara de subred: {{ subnet_mask }}"
+      
+
+    - name: Calcular las primeras cuatro IPs disponibles en el segmento
+      set_fact:
+        first_ip: "{{ ip_base }}.{{ last_octet | int + 1 }}"
+        second_ip: "{{ ip_base }}.{{ last_octet | int + 2 }}"
+        third_ip: "{{ ip_base }}.{{ last_octet | int + 3 }}"
+        fourth_ip: "{{ ip_base }}.{{ last_octet | int + 4 }}"
+        
+    - name: Mostrar las IPs calculadas
+      debug:
+        msg:
+          - "Primera IP: {{ first_ip }}"
+          - "Segunda IP: {{ second_ip }}"
+          - "Tercera IP: {{ third_ip }}"
+          - "Cuarta IP: {{ fourth_ip }}"
+          
+
+    - name: Configurar MPLS VRRP ROUTE-MAP en CDLV-212-G31-UR29-BLEAF-A
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vrf instance {{ vrf_name }}
+          - ip routing vrf {{ vrf_name }} 
+          
+          - vlan {{ vlan_id }}
+          - name INTER-RED-TDS-{{ vrf_name }}
+
+          - track {{ vrf_name }}TRACK interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_po }} line-protocol
+          
+          - interface {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_po }}
+          - description {{ vrf_name }}MPLS
+          - encapsulation dot1q vlan {{ vlan_po }}
+          - vrf {{ vrf_name }}
+          - ip address {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].ip_po }}
+          - no shutdown
+          
+          
+          - interface vlan {{ vlan_id }}
+          - vrf {{ vrf_name }}
+          - description {{ vrf_name }}-INTER-RED-TDS-SOCTI
+          - ip address {{ first_ip }}/29
+          - vrrp 120 ipv4 {{ third_ip }}
+          - vrrp 120 priority-level 200 
+          - vrrp 120 preempt
+          - vrrp 120 tracked-object {{ vrf_name }}TRACK decrement 60
+          
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
+
+          - interface Port-Channel12
+          - switchport trunk allowed vlan add {{ vlan_id }}
+          
+          - router bgp {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].bgp_asn }}
+          - vrf {{ vrf_name }}
+          - router-id {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].router_id }} 
+          - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} remote-as 27651
+          - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} send-community extended
+          - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} maximum-routes 10000
+          - network {{ network }}
+          
+      when: 
+        - site == 'CDLV' 
+        - inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
+        - "'not found' in vlan_check.stdout[0]"
+        - vrf_check.stdout[0] == ''
+        - routemap_check.stdout[0] == ''    
+        - routemap_check_resp.stdout[0] == ''
+        - po_check_cdlv_a.stdout[0] == ''       
+      changed_when: true
+
+     
+
+      
+    - name: Configurar MPLS VRRP ROUTE-MAP  en CDLV-212-G32-UR29-BLEAF-B
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vrf instance {{ vrf_name }}
+          - ip routing vrf {{ vrf_name }} 
+          - vlan {{ vlan_id }}
+          - name INTER-RED-TDS-{{ vrf_name }}
+          
+          - interface {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_po }}
+          - description {{ vrf_name }}MPLS
+          - encapsulation dot1q vlan {{ vlan_po }}
+          - vrf {{ vrf_name }}
+          - ip address {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].ip_po }}
+          - no shutdown
+            
+
+          - interface Port-Channel12
+          - switchport trunk allowed vlan add {{ vlan_id }}
+          
+          - route-map MPLS-RESPALDO-{{ vrf_name }} permit 10
+          - set as-path prepend {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].as_path_prepend }}
+          
+          - interface vlan {{ vlan_id }}
+          - vrf {{ vrf_name }}
+          - description {{ vrf_name }}-INTER-RED-TDS-SOCTI
+          - ip address {{ second_ip }}/29
+          - vrrp 120 ipv4 {{ third_ip }}
+          - vrrp 120 priority-level 150 
+          - vrrp 120 preempt
+          
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
+          
+          - router bgp {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].bgp_asn }}
+          - vrf {{ vrf_name }}
+          - router-id {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].router_id }} 
+          - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} remote-as 27651
+          - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].router_id }} send-community extended
+          - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].router_id }} maximum-routes 10000
+          - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} route-map MPLS-RESPALDO-{{ vrf_name }} out
+          - network {{ network }}
+          
+      when: 
+        - site == 'CDLV' 
+        - inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
+        - "'not found' in vlan_check.stdout[0]"
+        - vrf_check.stdout[0] == ''
+        - routemap_check.stdout[0] == ''    
+        - routemap_check_resp.stdout[0] == ''
+        - po_check_cdlv_b.stdout[0] == '' 
+      changed_when: true
+     
+          
+    - name: Configurar MPLS VRRP ROUTE-MAP  en AMU-P5-E4-UR29-BLEAF-A
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vrf instance {{ vrf_name }}
+          - ip routing vrf {{ vrf_name }}
+          
+          - vlan {{ vlan_id }}
+          - name INTER-RED-TDS-{{ vrf_name }}
+          
+          - track {{ vrf_name }}TRACK interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_po }} line-protocol
+          
+          - interface {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_po }}
+          - description {{ vrf_name }}MPLS
+          - encapsulation dot1q vlan {{ vlan_po }}
+          - vrf {{ vrf_name }}
+          - ip address {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].ip_po }}
+          - no shutdown
+          
+
+          - interface Port-Channel12
+          - switchport trunk allowed vlan add {{ vlan_id }}
+          
+          - interface vlan {{ vlan_id }}
+          - vrf {{ vrf_name }}
+          - description {{ vrf_name }}-INTER-RED-TDS-SOCTI
+          - ip address {{ first_ip }}/29
+          - vrrp 120 ipv4 {{ third_ip }}
+          - vrrp 120 priority-level 200 
+          - vrrp 120 preempt
+          - vrrp 120 tracked-object {{ vrf_name }}TRACK decrement 60
+          
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
+          
+          - router bgp {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].bgp_asn }}
+          - vrf {{ vrf_name }}
+          - router-id {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].router_id }} 
+          - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} remote-as 27651
+          - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} send-community extended
+          - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} maximum-routes 10000
+          - network {{ network }}
+             
+      when: 
+        - site == 'AMU' 
+        - inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
+        - "'not found' in vlan_check.stdout[0]"
+        - vrf_check.stdout[0] == ''
+        - routemap_check.stdout[0] == ''    
+        - routemap_check_resp.stdout[0] == ''
+        - po_check_amu_a.stdout[0] == ''       
+      changed_when: true
+      
+  
+    - name: Configurar MPLS VRRP ROUTE-MAP  en AMU-P5-E3-UR29-BLEAF-B
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - vrf instance {{ vrf_name }}
+          - ip routing vrf {{ vrf_name }} 
+          
+          - vlan {{ vlan_id }}
+          - name INTER-RED-TDS-{{ vrf_name }}
+          
+          - interface {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_po }}
+          - description {{ vrf_name }}MPLS
+          - encapsulation dot1q vlan {{ vlan_po }}
+          - no shutdown
+          - vrf {{ vrf_name }}
+          - ip address {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].ip_po }}
+          
+          
+          - route-map MPLS-RESPALDO-{{ vrf_name }} permit 10
+          - set as-path prepend {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].as_path_prepend }}
+
+          - interface Port-Channel12
+          - switchport trunk allowed vlan add {{ vlan_id }}
+          
+          - interface vlan {{ vlan_id }}
+          - vrf {{ vrf_name }}
+          - description {{ vrf_name }}-INTER-RED-TDS-SOCTI
+          - ip address {{ second_ip }}/29
+          - vrrp 120 ipv4 {{ third_ip }}
+          - vrrp 120 priority-level 150 
+          - vrrp 120 preempt
+          
+          - ip route vrf {{ vrf_name }} {{ ip_socti }} {{ fourth_ip }}
+          
+          - router bgp {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].bgp_asn }}
+          - vrf {{ vrf_name }}
+          - router-id {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].router_id }} 
+          - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} remote-as 27651
+          - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} send-community extended
+          - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} maximum-routes 10000
+          - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} route-map MPLS-RESPALDO-{{ vrf_name }} out
+          - network {{ network }}
+          
+      when: 
+        - site == 'AMU' 
+        - inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
+        - "'not found' in vlan_check.stdout[0]"
+        - vrf_check.stdout[0] == ''
+        - routemap_check.stdout[0] == ''    
+        - routemap_check_resp.stdout[0] == ''
+        - po_check_amu_b.stdout[0] == ''   
+      changed_when: true
+      
+
+
+    
+    - name: Guardar cambios
+      arista.eos.eos_command:
+        commands:
+          - write memory
