@@ -9,7 +9,7 @@
     segmento: ""
     vrf_name: ""
     network: ""
-    ip_socti: ""
+    ip_socti: "10.87.4.1/32"
     configuraciones_realizadas: []  # Variable para almacenar las configuraciones
     equipos_config:
       AMU-P5-E4-UR29-BLEAF-A:
@@ -172,7 +172,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}_SOC_TI
+          - vrf instance {{ vrf_name }}
           - ip routing vrf {{ vrf_name }} 
           
           - vlan {{ vlan_id }}
@@ -209,6 +209,7 @@
           - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} send-community extended
           - neighbor {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].neighbor_ip }} maximum-routes 10000
           - network {{ network }}
+          - network {{ ip_socti }}
           
       when: 
         - site == 'CDLV' 
@@ -227,7 +228,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}_SOC_TI
+          - vrf instance {{ vrf_name }}
           - ip routing vrf {{ vrf_name }} 
           - vlan {{ vlan_id }}
           - name INTER-RED-TDS-{{ vrf_name }}
@@ -264,6 +265,7 @@
           - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].router_id }} maximum-routes 10000
           - neighbor {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].neighbor_ip }} route-map MPLS-RESPALDO-{{ vrf_name }} out
           - network {{ network }}
+          - network {{ ip_socti }}
           
       when: 
         - site == 'CDLV' 
@@ -280,7 +282,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}_SOC_TI
+          - vrf instance {{ vrf_name }}
           - ip routing vrf {{ vrf_name }}
           
           - vlan {{ vlan_id }}
@@ -317,6 +319,7 @@
           - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} send-community extended
           - neighbor {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].neighbor_ip }} maximum-routes 10000
           - network {{ network }}
+          - network {{ ip_socti }}
              
       when: 
         - site == 'AMU' 
@@ -333,7 +336,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}_SOC_TI
+          - vrf instance {{ vrf_name }}
           - ip routing vrf {{ vrf_name }} 
           
           - vlan {{ vlan_id }}
@@ -371,6 +374,7 @@
           - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} maximum-routes 10000
           - neighbor {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].neighbor_ip }} route-map MPLS-RESPALDO-{{ vrf_name }} out
           - network {{ network }}
+          - network {{ ip_socti }}
           
       when: 
         - site == 'AMU' 
