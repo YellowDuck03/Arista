@@ -172,7 +172,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}
+          - vrf instance {{ vrf_name }}_SOC_TI
           - ip routing vrf {{ vrf_name }} 
           
           - vlan {{ vlan_id }}
@@ -227,7 +227,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}
+          - vrf instance {{ vrf_name }}_SOC_TI
           - ip routing vrf {{ vrf_name }} 
           - vlan {{ vlan_id }}
           - name INTER-RED-TDS-{{ vrf_name }}
@@ -280,7 +280,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}
+          - vrf instance {{ vrf_name }}_SOC_TI
           - ip routing vrf {{ vrf_name }}
           
           - vlan {{ vlan_id }}
@@ -333,7 +333,7 @@
       arista.eos.eos_command:
         commands:
           - configure terminal
-          - vrf instance {{ vrf_name }}
+          - vrf instance {{ vrf_name }}_SOC_TI
           - ip routing vrf {{ vrf_name }} 
           
           - vlan {{ vlan_id }}
