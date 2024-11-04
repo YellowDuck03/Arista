@@ -89,7 +89,7 @@
     - name: Verificar existencia del port-channel en equipo CDLV-212-G31-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
-          - show ip int brief | i {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
+          - show ip int {{ equipos_config['CDLV-212-G31-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
       register: po_check_cdlv_a
       when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G31-UR29-BLEAF-A'
 
@@ -102,7 +102,7 @@
     - name: Verificar existencia del port-channel en equipo CDLV-212-G32-UR29-BLEAF-B
       arista.eos.eos_command:
         commands:
-          - show ip int brief | i {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
+          - show ip int {{ equipos_config['CDLV-212-G32-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
       register: po_check_cdlv_b
       when: site == 'CDLV' and inventory_hostname == 'CDLV-212-G32-UR29-BLEAF-B'
 
@@ -115,7 +115,7 @@
     - name: Verificar existencia del port-channel en equipo AMU-P5-E4-UR29-BLEAF-A
       arista.eos.eos_command:
         commands:
-          - show ip int brief | i {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
+          - show ip int {{ equipos_config['AMU-P5-E4-UR29-BLEAF-A'].id_po }}{{ vlan_id }}
       register: po_check_amu_a
       when: site == 'AMU' and inventory_hostname == 'AMU-P5-E4-UR29-BLEAF-A'
 
@@ -128,7 +128,7 @@
     - name: Verificar existencia del port-channel en equipo AMU-P5-E3-UR29-BLEAF-B
       arista.eos.eos_command:
         commands:
-          - show ip int brief | i {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
+          - show ip int {{ equipos_config['AMU-P5-E3-UR29-BLEAF-B'].id_po }}{{ vlan_id }}
       register: po_check_amu_b
       when: site == 'AMU' and inventory_hostname == 'AMU-P5-E3-UR29-BLEAF-B'
 
@@ -254,7 +254,7 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - po_check_cdlv_a.stdout[0] == ''       
+        - "'not exist' in po_check_cdlv_a.stdout[0]"      
       changed_when: true
 
      
@@ -317,7 +317,7 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - po_check_cdlv_b.stdout[0] == '' 
+        - "'not exist' in po_check_cdlv_b.stdout[0]"  
       changed_when: true
      
           
@@ -375,7 +375,7 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - po_check_amu_a.stdout[0] == ''       
+        - "'not exist' in po_check_amu_a.stdout[0]"        
       changed_when: true
       
   
@@ -437,7 +437,7 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - po_check_amu_b.stdout[0] == ''   
+        - "'not exist' in po_check_amu_b.stdout[0]"   
       changed_when: true
       
 
