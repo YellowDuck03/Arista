@@ -254,7 +254,8 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - "'not exist' in po_check_cdlv_a.stdout[0]"      
+        - "'not exist' in po_check_cdlv_a.stdout[0]"
+        - vrf_name | search(' ') == false  # Verifica que no contenga espacios
       changed_when: true
 
      
@@ -317,7 +318,9 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - "'not exist' in po_check_cdlv_b.stdout[0]"  
+        - "'not exist' in po_check_cdlv_b.stdout[0]" 
+        - vrf_name | search(' ') == false  # Verifica que no contenga espacios
+      changed_when: true
       changed_when: true
      
           
@@ -375,7 +378,8 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - "'not exist' in po_check_amu_a.stdout[0]"        
+        - "'not exist' in po_check_amu_a.stdout[0]"
+        - vrf_name | search(' ') == false  # Verifica que no contenga espacios
       changed_when: true
       
   
@@ -437,7 +441,8 @@
         - prefix_check.stdout[0] == ''
         - routemap_check.stdout[0] == ''    
         - routemap_check_resp.stdout[0] == ''
-        - "'not exist' in po_check_amu_b.stdout[0]"   
+        - "'not exist' in po_check_amu_b.stdout[0]"
+        - vrf_name | search(' ') == false  # Verifica que no contenga espacios
       changed_when: true
       
 
